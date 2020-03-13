@@ -16,6 +16,8 @@ float[] BaseValues
 float[] TargetMorph
 float[] ThresholdMin
 float[] ThresholdMax
+float[] ThresholdUnequip
+int[] Slots
 float OldRads
 float UpdateDelay
 int RestartStackSize
@@ -106,6 +108,9 @@ Function Startup()
 		; get duration from MCM
 		UpdateDelay = MCM.GetModSettingFloat("LenA_RadMorphing", "fUpdateDelay:General")
 
+		; start listening for equipping items
+		RegisterForRemoteEvent(PlayerRef, "OnItemEquipped")
+
 		; start timer
 		TimerMorphTick()
 	ElseIf (MCM.GetModSettingBool("LenA_RadMorphing", "bWarnDisabled:General"))
@@ -122,26 +127,41 @@ Function SetupMorphConfig()
 	TargetMorph = new float[0]
 	ThresholdMin = new float[0]
 	ThresholdMax = new float[0]
+	ThresholdUnequip = new float[0]
+	Slots = new int[0]
 	
 	; get slider sets
-	int index = 1
-	While (index <= 20)
-		string sliderNames = MCM.GetModSettingString("LenA_RadMorphing", "sSliderName:Slider" + index)
+	int idxSet = 1
+	While (idxSet <= 20)
+		string sliderNames = MCM.GetModSettingString("LenA_RadMorphing", "sSliderName:Slider" + idxSet)
 		If (sliderNames)
 			string[] names = StringSplit(sliderNames, "|")
-			float target = MCM.GetModSettingFloat("LenA_RadMorphing", "fTargetMorph:Slider" + index)
-			float min = MCM.GetModSettingFloat("LenA_RadMorphing", "fThresholdMin:Slider" + index)
-			float max = MCM.GetModSettingFloat("LenA_RadMorphing", "fThresholdMax:Slider" + index)
-			int i = 0
-			While (i < names.Length)
-			Sliders.Add(names[i])
-			TargetMorph.Add(target)
-			ThresholdMin.Add(min)
-			ThresholdMax.Add(max)
-			i += 1
+			float target = MCM.GetModSettingFloat("LenA_RadMorphing", "fTargetMorph:Slider" + idxSet)
+			float min = MCM.GetModSettingFloat("LenA_RadMorphing", "fThresholdMin:Slider" + idxSet)
+			float max = MCM.GetModSettingFloat("LenA_RadMorphing", "fThresholdMax:Slider" + idxSet)
+			int idxSlider = 0
+			While (idxSlider < names.Length)
+				Sliders.Add(names[idxSlider])
+				TargetMorph.Add(target)
+				ThresholdMin.Add(min)
+				ThresholdMax.Add(max)
+				idxSlider += 1
 			EndWhile
+
+			string slot = MCM.GetModSettingString("LenA_RadMorphing", "sUnequipSlot:Slider" + idxSet)
+			float threshold = MCM.GetModSettingFloat("LenA_RadMorphing", "fThresholdUnequip:Slider" + idxSet)
+			If (slot)
+				string[] slotNums = StringSplit(slot, "|")
+				int idxSlot = 0
+				While (idxSlot < slotNums.Length)
+					Slots.Add(slotNums[idxSlot] as int)
+					ThresholdUnequip.Add(min + (max-min)*threshold / 100)
+					Log("Slot " + slotNums[idxSlot] + " threshold = " + ThresholdUnequip[ThresholdUnequip.Length-1])
+					idxSlot += 1
+				EndWhile
+			EndIf
 		EndIf
-		index += 1
+		idxSet += 1
 	EndWhile
 EndFunction
 
@@ -150,6 +170,8 @@ Function Shutdown()
 	Log("Shutdown")
 	; stop timer
 	CancelTimer(ETimerMorphTick)
+	; stop listening for equipping items
+	UnregisterForRemoteEvent(PlayerRef, "OnItemEquipped")
 	; restore base values
 	int i = 0
 	While (i < Sliders.Length)
@@ -186,6 +208,15 @@ EndEvent
 
 
 
+Event Actor.OnItemEquipped(Actor akSender, Form akBaseObject, ObjectReference akReference)
+	;TODO get slot number
+	;TODO check if slot is allowed
+	;TODO if slot is not allowed -> unequip
+EndEvent
+
+
+
+
 Function TimerMorphTick()
 	Log("TimerMorphTick")
 	; get rads (0-1000)
@@ -195,13 +226,13 @@ Function TimerMorphTick()
 		Log("new rads: " + currentRads + " (" + OldRads + ")")
 		OldRads = currentRads
 		; apply morphs
-		int i = 0
-		While (i < Sliders.Length)
-			float target = TargetMorph[i] / 100.0
+		int idxSlider = 0
+		While (idxSlider < Sliders.Length)
+			float target = TargetMorph[idxSlider] / 100.0
 			If (target != 0.0)
-				float min = ThresholdMin[i]
-				float max = ThresholdMax[i]
-				float base = BaseValues[i]
+				float min = ThresholdMin[idxSlider]
+				float max = ThresholdMax[idxSlider]
+				float base = BaseValues[idxSlider]
 				float morph
 				If (currentRads < min)
 					morph = 0.0
@@ -210,12 +241,41 @@ Function TimerMorphTick()
 				Else
 					morph = (currentRads - min) / (max - min)
 				EndIf
-				Log("setting morph '" + Sliders[i] + "' to " + (base + morph * target) + " (base is " + BaseValues[i] + ")")
-				BodyGen.SetMorph(PlayerRef, True, Sliders[i], kwMorph, base + morph * target)
+				Log("setting morph '" + Sliders[idxSlider] + "' to " + (base + morph * target) + " (base is " + BaseValues[idxSlider] + ")")
+				BodyGen.SetMorph(PlayerRef, True, Sliders[idxSlider], kwMorph, base + morph * target)
 			EndIf
-			i += 1
+			idxSlider += 1
+		EndWhile
+		int idxSlot = 0
+		While (idxSlot < Slots.Length)
+			If (currentRads > ThresholdUnequip[idxSlot])
+				Log("unequipping slot " + Slots[idxSlot])
+				PlayerRef.UnequipItemSlot(Slots[idxSlot])
+			EndIf
+			idxSlot += 1
 		EndWhile
 		BodyGen.UpdateMorphs(PlayerRef)
 	EndIf
 	StartTimer(UpdateDelay, ETimerMorphTick)
+EndFunction
+
+
+
+
+Function ShowEquippedClothes()
+	Note("ShowEquippedClothes")
+	string[] items = new string[0]
+	int slot = 0
+	While (slot < 44)
+		Actor:WornItem item = PlayerRef.GetWornItem(slot)
+		If (item != None && item.item != None)
+			items.Add(slot + ": " + item.item.GetName())
+			Log(slot + ": " + item.item.GetName() + " (" + item.modelName + ")")
+		Else
+			Log("Slot " + slot + " is empty")
+		EndIf
+		slot += 1
+	EndWhile
+
+	Debug.MessageBox(LL_FourPlay.StringJoin(items, "\n"))
 EndFunction

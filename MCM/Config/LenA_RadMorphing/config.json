@@ -43,7 +43,18 @@
 				"max": 60.0,
 				"step": 0.5
 			}
-		}
+		},
+		{
+			"text": "Show worn clothes",
+			"type": "button",
+			"help": "Show the worn clothing / armor items and their slots",
+			"action": {
+				"type": "CallFunction",
+				"form": "LenA_RadMorphing.esp|1000F99",
+				"function": "ShowEquippedClothes",
+				"params": []
+			}
+		  }
 	],
 	"pages": [
 		{
@@ -103,6 +114,27 @@
 						"min": 25.0,
 						"max": 100.0,
 						"step": 5.0
+					}
+				},
+				{
+					"text": "Armor slots to unequip",
+					"help": "Enter slot numbers to unequip when the unequip threshold is reached. Separate multiple slots by \"|\" (e.g. 10|11|12). Make sure there is no leading or trailing space.",
+					"type": "textinput",
+					"id": "sUnequipSlot:Slider1",
+					"valueOptions": {
+						"sourceType": "ModSettingString"
+					}
+				},
+				{
+					"text": "Unequip threshold",
+					"help": "When x% of your morphing target is reached armor from the selected slots will be unqeuipped.",
+					"type": "slider",
+					"id": "fThresholdUnequip:Slider1",
+					"valueOptions": {
+						"sourceType": "ModSettingFloat",
+						"min": 1.0,
+						"max": 100.0,
+						"step": 1.0
 					}
 				},
 
