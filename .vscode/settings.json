@@ -1,0 +1,6 @@
+{
+	"files.exclude": {
+		"**/*.esp": true,
+		"**/*.pex": true
+	}
+}
