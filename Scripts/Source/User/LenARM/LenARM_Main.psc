@@ -38,10 +38,12 @@ string[] Function StringSplit(string target, string delimiter)
 	string[] result = new string[0]
 	string current = target
 	int idx = LL_Fourplay.StringFind(current, delimiter)
+	Log("split idx: " + idx + " current: '" + current + "'")
 	While (idx > -1 && current)
-		Log("split idx: " + idx)
 		result.Add(LL_Fourplay.StringSubstring(current, 0, idx))
 		current = LL_Fourplay.StringSubstring(current, idx+1)
+		idx = LL_Fourplay.StringFind(current, delimiter)
+		Log("split idx: " + idx + " current: '" + current + "'")
 	EndWhile
 	If (current)
 		result.Add(current)
