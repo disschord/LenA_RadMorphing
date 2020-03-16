@@ -128,7 +128,7 @@
 				},
 				{
 					"text": "Unequip threshold",
-					"help": "When x% of your morphing target is reached armor from the selected slots will be unqeuipped.",
+					"help": "When x% of your morphing target is reached armor from the selected slots will be unequipped.",
 					"type": "slider",
 					"id": "fThresholdUnequip:Slider1",
 					"valueOptions": {
