@@ -177,6 +177,8 @@ Function Shutdown()
 	CancelTimer(ETimerMorphTick)
 	; stop listening for equipping items
 	UnregisterForRemoteEvent(PlayerRef, "OnItemEquipped")
+	
+	Utility.Wait(Math.Max(UpdateDelay + 0.5, 2.0))
 	; restore base values
 	int i = 0
 	While (i < Sliders.Length)
