@@ -268,7 +268,7 @@ Function ShowEquippedClothes()
 	Note("ShowEquippedClothes")
 	string[] items = new string[0]
 	int slot = 0
-	While (slot < 44)
+	While (slot < 62)
 		Actor:WornItem item = PlayerRef.GetWornItem(slot)
 		If (item != None && item.item != None)
 			items.Add(slot + ": " + item.item.GetName())
