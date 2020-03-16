@@ -212,9 +212,12 @@ EndEvent
 
 
 Event Actor.OnItemEquipped(Actor akSender, Form akBaseObject, ObjectReference akReference)
+	Log("Actor.OnItemEquipped: " + akBaseObject.GetName() + " (" + akBaseObject.GetSlotMask() + ")")
 	;TODO get slot number
 	;TODO check if slot is allowed
 	;TODO if slot is not allowed -> unequip
+	Utility.Wait(1.0)
+	TriggerUnequipSlots()
 EndEvent
 
 
