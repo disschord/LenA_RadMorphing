@@ -43,18 +43,7 @@
 				"max": 60.0,
 				"step": 0.5
 			}
-		},
-		{
-			"text": "Show worn clothes",
-			"type": "button",
-			"help": "Show the worn clothing / armor items and their slots",
-			"action": {
-				"type": "CallFunction",
-				"form": "LenA_RadMorphing.esp|1000F99",
-				"function": "ShowEquippedClothes",
-				"params": []
-			}
-		  }
+		}
 	],
 	"pages": [
 		{
@@ -65,6 +54,18 @@
 					"type": "text",
 					"html": true
 				},
+				{
+					"text": "Show worn clothes",
+					"type": "button",
+					"help": "Show the worn clothing / armor items and their slots",
+					"action": {
+						"type": "CallFunction",
+						"form": "LenA_RadMorphing.esp|1000F99",
+						"function": "ShowEquippedClothes",
+						"params": []
+					}
+				  },
+				
 				
 				
 				{
