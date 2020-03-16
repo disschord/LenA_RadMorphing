@@ -21,6 +21,7 @@ int[] Slots
 float OldRads
 float UpdateDelay
 int RestartStackSize
+int UnequipStackSize
 
 
 
@@ -248,17 +249,36 @@ Function TimerMorphTick()
 			EndIf
 			idxSlider += 1
 		EndWhile
+		BodyGen.UpdateMorphs(PlayerRef)
+		TriggerUnequipSlots()
+	EndIf
+	StartTimer(UpdateDelay, ETimerMorphTick)
+EndFunction
+
+
+Function UnequipSlots()
+	Log("UnequipSlots: " + UnequipStackSize)
+	UnequipStackSize -= 1
+	If (UnequipStackSize <= 0)
 		int idxSlot = 0
 		While (idxSlot < Slots.Length)
-			If (currentRads > ThresholdUnequip[idxSlot])
-				Log("unequipping slot " + Slots[idxSlot])
-				PlayerRef.UnequipItemSlot(Slots[idxSlot])
+			If (OldRads > ThresholdUnequip[idxSlot])
+				Actor:WornItem item = PlayerRef.GetWornItem(Slots[idxSlot])
+				If (item.item)
+					Log("unequipping slot " + Slots[idxSlot])
+					PlayerRef.UnequipItemSlot(Slots[idxSlot])
+				EndIf
 			EndIf
 			idxSlot += 1
 		EndWhile
-		BodyGen.UpdateMorphs(PlayerRef)
 	EndIf
-	StartTimer(UpdateDelay, ETimerMorphTick)
+EndFunction
+
+Function TriggerUnequipSlots()
+	Log("TriggerUnequipSlots")
+	UnequipStackSize += 1
+	Utility.Wait(0.1)
+	UnequipSlots()
 EndFunction
 
 
