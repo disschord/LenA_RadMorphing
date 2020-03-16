@@ -6,6 +6,8 @@ Keyword Property kwMorph Auto Const
 
 ActorValue Property Rads Auto Const
 
+Sound Property LenARM_DropClothesSound Auto Const
+
 Group EnumTimerId
 	int Property ETimerMorphTick = 1 Auto Const
 EndGroup
@@ -263,6 +265,7 @@ Function UnequipSlots()
 	Log("UnequipSlots: " + UnequipStackSize)
 	UnequipStackSize -= 1
 	If (UnequipStackSize <= 0)
+		bool found = false
 		int idxSlot = 0
 		While (idxSlot < Slots.Length)
 			If (OldRads > ThresholdUnequip[idxSlot])
@@ -270,10 +273,14 @@ Function UnequipSlots()
 				If (item.item)
 					Log("unequipping slot " + Slots[idxSlot])
 					PlayerRef.UnequipItemSlot(Slots[idxSlot])
+					found = true
 				EndIf
 			EndIf
 			idxSlot += 1
 		EndWhile
+		If (found)
+			LenARM_DropClothesSound.Play(PlayerRef)
+		EndIf
 	EndIf
 EndFunction
 
