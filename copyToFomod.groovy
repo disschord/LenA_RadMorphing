@@ -3,6 +3,7 @@ def target = "../../Fallout 4 DEV/LenA_RadMorphingRedux/_base/"
 def black = [
 	~/^.+\.code-workspace$/,
 	~/^.+\.groovy$/,
+	~/^.+\.pyy$/,
 	~/^.+\.ppj$/
 ]
 
