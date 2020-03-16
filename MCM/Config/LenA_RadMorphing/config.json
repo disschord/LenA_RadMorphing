@@ -189,6 +189,27 @@
 						"step": 5.0
 					}
 				},
+				{
+					"text": "Armor slots to unequip",
+					"help": "Enter slot numbers to unequip when the unequip threshold is reached. Separate multiple slots by \"|\" (e.g. 10|11|12). Make sure there is no leading or trailing space.",
+					"type": "textinput",
+					"id": "sUnequipSlot:Slider2",
+					"valueOptions": {
+						"sourceType": "ModSettingString"
+					}
+				},
+				{
+					"text": "Unequip threshold",
+					"help": "When x% of your morphing target is reached armor from the selected slots will be unequipped.",
+					"type": "slider",
+					"id": "fThresholdUnequip:Slider2",
+					"valueOptions": {
+						"sourceType": "ModSettingFloat",
+						"min": 1.0,
+						"max": 100.0,
+						"step": 1.0
+					}
+				},
 
 
 				{
@@ -238,6 +259,27 @@
 						"min": 25.0,
 						"max": 100.0,
 						"step": 5.0
+					}
+				},
+				{
+					"text": "Armor slots to unequip",
+					"help": "Enter slot numbers to unequip when the unequip threshold is reached. Separate multiple slots by \"|\" (e.g. 10|11|12). Make sure there is no leading or trailing space.",
+					"type": "textinput",
+					"id": "sUnequipSlot:Slider3",
+					"valueOptions": {
+						"sourceType": "ModSettingString"
+					}
+				},
+				{
+					"text": "Unequip threshold",
+					"help": "When x% of your morphing target is reached armor from the selected slots will be unequipped.",
+					"type": "slider",
+					"id": "fThresholdUnequip:Slider3",
+					"valueOptions": {
+						"sourceType": "ModSettingFloat",
+						"min": 1.0,
+						"max": 100.0,
+						"step": 1.0
 					}
 				},
 
@@ -291,6 +333,27 @@
 						"step": 5.0
 					}
 				},
+				{
+					"text": "Armor slots to unequip",
+					"help": "Enter slot numbers to unequip when the unequip threshold is reached. Separate multiple slots by \"|\" (e.g. 10|11|12). Make sure there is no leading or trailing space.",
+					"type": "textinput",
+					"id": "sUnequipSlot:Slider4",
+					"valueOptions": {
+						"sourceType": "ModSettingString"
+					}
+				},
+				{
+					"text": "Unequip threshold",
+					"help": "When x% of your morphing target is reached armor from the selected slots will be unequipped.",
+					"type": "slider",
+					"id": "fThresholdUnequip:Slider4",
+					"valueOptions": {
+						"sourceType": "ModSettingFloat",
+						"min": 1.0,
+						"max": 100.0,
+						"step": 1.0
+					}
+				},
 
 
 				{
@@ -340,6 +403,27 @@
 						"min": 25.0,
 						"max": 100.0,
 						"step": 5.0
+					}
+				},
+				{
+					"text": "Armor slots to unequip",
+					"help": "Enter slot numbers to unequip when the unequip threshold is reached. Separate multiple slots by \"|\" (e.g. 10|11|12). Make sure there is no leading or trailing space.",
+					"type": "textinput",
+					"id": "sUnequipSlot:Slider5",
+					"valueOptions": {
+						"sourceType": "ModSettingString"
+					}
+				},
+				{
+					"text": "Unequip threshold",
+					"help": "When x% of your morphing target is reached armor from the selected slots will be unequipped.",
+					"type": "slider",
+					"id": "fThresholdUnequip:Slider5",
+					"valueOptions": {
+						"sourceType": "ModSettingFloat",
+						"min": 1.0,
+						"max": 100.0,
+						"step": 1.0
 					}
 				},
 
@@ -393,6 +477,27 @@
 						"step": 5.0
 					}
 				},
+				{
+					"text": "Armor slots to unequip",
+					"help": "Enter slot numbers to unequip when the unequip threshold is reached. Separate multiple slots by \"|\" (e.g. 10|11|12). Make sure there is no leading or trailing space.",
+					"type": "textinput",
+					"id": "sUnequipSlot:Slider6",
+					"valueOptions": {
+						"sourceType": "ModSettingString"
+					}
+				},
+				{
+					"text": "Unequip threshold",
+					"help": "When x% of your morphing target is reached armor from the selected slots will be unequipped.",
+					"type": "slider",
+					"id": "fThresholdUnequip:Slider6",
+					"valueOptions": {
+						"sourceType": "ModSettingFloat",
+						"min": 1.0,
+						"max": 100.0,
+						"step": 1.0
+					}
+				},
 
 
 				{
@@ -442,6 +547,27 @@
 						"min": 25.0,
 						"max": 100.0,
 						"step": 5.0
+					}
+				},
+				{
+					"text": "Armor slots to unequip",
+					"help": "Enter slot numbers to unequip when the unequip threshold is reached. Separate multiple slots by \"|\" (e.g. 10|11|12). Make sure there is no leading or trailing space.",
+					"type": "textinput",
+					"id": "sUnequipSlot:Slider7",
+					"valueOptions": {
+						"sourceType": "ModSettingString"
+					}
+				},
+				{
+					"text": "Unequip threshold",
+					"help": "When x% of your morphing target is reached armor from the selected slots will be unequipped.",
+					"type": "slider",
+					"id": "fThresholdUnequip:Slider7",
+					"valueOptions": {
+						"sourceType": "ModSettingFloat",
+						"min": 1.0,
+						"max": 100.0,
+						"step": 1.0
 					}
 				},
 
@@ -495,6 +621,27 @@
 						"step": 5.0
 					}
 				},
+				{
+					"text": "Armor slots to unequip",
+					"help": "Enter slot numbers to unequip when the unequip threshold is reached. Separate multiple slots by \"|\" (e.g. 10|11|12). Make sure there is no leading or trailing space.",
+					"type": "textinput",
+					"id": "sUnequipSlot:Slider8",
+					"valueOptions": {
+						"sourceType": "ModSettingString"
+					}
+				},
+				{
+					"text": "Unequip threshold",
+					"help": "When x% of your morphing target is reached armor from the selected slots will be unequipped.",
+					"type": "slider",
+					"id": "fThresholdUnequip:Slider8",
+					"valueOptions": {
+						"sourceType": "ModSettingFloat",
+						"min": 1.0,
+						"max": 100.0,
+						"step": 1.0
+					}
+				},
 
 
 				{
@@ -544,6 +691,27 @@
 						"min": 25.0,
 						"max": 100.0,
 						"step": 5.0
+					}
+				},
+				{
+					"text": "Armor slots to unequip",
+					"help": "Enter slot numbers to unequip when the unequip threshold is reached. Separate multiple slots by \"|\" (e.g. 10|11|12). Make sure there is no leading or trailing space.",
+					"type": "textinput",
+					"id": "sUnequipSlot:Slider9",
+					"valueOptions": {
+						"sourceType": "ModSettingString"
+					}
+				},
+				{
+					"text": "Unequip threshold",
+					"help": "When x% of your morphing target is reached armor from the selected slots will be unequipped.",
+					"type": "slider",
+					"id": "fThresholdUnequip:Slider9",
+					"valueOptions": {
+						"sourceType": "ModSettingFloat",
+						"min": 1.0,
+						"max": 100.0,
+						"step": 1.0
 					}
 				},
 
@@ -597,6 +765,27 @@
 						"step": 5.0
 					}
 				},
+				{
+					"text": "Armor slots to unequip",
+					"help": "Enter slot numbers to unequip when the unequip threshold is reached. Separate multiple slots by \"|\" (e.g. 10|11|12). Make sure there is no leading or trailing space.",
+					"type": "textinput",
+					"id": "sUnequipSlot:Slider10",
+					"valueOptions": {
+						"sourceType": "ModSettingString"
+					}
+				},
+				{
+					"text": "Unequip threshold",
+					"help": "When x% of your morphing target is reached armor from the selected slots will be unequipped.",
+					"type": "slider",
+					"id": "fThresholdUnequip:Slider10",
+					"valueOptions": {
+						"sourceType": "ModSettingFloat",
+						"min": 1.0,
+						"max": 100.0,
+						"step": 1.0
+					}
+				},
 
 
 				{
@@ -646,6 +835,27 @@
 						"min": 25.0,
 						"max": 100.0,
 						"step": 5.0
+					}
+				},
+				{
+					"text": "Armor slots to unequip",
+					"help": "Enter slot numbers to unequip when the unequip threshold is reached. Separate multiple slots by \"|\" (e.g. 10|11|12). Make sure there is no leading or trailing space.",
+					"type": "textinput",
+					"id": "sUnequipSlot:Slider11",
+					"valueOptions": {
+						"sourceType": "ModSettingString"
+					}
+				},
+				{
+					"text": "Unequip threshold",
+					"help": "When x% of your morphing target is reached armor from the selected slots will be unequipped.",
+					"type": "slider",
+					"id": "fThresholdUnequip:Slider11",
+					"valueOptions": {
+						"sourceType": "ModSettingFloat",
+						"min": 1.0,
+						"max": 100.0,
+						"step": 1.0
 					}
 				},
 
@@ -699,6 +909,27 @@
 						"step": 5.0
 					}
 				},
+				{
+					"text": "Armor slots to unequip",
+					"help": "Enter slot numbers to unequip when the unequip threshold is reached. Separate multiple slots by \"|\" (e.g. 10|11|12). Make sure there is no leading or trailing space.",
+					"type": "textinput",
+					"id": "sUnequipSlot:Slider12",
+					"valueOptions": {
+						"sourceType": "ModSettingString"
+					}
+				},
+				{
+					"text": "Unequip threshold",
+					"help": "When x% of your morphing target is reached armor from the selected slots will be unequipped.",
+					"type": "slider",
+					"id": "fThresholdUnequip:Slider12",
+					"valueOptions": {
+						"sourceType": "ModSettingFloat",
+						"min": 1.0,
+						"max": 100.0,
+						"step": 1.0
+					}
+				},
 
 
 				{
@@ -748,6 +979,27 @@
 						"min": 25.0,
 						"max": 100.0,
 						"step": 5.0
+					}
+				},
+				{
+					"text": "Armor slots to unequip",
+					"help": "Enter slot numbers to unequip when the unequip threshold is reached. Separate multiple slots by \"|\" (e.g. 10|11|12). Make sure there is no leading or trailing space.",
+					"type": "textinput",
+					"id": "sUnequipSlot:Slider13",
+					"valueOptions": {
+						"sourceType": "ModSettingString"
+					}
+				},
+				{
+					"text": "Unequip threshold",
+					"help": "When x% of your morphing target is reached armor from the selected slots will be unequipped.",
+					"type": "slider",
+					"id": "fThresholdUnequip:Slider13",
+					"valueOptions": {
+						"sourceType": "ModSettingFloat",
+						"min": 1.0,
+						"max": 100.0,
+						"step": 1.0
 					}
 				},
 
@@ -801,6 +1053,27 @@
 						"step": 5.0
 					}
 				},
+				{
+					"text": "Armor slots to unequip",
+					"help": "Enter slot numbers to unequip when the unequip threshold is reached. Separate multiple slots by \"|\" (e.g. 10|11|12). Make sure there is no leading or trailing space.",
+					"type": "textinput",
+					"id": "sUnequipSlot:Slider14",
+					"valueOptions": {
+						"sourceType": "ModSettingString"
+					}
+				},
+				{
+					"text": "Unequip threshold",
+					"help": "When x% of your morphing target is reached armor from the selected slots will be unequipped.",
+					"type": "slider",
+					"id": "fThresholdUnequip:Slider14",
+					"valueOptions": {
+						"sourceType": "ModSettingFloat",
+						"min": 1.0,
+						"max": 100.0,
+						"step": 1.0
+					}
+				},
 
 
 				{
@@ -850,6 +1123,27 @@
 						"min": 25.0,
 						"max": 100.0,
 						"step": 5.0
+					}
+				},
+				{
+					"text": "Armor slots to unequip",
+					"help": "Enter slot numbers to unequip when the unequip threshold is reached. Separate multiple slots by \"|\" (e.g. 10|11|12). Make sure there is no leading or trailing space.",
+					"type": "textinput",
+					"id": "sUnequipSlot:Slider15",
+					"valueOptions": {
+						"sourceType": "ModSettingString"
+					}
+				},
+				{
+					"text": "Unequip threshold",
+					"help": "When x% of your morphing target is reached armor from the selected slots will be unequipped.",
+					"type": "slider",
+					"id": "fThresholdUnequip:Slider15",
+					"valueOptions": {
+						"sourceType": "ModSettingFloat",
+						"min": 1.0,
+						"max": 100.0,
+						"step": 1.0
 					}
 				},
 
@@ -903,6 +1197,27 @@
 						"step": 5.0
 					}
 				},
+				{
+					"text": "Armor slots to unequip",
+					"help": "Enter slot numbers to unequip when the unequip threshold is reached. Separate multiple slots by \"|\" (e.g. 10|11|12). Make sure there is no leading or trailing space.",
+					"type": "textinput",
+					"id": "sUnequipSlot:Slider16",
+					"valueOptions": {
+						"sourceType": "ModSettingString"
+					}
+				},
+				{
+					"text": "Unequip threshold",
+					"help": "When x% of your morphing target is reached armor from the selected slots will be unequipped.",
+					"type": "slider",
+					"id": "fThresholdUnequip:Slider16",
+					"valueOptions": {
+						"sourceType": "ModSettingFloat",
+						"min": 1.0,
+						"max": 100.0,
+						"step": 1.0
+					}
+				},
 
 
 				{
@@ -952,6 +1267,27 @@
 						"min": 25.0,
 						"max": 100.0,
 						"step": 5.0
+					}
+				},
+				{
+					"text": "Armor slots to unequip",
+					"help": "Enter slot numbers to unequip when the unequip threshold is reached. Separate multiple slots by \"|\" (e.g. 10|11|12). Make sure there is no leading or trailing space.",
+					"type": "textinput",
+					"id": "sUnequipSlot:Slider17",
+					"valueOptions": {
+						"sourceType": "ModSettingString"
+					}
+				},
+				{
+					"text": "Unequip threshold",
+					"help": "When x% of your morphing target is reached armor from the selected slots will be unequipped.",
+					"type": "slider",
+					"id": "fThresholdUnequip:Slider17",
+					"valueOptions": {
+						"sourceType": "ModSettingFloat",
+						"min": 1.0,
+						"max": 100.0,
+						"step": 1.0
 					}
 				},
 
@@ -1005,6 +1341,27 @@
 						"step": 5.0
 					}
 				},
+				{
+					"text": "Armor slots to unequip",
+					"help": "Enter slot numbers to unequip when the unequip threshold is reached. Separate multiple slots by \"|\" (e.g. 10|11|12). Make sure there is no leading or trailing space.",
+					"type": "textinput",
+					"id": "sUnequipSlot:Slider18",
+					"valueOptions": {
+						"sourceType": "ModSettingString"
+					}
+				},
+				{
+					"text": "Unequip threshold",
+					"help": "When x% of your morphing target is reached armor from the selected slots will be unequipped.",
+					"type": "slider",
+					"id": "fThresholdUnequip:Slider18",
+					"valueOptions": {
+						"sourceType": "ModSettingFloat",
+						"min": 1.0,
+						"max": 100.0,
+						"step": 1.0
+					}
+				},
 
 
 				{
@@ -1056,6 +1413,27 @@
 						"step": 5.0
 					}
 				},
+				{
+					"text": "Armor slots to unequip",
+					"help": "Enter slot numbers to unequip when the unequip threshold is reached. Separate multiple slots by \"|\" (e.g. 10|11|12). Make sure there is no leading or trailing space.",
+					"type": "textinput",
+					"id": "sUnequipSlot:Slider19",
+					"valueOptions": {
+						"sourceType": "ModSettingString"
+					}
+				},
+				{
+					"text": "Unequip threshold",
+					"help": "When x% of your morphing target is reached armor from the selected slots will be unequipped.",
+					"type": "slider",
+					"id": "fThresholdUnequip:Slider19",
+					"valueOptions": {
+						"sourceType": "ModSettingFloat",
+						"min": 1.0,
+						"max": 100.0,
+						"step": 1.0
+					}
+				},
 
 
 				{
@@ -1105,6 +1483,27 @@
 						"min": 25.0,
 						"max": 100.0,
 						"step": 5.0
+					}
+				},
+				{
+					"text": "Armor slots to unequip",
+					"help": "Enter slot numbers to unequip when the unequip threshold is reached. Separate multiple slots by \"|\" (e.g. 10|11|12). Make sure there is no leading or trailing space.",
+					"type": "textinput",
+					"id": "sUnequipSlot:Slider20",
+					"valueOptions": {
+						"sourceType": "ModSettingString"
+					}
+				},
+				{
+					"text": "Unequip threshold",
+					"help": "When x% of your morphing target is reached armor from the selected slots will be unequipped.",
+					"type": "slider",
+					"id": "fThresholdUnequip:Slider20",
+					"valueOptions": {
+						"sourceType": "ModSettingFloat",
+						"min": 1.0,
+						"max": 100.0,
+						"step": 1.0
 					}
 				}
 			]
