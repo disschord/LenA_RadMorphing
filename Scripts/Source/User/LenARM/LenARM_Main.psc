@@ -6,7 +6,10 @@ Keyword Property kwMorph Auto Const
 
 ActorValue Property Rads Auto Const
 
+Scene Property DoctorMedicineScene03_AllDone Auto Const
+
 Sound Property LenARM_DropClothesSound Auto Const
+
 
 Group EnumTimerId
 	int Property ETimerMorphTick = 1 Auto Const
@@ -21,6 +24,7 @@ float[] ThresholdMax
 float[] ThresholdUnequip
 int[] Slots
 float OldRads
+float RadsBeforeDoc
 float UpdateDelay
 int RestartStackSize
 int UnequipStackSize
@@ -115,6 +119,10 @@ Function Startup()
 
 		; start listening for equipping items
 		RegisterForRemoteEvent(PlayerRef, "OnItemEquipped")
+
+		; start listening for doctor scene
+		RegisterForRemoteEvent(DoctorMedicineScene03_AllDone, "OnBegin")
+		RegisterForRemoteEvent(DoctorMedicineScene03_AllDone, "OnEnd")
 
 		; start timer
 		TimerMorphTick()
@@ -222,6 +230,17 @@ Event Actor.OnItemEquipped(Actor akSender, Form akBaseObject, ObjectReference ak
 	;TODO if slot is not allowed -> unequip
 	Utility.Wait(1.0)
 	TriggerUnequipSlots()
+EndEvent
+
+
+Event Scene.OnBegin(Scene akSender)
+	RadsBeforeDoc = PlayerRef.GetValue(Rads)
+	Log("Scene.OnBegin: " + akSender + " (rads: " + RadsBeforeDoc + ")")
+EndEvent
+
+Event Scene.OnEnd(Scene akSender)
+	float radsNow = PlayerRef.GetValue(Rads)
+	Log("Scene.OnEnd: " + akSender + " (rads: " + radsNow + ")")
 EndEvent
 
 
