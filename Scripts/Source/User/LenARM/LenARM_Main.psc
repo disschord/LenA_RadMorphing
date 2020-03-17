@@ -17,12 +17,21 @@ EndGroup
 
 
 string[] Sliders
-float[] BaseValues
 float[] TargetMorph
 float[] ThresholdMin
 float[] ThresholdMax
 float[] ThresholdUnequip
 int[] Slots
+int[] SlotSliderIndex
+bool[] OnlyDoc
+bool[] IsAdditive
+bool[] HasAdditiveLimit
+float[] AdditiveLimit
+
+float[] BaseValues
+float[] BaseMorph
+float[] CurrentMorph
+
 float OldRads
 float RadsBeforeDoc
 float UpdateDelay
@@ -62,6 +71,13 @@ string[] Function StringSplit(string target, string delimiter)
 EndFunction
 
 
+float Function Clamp(float value, float limit1, float limit2)
+	float lower = Math.Min(limit1, limit2)
+	float upper = Math.Max(limit1, limit2)
+	return Math.Min(Math.Max(value, lower), upper)
+EndFunction
+
+
 
 
 
@@ -91,7 +107,17 @@ EndEvent
 
 Function OnMCMSettingChange(string modName, string id)
 	Log("OnMCMSettingChange: " + modName + "; " + id)
+	;TODO keep / update persistant values (e.g. base morphs)
 	Restart()
+EndFunction
+
+
+
+
+Function ReactToSettingsChange(string id)
+	If (LL_FourPlay.StringSubstring(id, 0, 11) == "sSliderName")
+		Restart()
+	EndIf
 EndFunction
 
 
@@ -107,10 +133,15 @@ Function Startup()
 
 		; get and store base values
 		BaseValues = new float[Sliders.Length]
+		BaseMorph = new float[Sliders.Length]
+		CurrentMorph = new float[Sliders.Length]
 		int i = 0
 		While (i < Sliders.Length)
-			BaseValues[i] = BodyGen.GetMorph(playerRef, True, Sliders[i], None)
+			float morph = BodyGen.GetMorph(playerRef, True, Sliders[i], None)
+			BaseValues[i] = morph
 			Log("BaseValues[" + i + "]: " + BaseValues[i])
+			BaseMorph[i] = 0.0
+			CurrentMorph[i] = 0.0
 			i += 1
 		EndWhile
 
@@ -142,6 +173,11 @@ Function SetupMorphConfig()
 	ThresholdMax = new float[0]
 	ThresholdUnequip = new float[0]
 	Slots = new int[0]
+	SlotSliderIndex = new int[0]
+	OnlyDoc = new bool[0]
+	IsAdditive = new bool[0]
+	HasAdditiveLimit = new bool[0]
+	AdditiveLimit = new float[0]
 	
 	; get slider sets
 	int idxSet = 1
@@ -149,15 +185,23 @@ Function SetupMorphConfig()
 		string sliderNames = MCM.GetModSettingString("LenA_RadMorphing", "sSliderName:Slider" + idxSet)
 		If (sliderNames)
 			string[] names = StringSplit(sliderNames, "|")
-			float target = MCM.GetModSettingFloat("LenA_RadMorphing", "fTargetMorph:Slider" + idxSet)
-			float min = MCM.GetModSettingFloat("LenA_RadMorphing", "fThresholdMin:Slider" + idxSet)
-			float max = MCM.GetModSettingFloat("LenA_RadMorphing", "fThresholdMax:Slider" + idxSet)
+			float target = MCM.GetModSettingFloat("LenA_RadMorphing", "fTargetMorph:Slider" + idxSet) / 100.0
+			float min = MCM.GetModSettingFloat("LenA_RadMorphing", "fThresholdMin:Slider" + idxSet) / 100.0
+			float max = MCM.GetModSettingFloat("LenA_RadMorphing", "fThresholdMax:Slider" + idxSet) / 100.0
+			bool doc = MCM.GetModSettingBool("LenA_RadMorphing", "bOnlyDoctorCanReset:Slider" + idxSet)
+			bool additive = MCM.GetModSettingBool("LenA_RadMorphing", "bIsAdditive:Slider" + idxSet)
+			bool hasLimit = MCM.GetModSettingBool("LenA_RadMorphing", "bHasAdditiveLimit:Slider" + idxSet)
+			float limit = MCM.GetModSettingFloat("LenA_RadMorphing", "fAdditiveLimit:Slider" + idxSet) / 100.0
 			int idxSlider = 0
 			While (idxSlider < names.Length)
 				Sliders.Add(names[idxSlider])
 				TargetMorph.Add(target)
 				ThresholdMin.Add(min)
 				ThresholdMax.Add(max)
+				OnlyDoc.Add(doc)
+				IsAdditive.Add(additive)
+				HasAdditiveLimit.Add(hasLimit)
+				AdditiveLimit.Add(limit)
 				idxSlider += 1
 			EndWhile
 
@@ -168,7 +212,8 @@ Function SetupMorphConfig()
 				int idxSlot = 0
 				While (idxSlot < slotNums.Length)
 					Slots.Add(slotNums[idxSlot] as int)
-					ThresholdUnequip.Add(min + (max-min)*threshold / 100)
+					ThresholdUnequip.Add((min + (max-min)*threshold) * target)
+					SlotSliderIndex.Add(Sliders.Length-1)
 					Log("Slot " + slotNums[idxSlot] + " threshold = " + ThresholdUnequip[ThresholdUnequip.Length-1])
 					idxSlot += 1
 				EndWhile
@@ -176,6 +221,30 @@ Function SetupMorphConfig()
 		EndIf
 		idxSet += 1
 	EndWhile
+EndFunction
+
+Function LoadSlotSettings(int idxSet, float min, float max, float target)
+	Log("LoadSlotSettings")
+	; get slider sets
+	int idxSet = 1
+	While (idxSet <= 20)
+		string sliderNames = MCM.GetModSettingString("LenA_RadMorphing", "sSliderName:Slider" + idxSet)
+		If (sliderNames)
+		EndIf
+	EndWhile
+	string slot = MCM.GetModSettingString("LenA_RadMorphing", "sUnequipSlot:Slider" + idxSet)
+	float threshold = MCM.GetModSettingFloat("LenA_RadMorphing", "fThresholdUnequip:Slider" + idxSet)
+	If (slot)
+		string[] slotNums = StringSplit(slot, "|")
+		int idxSlot = 0
+		While (idxSlot < slotNums.Length)
+			Slots.Add(slotNums[idxSlot] as int)
+			ThresholdUnequip.Add((min + (max-min)*threshold) * target)
+			SlotSliderIndex.Add(Sliders.Length-1)
+			Log("Slot " + slotNums[idxSlot] + " threshold = " + ThresholdUnequip[ThresholdUnequip.Length-1])
+			idxSlot += 1
+		EndWhile
+	EndIf
 EndFunction
 
 
@@ -188,12 +257,7 @@ Function Shutdown()
 	
 	Utility.Wait(Math.Max(UpdateDelay + 0.5, 2.0))
 	; restore base values
-	int i = 0
-	While (i < Sliders.Length)
-		BodyGen.SetMorph(PlayerRef, True, Sliders[i], kwMorph, BaseValues[i])
-		i += 1
-	EndWhile
-	BodyGen.UpdateMorphs(PlayerRef)
+	ResetMorphs()
 EndFunction
 
 Function Restart()
@@ -214,7 +278,6 @@ EndFunction
 
 
 Event OnTimer(int tid)
-	Log("OnTimer: " + tid)
 	If (tid == ETimerMorphTick)
 		TimerMorphTick()
 	EndIf
@@ -234,44 +297,78 @@ EndEvent
 
 
 Event Scene.OnBegin(Scene akSender)
-	RadsBeforeDoc = PlayerRef.GetValue(Rads)
-	Log("Scene.OnBegin: " + akSender + " (rads: " + RadsBeforeDoc + ")")
+	radsBeforeDoc = PlayerRef.GetValue(Rads)
+	Log("Scene.OnBegin: " + akSender + " (rads: " + radsBeforeDoc + ")")
 EndEvent
 
 Event Scene.OnEnd(Scene akSender)
 	float radsNow = PlayerRef.GetValue(Rads)
 	Log("Scene.OnEnd: " + akSender + " (rads: " + radsNow + ")")
+	If (radsNow == 0.0)
+		ResetMorphs()
+	EndIf
 EndEvent
 
 
 
 
+Function ResetMorphs()
+	Log("ResetMorphs")
+	; restore base values
+	int i = 0
+	While (i < Sliders.Length)
+		BodyGen.SetMorph(PlayerRef, True, Sliders[i], kwMorph, BaseValues[i])
+		CurrentMorph[i] = 0.0
+		i += 1
+	EndWhile
+	BodyGen.UpdateMorphs(PlayerRef)
+EndFunction
+
+
+
+
 Function TimerMorphTick()
-	Log("TimerMorphTick")
 	; get rads (0-1000)
-	float currentRads = PlayerRef.GetValue(Rads) / 10.0
-	Log("current rads: " + currentRads + " (" + OldRads + ")")
-	If (currentRads != OldRads)
-		Log("new rads: " + currentRads + " (" + OldRads + ")")
-		OldRads = currentRads
+	float newRads = PlayerRef.GetValue(Rads) / 1000.0
+	If (newRads != OldRads)
+		Log("new rads: " + newRads + " (" + OldRads + ")")
+		OldRads = newRads
 		; apply morphs
 		int idxSlider = 0
 		While (idxSlider < Sliders.Length)
-			float target = TargetMorph[idxSlider] / 100.0
+			float target = TargetMorph[idxSlider]
 			If (target != 0.0)
 				float min = ThresholdMin[idxSlider]
 				float max = ThresholdMax[idxSlider]
 				float base = BaseValues[idxSlider]
-				float morph
-				If (currentRads < min)
-					morph = 0.0
-				ElseIf (currentRads > max)
-					morph = 1.0
+				float oldMorph = CurrentMorph[idxSlider]
+				float newMorph
+
+				If (newRads < min)
+					newMorph = 0.0
+				ElseIf (newRads > max)
+					newMorph = 1.0
 				Else
-					morph = (currentRads - min) / (max - min)
+					newMorph = (newRads - min) / (max - min)
 				EndIf
-				Log("setting morph '" + Sliders[idxSlider] + "' to " + (base + morph * target) + " (base is " + BaseValues[idxSlider] + ")")
-				BodyGen.SetMorph(PlayerRef, True, Sliders[idxSlider], kwMorph, base + morph * target)
+
+				Log("  morph '" + Sliders[idxSlider] + "' " + oldMorph + " -> " + newMorph)
+				CurrentMorph[idxSlider] = newMorph
+				If (newMorph > oldMorph || !OnlyDoc[idxSlider])
+					float fullMorph = newMorph
+					If (IsAdditive[idxSlider])
+						fullMorph += BaseMorph[idxSlider]
+						If (HasAdditiveLimit[idxSlider])
+							fullMorph = Math.Min(fullMorph, 1.0 + AdditiveLimit[idxSlider])
+						EndIf
+					EndIf
+					Log("    morph '" + Sliders[idxSlider] + "' " + oldMorph + " -> " + newMorph + " -> " + fullMorph)
+					Log("    setting slider '" + Sliders[idxSlider] + "' to " + (base + fullMorph * target) + " (base value is " + BaseValues[idxSlider] + ")" + " (base morph is " + BaseMorph[idxSlider] + ")")
+					BodyGen.SetMorph(PlayerRef, True, Sliders[idxSlider], kwMorph, base + fullMorph * target)
+				ElseIf (IsAdditive[idxSlider])
+					BaseMorph[idxSlider] += oldMorph - newMorph
+					Log("    setting baseMorph '" + Sliders[idxSlider] + "' to " + BaseMorph[idxSlider])
+				EndIf
 			EndIf
 			idxSlider += 1
 		EndWhile
@@ -289,7 +386,8 @@ Function UnequipSlots()
 		bool found = false
 		int idxSlot = 0
 		While (idxSlot < Slots.Length)
-			If (OldRads > ThresholdUnequip[idxSlot])
+			int idxSlider = SlotSliderIndex[idxSlot]
+			If (BaseMorph[idxSlider] + CurrentMorph[idxSlider] > ThresholdUnequip[idxSlot])
 				Actor:WornItem item = PlayerRef.GetWornItem(Slots[idxSlot])
 				If (item.item)
 					Log("unequipping slot " + Slots[idxSlot])
