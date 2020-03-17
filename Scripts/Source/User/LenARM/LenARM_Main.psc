@@ -38,6 +38,8 @@ float UpdateDelay
 int RestartStackSize
 int UnequipStackSize
 
+string Version
+
 
 
 Function Note(string msg)
@@ -80,6 +82,13 @@ EndFunction
 
 
 
+string Function GetVersion()
+	return "0.3.0"
+EndFunction
+
+
+
+
 
 
 
@@ -100,8 +109,7 @@ EndEvent
 
 Event Actor.OnPlayerLoadGame(Actor akSender)
 	Log("Actor.OnPlayerLoadGame: " + akSender)
-	;TODO check mod version and run update / restart if necessary
-	Restart()
+	PerformUpdateIfNecessary()
 EndEvent
 
 
@@ -117,6 +125,18 @@ EndFunction
 Function ReactToSettingsChange(string id)
 	If (LL_FourPlay.StringSubstring(id, 0, 11) == "sSliderName")
 		Restart()
+	EndIf
+EndFunction
+
+
+
+
+Function PerformUpdateIfNecessary()
+	Log("PerformUpdateIfNecessary: " + Version + " != " + GetVersion() + " -> " + (Version != GetVersion()))
+	If (Version != GetVersion())
+		Restart()
+		;TODO uncomment setting the current version number
+		; Version = GetVersion()
 	EndIf
 EndFunction
 
