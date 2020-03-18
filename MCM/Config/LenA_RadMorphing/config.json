@@ -68,8 +68,132 @@
 				
 				
 				
+				
 				{
 					"text": "Slider Set 1",
+					"type": "section"
+				},
+				{
+					"text": "Slider Names",
+					"help": "Enter the slider names separated by \"|\" (e.g. Boobs|Butt|Nose). Make sure there is no leading or trailing space.",
+					"type": "textinput",
+					"id": "sSliderName:Slider0",
+					"valueOptions": {
+						"sourceType": "ModSettingString"
+					}
+				},
+				{
+					"text": "Target size increase",
+					"help": "At 100% the slider will be the initial value + 1 when you are fully irradiated.",
+					"type": "slider",
+					"id": "fTargetMorph:Slider0",
+					"valueOptions": {
+						"sourceType": "ModSettingFloat",
+						"min": -600.0,
+						"max": 600.0,
+						"step": 10.0
+					}
+				},
+				{
+					"text": "Lower radiation threshold",
+					"help": "Morphing starts when you are irradiated for x%",
+					"type": "slider",
+					"id": "fThresholdMin:Slider0",
+					"valueOptions": {
+						"sourceType": "ModSettingFloat",
+						"min": 0.0,
+						"max": 75.0,
+						"step": 5.0
+					}
+				},
+				{
+					"text": "Upper radiation threshold",
+					"help": "Morphing reaches the target size increase when you are irradiated for x%",
+					"type": "slider",
+					"id": "fThresholdMax:Slider0",
+					"valueOptions": {
+						"sourceType": "ModSettingFloat",
+						"min": 25.0,
+						"max": 100.0,
+						"step": 5.0
+					}
+				},
+				{
+					"text": "Armor slots to unequip",
+					"help": "Enter slot numbers to unequip when the unequip threshold is reached. Separate multiple slots by \"|\" (e.g. 10|11|12). Make sure there is no leading or trailing space.",
+					"type": "textinput",
+					"id": "sUnequipSlot:Slider0",
+					"valueOptions": {
+						"sourceType": "ModSettingString"
+					}
+				},
+				{
+					"text": "Unequip threshold",
+					"help": "When x% of your morphing target is reached armor from the selected slots will be unequipped.",
+					"type": "slider",
+					"id": "fThresholdUnequip:Slider0",
+					"valueOptions": {
+						"sourceType": "ModSettingFloat",
+						"min": 1.0,
+						"max": 100.0,
+						"step": 1.0
+					}
+				},
+				{
+					"text": "Only doctors can reset morphs",
+					"help": "With this enabled only doctors can restore your base shape. Reducing rads with RadAway or other means will have no effect on the sliders.",
+					"type": "switcher",
+					"id": "bOnlyDoctorCanReset:Slider0",
+					"groupControl": 1,
+					"valueOptions": {
+						"sourceType": "ModSettingBool"
+					}
+				},
+				{
+					"text": "Additive morphing",
+					"help": "Enabled: rads gained after taking RadAway further increase morphs. Disabled: rads gained after taking RadAway only increase morphs if irradiation is higher than before taking RadAway.",
+					"type": "switcher",
+					"id": "bIsAdditive:Slider0",
+					"groupControl": 2,
+					"groupCondition": 1,
+					"valueOptions": {
+						"sourceType": "ModSettingBool"
+					}
+				},
+				{
+					"text": "Limit additive morphing",
+					"help": "Disabled: Unlimited additive morphing. Use at own risk!",
+					"type": "switcher",
+					"id": "bHasAdditiveLimit:Slider0",
+					"groupControl": 3,
+					"groupCondition": {"AND":[1,2]},
+					"valueOptions": {
+						"sourceType": "ModSettingBool"
+					}
+				},
+				{
+					"text": "Additive morphing limit",
+					"help": "How far additive morphing can exceed the target size increase (% of target size increase). 0 = cannot exceed target; 100 = cannot exceed 2x target",
+					"type": "slider",
+					"id": "fAdditiveLimit:Slider0",
+					"groupCondition": {"AND":[1,2,3]},
+					"valueOptions": {
+						"sourceType": "ModSettingFloat",
+						"min": 0.0,
+						"max": 600.0,
+						"step": 10.0
+					}
+				},
+				{
+					"text": "<b>Warning!</b> Additive morphing without a limit can lead to insane morphs!",
+					"type": "text",
+					"html": true,
+					"groupCondition": 1
+				},
+
+
+				{
+					"text": "Slider Set 2",
 					"type": "section"
 				},
 				{
@@ -192,7 +316,7 @@
 
 
 				{
-					"text": "Slider Set 2",
+					"text": "Slider Set 3",
 					"type": "section"
 				},
 				{
@@ -261,10 +385,61 @@
 						"step": 1.0
 					}
 				},
+				{
+					"text": "Only doctors can reset morphs",
+					"help": "With this enabled only doctors can restore your base shape. Reducing rads with RadAway or other means will have no effect on the sliders.",
+					"type": "switcher",
+					"id": "bOnlyDoctorCanReset:Slider2",
+					"groupControl": 1,
+					"valueOptions": {
+						"sourceType": "ModSettingBool"
+					}
+				},
+				{
+					"text": "Additive morphing",
+					"help": "Enabled: rads gained after taking RadAway further increase morphs. Disabled: rads gained after taking RadAway only increase morphs if irradiation is higher than before taking RadAway.",
+					"type": "switcher",
+					"id": "bIsAdditive:Slider2",
+					"groupControl": 2,
+					"groupCondition": 1,
+					"valueOptions": {
+						"sourceType": "ModSettingBool"
+					}
+				},
+				{
+					"text": "Limit additive morphing",
+					"help": "Disabled: Unlimited additive morphing. Use at own risk!",
+					"type": "switcher",
+					"id": "bHasAdditiveLimit:Slider2",
+					"groupControl": 3,
+					"groupCondition": {"AND":[1,2]},
+					"valueOptions": {
+						"sourceType": "ModSettingBool"
+					}
+				},
+				{
+					"text": "Additive morphing limit",
+					"help": "How far additive morphing can exceed the target size increase (% of target size increase). 0 = cannot exceed target; 100 = cannot exceed 2x target",
+					"type": "slider",
+					"id": "fAdditiveLimit:Slider2",
+					"groupCondition": {"AND":[1,2,3]},
+					"valueOptions": {
+						"sourceType": "ModSettingFloat",
+						"min": 0.0,
+						"max": 600.0,
+						"step": 10.0
+					}
+				},
+				{
+					"text": "<b>Warning!</b> Additive morphing without a limit can lead to insane morphs!",
+					"type": "text",
+					"html": true,
+					"groupCondition": 1
+				},
 
 
 				{
-					"text": "Slider Set 3",
+					"text": "Slider Set 4",
 					"type": "section"
 				},
 				{
@@ -333,10 +508,61 @@
 						"step": 1.0
 					}
 				},
+				{
+					"text": "Only doctors can reset morphs",
+					"help": "With this enabled only doctors can restore your base shape. Reducing rads with RadAway or other means will have no effect on the sliders.",
+					"type": "switcher",
+					"id": "bOnlyDoctorCanReset:Slider3",
+					"groupControl": 1,
+					"valueOptions": {
+						"sourceType": "ModSettingBool"
+					}
+				},
+				{
+					"text": "Additive morphing",
+					"help": "Enabled: rads gained after taking RadAway further increase morphs. Disabled: rads gained after taking RadAway only increase morphs if irradiation is higher than before taking RadAway.",
+					"type": "switcher",
+					"id": "bIsAdditive:Slider3",
+					"groupControl": 2,
+					"groupCondition": 1,
+					"valueOptions": {
+						"sourceType": "ModSettingBool"
+					}
+				},
+				{
+					"text": "Limit additive morphing",
+					"help": "Disabled: Unlimited additive morphing. Use at own risk!",
+					"type": "switcher",
+					"id": "bHasAdditiveLimit:Slider3",
+					"groupControl": 3,
+					"groupCondition": {"AND":[1,2]},
+					"valueOptions": {
+						"sourceType": "ModSettingBool"
+					}
+				},
+				{
+					"text": "Additive morphing limit",
+					"help": "How far additive morphing can exceed the target size increase (% of target size increase). 0 = cannot exceed target; 100 = cannot exceed 2x target",
+					"type": "slider",
+					"id": "fAdditiveLimit:Slider3",
+					"groupCondition": {"AND":[1,2,3]},
+					"valueOptions": {
+						"sourceType": "ModSettingFloat",
+						"min": 0.0,
+						"max": 600.0,
+						"step": 10.0
+					}
+				},
+				{
+					"text": "<b>Warning!</b> Additive morphing without a limit can lead to insane morphs!",
+					"type": "text",
+					"html": true,
+					"groupCondition": 1
+				},
 
 
 				{
-					"text": "Slider Set 4",
+					"text": "Slider Set 5",
 					"type": "section"
 				},
 				{
@@ -405,10 +631,61 @@
 						"step": 1.0
 					}
 				},
+				{
+					"text": "Only doctors can reset morphs",
+					"help": "With this enabled only doctors can restore your base shape. Reducing rads with RadAway or other means will have no effect on the sliders.",
+					"type": "switcher",
+					"id": "bOnlyDoctorCanReset:Slider4",
+					"groupControl": 1,
+					"valueOptions": {
+						"sourceType": "ModSettingBool"
+					}
+				},
+				{
+					"text": "Additive morphing",
+					"help": "Enabled: rads gained after taking RadAway further increase morphs. Disabled: rads gained after taking RadAway only increase morphs if irradiation is higher than before taking RadAway.",
+					"type": "switcher",
+					"id": "bIsAdditive:Slider4",
+					"groupControl": 2,
+					"groupCondition": 1,
+					"valueOptions": {
+						"sourceType": "ModSettingBool"
+					}
+				},
+				{
+					"text": "Limit additive morphing",
+					"help": "Disabled: Unlimited additive morphing. Use at own risk!",
+					"type": "switcher",
+					"id": "bHasAdditiveLimit:Slider4",
+					"groupControl": 3,
+					"groupCondition": {"AND":[1,2]},
+					"valueOptions": {
+						"sourceType": "ModSettingBool"
+					}
+				},
+				{
+					"text": "Additive morphing limit",
+					"help": "How far additive morphing can exceed the target size increase (% of target size increase). 0 = cannot exceed target; 100 = cannot exceed 2x target",
+					"type": "slider",
+					"id": "fAdditiveLimit:Slider4",
+					"groupCondition": {"AND":[1,2,3]},
+					"valueOptions": {
+						"sourceType": "ModSettingFloat",
+						"min": 0.0,
+						"max": 600.0,
+						"step": 10.0
+					}
+				},
+				{
+					"text": "<b>Warning!</b> Additive morphing without a limit can lead to insane morphs!",
+					"type": "text",
+					"html": true,
+					"groupCondition": 1
+				},
 
 
 				{
-					"text": "Slider Set 5",
+					"text": "Slider Set 6",
 					"type": "section"
 				},
 				{
@@ -477,10 +754,61 @@
 						"step": 1.0
 					}
 				},
+				{
+					"text": "Only doctors can reset morphs",
+					"help": "With this enabled only doctors can restore your base shape. Reducing rads with RadAway or other means will have no effect on the sliders.",
+					"type": "switcher",
+					"id": "bOnlyDoctorCanReset:Slider5",
+					"groupControl": 1,
+					"valueOptions": {
+						"sourceType": "ModSettingBool"
+					}
+				},
+				{
+					"text": "Additive morphing",
+					"help": "Enabled: rads gained after taking RadAway further increase morphs. Disabled: rads gained after taking RadAway only increase morphs if irradiation is higher than before taking RadAway.",
+					"type": "switcher",
+					"id": "bIsAdditive:Slider5",
+					"groupControl": 2,
+					"groupCondition": 1,
+					"valueOptions": {
+						"sourceType": "ModSettingBool"
+					}
+				},
+				{
+					"text": "Limit additive morphing",
+					"help": "Disabled: Unlimited additive morphing. Use at own risk!",
+					"type": "switcher",
+					"id": "bHasAdditiveLimit:Slider5",
+					"groupControl": 3,
+					"groupCondition": {"AND":[1,2]},
+					"valueOptions": {
+						"sourceType": "ModSettingBool"
+					}
+				},
+				{
+					"text": "Additive morphing limit",
+					"help": "How far additive morphing can exceed the target size increase (% of target size increase). 0 = cannot exceed target; 100 = cannot exceed 2x target",
+					"type": "slider",
+					"id": "fAdditiveLimit:Slider5",
+					"groupCondition": {"AND":[1,2,3]},
+					"valueOptions": {
+						"sourceType": "ModSettingFloat",
+						"min": 0.0,
+						"max": 600.0,
+						"step": 10.0
+					}
+				},
+				{
+					"text": "<b>Warning!</b> Additive morphing without a limit can lead to insane morphs!",
+					"type": "text",
+					"html": true,
+					"groupCondition": 1
+				},
 
 
 				{
-					"text": "Slider Set 6",
+					"text": "Slider Set 7",
 					"type": "section"
 				},
 				{
@@ -549,10 +877,61 @@
 						"step": 1.0
 					}
 				},
+				{
+					"text": "Only doctors can reset morphs",
+					"help": "With this enabled only doctors can restore your base shape. Reducing rads with RadAway or other means will have no effect on the sliders.",
+					"type": "switcher",
+					"id": "bOnlyDoctorCanReset:Slider6",
+					"groupControl": 1,
+					"valueOptions": {
+						"sourceType": "ModSettingBool"
+					}
+				},
+				{
+					"text": "Additive morphing",
+					"help": "Enabled: rads gained after taking RadAway further increase morphs. Disabled: rads gained after taking RadAway only increase morphs if irradiation is higher than before taking RadAway.",
+					"type": "switcher",
+					"id": "bIsAdditive:Slider6",
+					"groupControl": 2,
+					"groupCondition": 1,
+					"valueOptions": {
+						"sourceType": "ModSettingBool"
+					}
+				},
+				{
+					"text": "Limit additive morphing",
+					"help": "Disabled: Unlimited additive morphing. Use at own risk!",
+					"type": "switcher",
+					"id": "bHasAdditiveLimit:Slider6",
+					"groupControl": 3,
+					"groupCondition": {"AND":[1,2]},
+					"valueOptions": {
+						"sourceType": "ModSettingBool"
+					}
+				},
+				{
+					"text": "Additive morphing limit",
+					"help": "How far additive morphing can exceed the target size increase (% of target size increase). 0 = cannot exceed target; 100 = cannot exceed 2x target",
+					"type": "slider",
+					"id": "fAdditiveLimit:Slider6",
+					"groupCondition": {"AND":[1,2,3]},
+					"valueOptions": {
+						"sourceType": "ModSettingFloat",
+						"min": 0.0,
+						"max": 600.0,
+						"step": 10.0
+					}
+				},
+				{
+					"text": "<b>Warning!</b> Additive morphing without a limit can lead to insane morphs!",
+					"type": "text",
+					"html": true,
+					"groupCondition": 1
+				},
 
 
 				{
-					"text": "Slider Set 7",
+					"text": "Slider Set 8",
 					"type": "section"
 				},
 				{
@@ -621,10 +1000,61 @@
 						"step": 1.0
 					}
 				},
+				{
+					"text": "Only doctors can reset morphs",
+					"help": "With this enabled only doctors can restore your base shape. Reducing rads with RadAway or other means will have no effect on the sliders.",
+					"type": "switcher",
+					"id": "bOnlyDoctorCanReset:Slider7",
+					"groupControl": 1,
+					"valueOptions": {
+						"sourceType": "ModSettingBool"
+					}
+				},
+				{
+					"text": "Additive morphing",
+					"help": "Enabled: rads gained after taking RadAway further increase morphs. Disabled: rads gained after taking RadAway only increase morphs if irradiation is higher than before taking RadAway.",
+					"type": "switcher",
+					"id": "bIsAdditive:Slider7",
+					"groupControl": 2,
+					"groupCondition": 1,
+					"valueOptions": {
+						"sourceType": "ModSettingBool"
+					}
+				},
+				{
+					"text": "Limit additive morphing",
+					"help": "Disabled: Unlimited additive morphing. Use at own risk!",
+					"type": "switcher",
+					"id": "bHasAdditiveLimit:Slider7",
+					"groupControl": 3,
+					"groupCondition": {"AND":[1,2]},
+					"valueOptions": {
+						"sourceType": "ModSettingBool"
+					}
+				},
+				{
+					"text": "Additive morphing limit",
+					"help": "How far additive morphing can exceed the target size increase (% of target size increase). 0 = cannot exceed target; 100 = cannot exceed 2x target",
+					"type": "slider",
+					"id": "fAdditiveLimit:Slider7",
+					"groupCondition": {"AND":[1,2,3]},
+					"valueOptions": {
+						"sourceType": "ModSettingFloat",
+						"min": 0.0,
+						"max": 600.0,
+						"step": 10.0
+					}
+				},
+				{
+					"text": "<b>Warning!</b> Additive morphing without a limit can lead to insane morphs!",
+					"type": "text",
+					"html": true,
+					"groupCondition": 1
+				},
 
 
 				{
-					"text": "Slider Set 8",
+					"text": "Slider Set 9",
 					"type": "section"
 				},
 				{
@@ -693,10 +1123,61 @@
 						"step": 1.0
 					}
 				},
+				{
+					"text": "Only doctors can reset morphs",
+					"help": "With this enabled only doctors can restore your base shape. Reducing rads with RadAway or other means will have no effect on the sliders.",
+					"type": "switcher",
+					"id": "bOnlyDoctorCanReset:Slider8",
+					"groupControl": 1,
+					"valueOptions": {
+						"sourceType": "ModSettingBool"
+					}
+				},
+				{
+					"text": "Additive morphing",
+					"help": "Enabled: rads gained after taking RadAway further increase morphs. Disabled: rads gained after taking RadAway only increase morphs if irradiation is higher than before taking RadAway.",
+					"type": "switcher",
+					"id": "bIsAdditive:Slider8",
+					"groupControl": 2,
+					"groupCondition": 1,
+					"valueOptions": {
+						"sourceType": "ModSettingBool"
+					}
+				},
+				{
+					"text": "Limit additive morphing",
+					"help": "Disabled: Unlimited additive morphing. Use at own risk!",
+					"type": "switcher",
+					"id": "bHasAdditiveLimit:Slider8",
+					"groupControl": 3,
+					"groupCondition": {"AND":[1,2]},
+					"valueOptions": {
+						"sourceType": "ModSettingBool"
+					}
+				},
+				{
+					"text": "Additive morphing limit",
+					"help": "How far additive morphing can exceed the target size increase (% of target size increase). 0 = cannot exceed target; 100 = cannot exceed 2x target",
+					"type": "slider",
+					"id": "fAdditiveLimit:Slider8",
+					"groupCondition": {"AND":[1,2,3]},
+					"valueOptions": {
+						"sourceType": "ModSettingFloat",
+						"min": 0.0,
+						"max": 600.0,
+						"step": 10.0
+					}
+				},
+				{
+					"text": "<b>Warning!</b> Additive morphing without a limit can lead to insane morphs!",
+					"type": "text",
+					"html": true,
+					"groupCondition": 1
+				},
 
 
 				{
-					"text": "Slider Set 9",
+					"text": "Slider Set 10",
 					"type": "section"
 				},
 				{
@@ -765,10 +1246,61 @@
 						"step": 1.0
 					}
 				},
+				{
+					"text": "Only doctors can reset morphs",
+					"help": "With this enabled only doctors can restore your base shape. Reducing rads with RadAway or other means will have no effect on the sliders.",
+					"type": "switcher",
+					"id": "bOnlyDoctorCanReset:Slider9",
+					"groupControl": 1,
+					"valueOptions": {
+						"sourceType": "ModSettingBool"
+					}
+				},
+				{
+					"text": "Additive morphing",
+					"help": "Enabled: rads gained after taking RadAway further increase morphs. Disabled: rads gained after taking RadAway only increase morphs if irradiation is higher than before taking RadAway.",
+					"type": "switcher",
+					"id": "bIsAdditive:Slider9",
+					"groupControl": 2,
+					"groupCondition": 1,
+					"valueOptions": {
+						"sourceType": "ModSettingBool"
+					}
+				},
+				{
+					"text": "Limit additive morphing",
+					"help": "Disabled: Unlimited additive morphing. Use at own risk!",
+					"type": "switcher",
+					"id": "bHasAdditiveLimit:Slider9",
+					"groupControl": 3,
+					"groupCondition": {"AND":[1,2]},
+					"valueOptions": {
+						"sourceType": "ModSettingBool"
+					}
+				},
+				{
+					"text": "Additive morphing limit",
+					"help": "How far additive morphing can exceed the target size increase (% of target size increase). 0 = cannot exceed target; 100 = cannot exceed 2x target",
+					"type": "slider",
+					"id": "fAdditiveLimit:Slider9",
+					"groupCondition": {"AND":[1,2,3]},
+					"valueOptions": {
+						"sourceType": "ModSettingFloat",
+						"min": 0.0,
+						"max": 600.0,
+						"step": 10.0
+					}
+				},
+				{
+					"text": "<b>Warning!</b> Additive morphing without a limit can lead to insane morphs!",
+					"type": "text",
+					"html": true,
+					"groupCondition": 1
+				},
 
 
 				{
-					"text": "Slider Set 10",
+					"text": "Slider Set 11",
 					"type": "section"
 				},
 				{
@@ -837,10 +1369,61 @@
 						"step": 1.0
 					}
 				},
+				{
+					"text": "Only doctors can reset morphs",
+					"help": "With this enabled only doctors can restore your base shape. Reducing rads with RadAway or other means will have no effect on the sliders.",
+					"type": "switcher",
+					"id": "bOnlyDoctorCanReset:Slider10",
+					"groupControl": 1,
+					"valueOptions": {
+						"sourceType": "ModSettingBool"
+					}
+				},
+				{
+					"text": "Additive morphing",
+					"help": "Enabled: rads gained after taking RadAway further increase morphs. Disabled: rads gained after taking RadAway only increase morphs if irradiation is higher than before taking RadAway.",
+					"type": "switcher",
+					"id": "bIsAdditive:Slider10",
+					"groupControl": 2,
+					"groupCondition": 1,
+					"valueOptions": {
+						"sourceType": "ModSettingBool"
+					}
+				},
+				{
+					"text": "Limit additive morphing",
+					"help": "Disabled: Unlimited additive morphing. Use at own risk!",
+					"type": "switcher",
+					"id": "bHasAdditiveLimit:Slider10",
+					"groupControl": 3,
+					"groupCondition": {"AND":[1,2]},
+					"valueOptions": {
+						"sourceType": "ModSettingBool"
+					}
+				},
+				{
+					"text": "Additive morphing limit",
+					"help": "How far additive morphing can exceed the target size increase (% of target size increase). 0 = cannot exceed target; 100 = cannot exceed 2x target",
+					"type": "slider",
+					"id": "fAdditiveLimit:Slider10",
+					"groupCondition": {"AND":[1,2,3]},
+					"valueOptions": {
+						"sourceType": "ModSettingFloat",
+						"min": 0.0,
+						"max": 600.0,
+						"step": 10.0
+					}
+				},
+				{
+					"text": "<b>Warning!</b> Additive morphing without a limit can lead to insane morphs!",
+					"type": "text",
+					"html": true,
+					"groupCondition": 1
+				},
 
 
 				{
-					"text": "Slider Set 11",
+					"text": "Slider Set 12",
 					"type": "section"
 				},
 				{
@@ -909,10 +1492,61 @@
 						"step": 1.0
 					}
 				},
+				{
+					"text": "Only doctors can reset morphs",
+					"help": "With this enabled only doctors can restore your base shape. Reducing rads with RadAway or other means will have no effect on the sliders.",
+					"type": "switcher",
+					"id": "bOnlyDoctorCanReset:Slider11",
+					"groupControl": 1,
+					"valueOptions": {
+						"sourceType": "ModSettingBool"
+					}
+				},
+				{
+					"text": "Additive morphing",
+					"help": "Enabled: rads gained after taking RadAway further increase morphs. Disabled: rads gained after taking RadAway only increase morphs if irradiation is higher than before taking RadAway.",
+					"type": "switcher",
+					"id": "bIsAdditive:Slider11",
+					"groupControl": 2,
+					"groupCondition": 1,
+					"valueOptions": {
+						"sourceType": "ModSettingBool"
+					}
+				},
+				{
+					"text": "Limit additive morphing",
+					"help": "Disabled: Unlimited additive morphing. Use at own risk!",
+					"type": "switcher",
+					"id": "bHasAdditiveLimit:Slider11",
+					"groupControl": 3,
+					"groupCondition": {"AND":[1,2]},
+					"valueOptions": {
+						"sourceType": "ModSettingBool"
+					}
+				},
+				{
+					"text": "Additive morphing limit",
+					"help": "How far additive morphing can exceed the target size increase (% of target size increase). 0 = cannot exceed target; 100 = cannot exceed 2x target",
+					"type": "slider",
+					"id": "fAdditiveLimit:Slider11",
+					"groupCondition": {"AND":[1,2,3]},
+					"valueOptions": {
+						"sourceType": "ModSettingFloat",
+						"min": 0.0,
+						"max": 600.0,
+						"step": 10.0
+					}
+				},
+				{
+					"text": "<b>Warning!</b> Additive morphing without a limit can lead to insane morphs!",
+					"type": "text",
+					"html": true,
+					"groupCondition": 1
+				},
 
 
 				{
-					"text": "Slider Set 12",
+					"text": "Slider Set 13",
 					"type": "section"
 				},
 				{
@@ -981,10 +1615,61 @@
 						"step": 1.0
 					}
 				},
+				{
+					"text": "Only doctors can reset morphs",
+					"help": "With this enabled only doctors can restore your base shape. Reducing rads with RadAway or other means will have no effect on the sliders.",
+					"type": "switcher",
+					"id": "bOnlyDoctorCanReset:Slider12",
+					"groupControl": 1,
+					"valueOptions": {
+						"sourceType": "ModSettingBool"
+					}
+				},
+				{
+					"text": "Additive morphing",
+					"help": "Enabled: rads gained after taking RadAway further increase morphs. Disabled: rads gained after taking RadAway only increase morphs if irradiation is higher than before taking RadAway.",
+					"type": "switcher",
+					"id": "bIsAdditive:Slider12",
+					"groupControl": 2,
+					"groupCondition": 1,
+					"valueOptions": {
+						"sourceType": "ModSettingBool"
+					}
+				},
+				{
+					"text": "Limit additive morphing",
+					"help": "Disabled: Unlimited additive morphing. Use at own risk!",
+					"type": "switcher",
+					"id": "bHasAdditiveLimit:Slider12",
+					"groupControl": 3,
+					"groupCondition": {"AND":[1,2]},
+					"valueOptions": {
+						"sourceType": "ModSettingBool"
+					}
+				},
+				{
+					"text": "Additive morphing limit",
+					"help": "How far additive morphing can exceed the target size increase (% of target size increase). 0 = cannot exceed target; 100 = cannot exceed 2x target",
+					"type": "slider",
+					"id": "fAdditiveLimit:Slider12",
+					"groupCondition": {"AND":[1,2,3]},
+					"valueOptions": {
+						"sourceType": "ModSettingFloat",
+						"min": 0.0,
+						"max": 600.0,
+						"step": 10.0
+					}
+				},
+				{
+					"text": "<b>Warning!</b> Additive morphing without a limit can lead to insane morphs!",
+					"type": "text",
+					"html": true,
+					"groupCondition": 1
+				},
 
 
 				{
-					"text": "Slider Set 13",
+					"text": "Slider Set 14",
 					"type": "section"
 				},
 				{
@@ -1053,10 +1738,61 @@
 						"step": 1.0
 					}
 				},
+				{
+					"text": "Only doctors can reset morphs",
+					"help": "With this enabled only doctors can restore your base shape. Reducing rads with RadAway or other means will have no effect on the sliders.",
+					"type": "switcher",
+					"id": "bOnlyDoctorCanReset:Slider13",
+					"groupControl": 1,
+					"valueOptions": {
+						"sourceType": "ModSettingBool"
+					}
+				},
+				{
+					"text": "Additive morphing",
+					"help": "Enabled: rads gained after taking RadAway further increase morphs. Disabled: rads gained after taking RadAway only increase morphs if irradiation is higher than before taking RadAway.",
+					"type": "switcher",
+					"id": "bIsAdditive:Slider13",
+					"groupControl": 2,
+					"groupCondition": 1,
+					"valueOptions": {
+						"sourceType": "ModSettingBool"
+					}
+				},
+				{
+					"text": "Limit additive morphing",
+					"help": "Disabled: Unlimited additive morphing. Use at own risk!",
+					"type": "switcher",
+					"id": "bHasAdditiveLimit:Slider13",
+					"groupControl": 3,
+					"groupCondition": {"AND":[1,2]},
+					"valueOptions": {
+						"sourceType": "ModSettingBool"
+					}
+				},
+				{
+					"text": "Additive morphing limit",
+					"help": "How far additive morphing can exceed the target size increase (% of target size increase). 0 = cannot exceed target; 100 = cannot exceed 2x target",
+					"type": "slider",
+					"id": "fAdditiveLimit:Slider13",
+					"groupCondition": {"AND":[1,2,3]},
+					"valueOptions": {
+						"sourceType": "ModSettingFloat",
+						"min": 0.0,
+						"max": 600.0,
+						"step": 10.0
+					}
+				},
+				{
+					"text": "<b>Warning!</b> Additive morphing without a limit can lead to insane morphs!",
+					"type": "text",
+					"html": true,
+					"groupCondition": 1
+				},
 
 
 				{
-					"text": "Slider Set 14",
+					"text": "Slider Set 15",
 					"type": "section"
 				},
 				{
@@ -1125,10 +1861,61 @@
 						"step": 1.0
 					}
 				},
+				{
+					"text": "Only doctors can reset morphs",
+					"help": "With this enabled only doctors can restore your base shape. Reducing rads with RadAway or other means will have no effect on the sliders.",
+					"type": "switcher",
+					"id": "bOnlyDoctorCanReset:Slider14",
+					"groupControl": 1,
+					"valueOptions": {
+						"sourceType": "ModSettingBool"
+					}
+				},
+				{
+					"text": "Additive morphing",
+					"help": "Enabled: rads gained after taking RadAway further increase morphs. Disabled: rads gained after taking RadAway only increase morphs if irradiation is higher than before taking RadAway.",
+					"type": "switcher",
+					"id": "bIsAdditive:Slider14",
+					"groupControl": 2,
+					"groupCondition": 1,
+					"valueOptions": {
+						"sourceType": "ModSettingBool"
+					}
+				},
+				{
+					"text": "Limit additive morphing",
+					"help": "Disabled: Unlimited additive morphing. Use at own risk!",
+					"type": "switcher",
+					"id": "bHasAdditiveLimit:Slider14",
+					"groupControl": 3,
+					"groupCondition": {"AND":[1,2]},
+					"valueOptions": {
+						"sourceType": "ModSettingBool"
+					}
+				},
+				{
+					"text": "Additive morphing limit",
+					"help": "How far additive morphing can exceed the target size increase (% of target size increase). 0 = cannot exceed target; 100 = cannot exceed 2x target",
+					"type": "slider",
+					"id": "fAdditiveLimit:Slider14",
+					"groupCondition": {"AND":[1,2,3]},
+					"valueOptions": {
+						"sourceType": "ModSettingFloat",
+						"min": 0.0,
+						"max": 600.0,
+						"step": 10.0
+					}
+				},
+				{
+					"text": "<b>Warning!</b> Additive morphing without a limit can lead to insane morphs!",
+					"type": "text",
+					"html": true,
+					"groupCondition": 1
+				},
 
 
 				{
-					"text": "Slider Set 15",
+					"text": "Slider Set 16",
 					"type": "section"
 				},
 				{
@@ -1197,10 +1984,61 @@
 						"step": 1.0
 					}
 				},
+				{
+					"text": "Only doctors can reset morphs",
+					"help": "With this enabled only doctors can restore your base shape. Reducing rads with RadAway or other means will have no effect on the sliders.",
+					"type": "switcher",
+					"id": "bOnlyDoctorCanReset:Slider15",
+					"groupControl": 1,
+					"valueOptions": {
+						"sourceType": "ModSettingBool"
+					}
+				},
+				{
+					"text": "Additive morphing",
+					"help": "Enabled: rads gained after taking RadAway further increase morphs. Disabled: rads gained after taking RadAway only increase morphs if irradiation is higher than before taking RadAway.",
+					"type": "switcher",
+					"id": "bIsAdditive:Slider15",
+					"groupControl": 2,
+					"groupCondition": 1,
+					"valueOptions": {
+						"sourceType": "ModSettingBool"
+					}
+				},
+				{
+					"text": "Limit additive morphing",
+					"help": "Disabled: Unlimited additive morphing. Use at own risk!",
+					"type": "switcher",
+					"id": "bHasAdditiveLimit:Slider15",
+					"groupControl": 3,
+					"groupCondition": {"AND":[1,2]},
+					"valueOptions": {
+						"sourceType": "ModSettingBool"
+					}
+				},
+				{
+					"text": "Additive morphing limit",
+					"help": "How far additive morphing can exceed the target size increase (% of target size increase). 0 = cannot exceed target; 100 = cannot exceed 2x target",
+					"type": "slider",
+					"id": "fAdditiveLimit:Slider15",
+					"groupCondition": {"AND":[1,2,3]},
+					"valueOptions": {
+						"sourceType": "ModSettingFloat",
+						"min": 0.0,
+						"max": 600.0,
+						"step": 10.0
+					}
+				},
+				{
+					"text": "<b>Warning!</b> Additive morphing without a limit can lead to insane morphs!",
+					"type": "text",
+					"html": true,
+					"groupCondition": 1
+				},
 
 
 				{
-					"text": "Slider Set 16",
+					"text": "Slider Set 17",
 					"type": "section"
 				},
 				{
@@ -1269,10 +2107,61 @@
 						"step": 1.0
 					}
 				},
+				{
+					"text": "Only doctors can reset morphs",
+					"help": "With this enabled only doctors can restore your base shape. Reducing rads with RadAway or other means will have no effect on the sliders.",
+					"type": "switcher",
+					"id": "bOnlyDoctorCanReset:Slider16",
+					"groupControl": 1,
+					"valueOptions": {
+						"sourceType": "ModSettingBool"
+					}
+				},
+				{
+					"text": "Additive morphing",
+					"help": "Enabled: rads gained after taking RadAway further increase morphs. Disabled: rads gained after taking RadAway only increase morphs if irradiation is higher than before taking RadAway.",
+					"type": "switcher",
+					"id": "bIsAdditive:Slider16",
+					"groupControl": 2,
+					"groupCondition": 1,
+					"valueOptions": {
+						"sourceType": "ModSettingBool"
+					}
+				},
+				{
+					"text": "Limit additive morphing",
+					"help": "Disabled: Unlimited additive morphing. Use at own risk!",
+					"type": "switcher",
+					"id": "bHasAdditiveLimit:Slider16",
+					"groupControl": 3,
+					"groupCondition": {"AND":[1,2]},
+					"valueOptions": {
+						"sourceType": "ModSettingBool"
+					}
+				},
+				{
+					"text": "Additive morphing limit",
+					"help": "How far additive morphing can exceed the target size increase (% of target size increase). 0 = cannot exceed target; 100 = cannot exceed 2x target",
+					"type": "slider",
+					"id": "fAdditiveLimit:Slider16",
+					"groupCondition": {"AND":[1,2,3]},
+					"valueOptions": {
+						"sourceType": "ModSettingFloat",
+						"min": 0.0,
+						"max": 600.0,
+						"step": 10.0
+					}
+				},
+				{
+					"text": "<b>Warning!</b> Additive morphing without a limit can lead to insane morphs!",
+					"type": "text",
+					"html": true,
+					"groupCondition": 1
+				},
 
 
 				{
-					"text": "Slider Set 17",
+					"text": "Slider Set 18",
 					"type": "section"
 				},
 				{
@@ -1341,10 +2230,61 @@
 						"step": 1.0
 					}
 				},
+				{
+					"text": "Only doctors can reset morphs",
+					"help": "With this enabled only doctors can restore your base shape. Reducing rads with RadAway or other means will have no effect on the sliders.",
+					"type": "switcher",
+					"id": "bOnlyDoctorCanReset:Slider17",
+					"groupControl": 1,
+					"valueOptions": {
+						"sourceType": "ModSettingBool"
+					}
+				},
+				{
+					"text": "Additive morphing",
+					"help": "Enabled: rads gained after taking RadAway further increase morphs. Disabled: rads gained after taking RadAway only increase morphs if irradiation is higher than before taking RadAway.",
+					"type": "switcher",
+					"id": "bIsAdditive:Slider17",
+					"groupControl": 2,
+					"groupCondition": 1,
+					"valueOptions": {
+						"sourceType": "ModSettingBool"
+					}
+				},
+				{
+					"text": "Limit additive morphing",
+					"help": "Disabled: Unlimited additive morphing. Use at own risk!",
+					"type": "switcher",
+					"id": "bHasAdditiveLimit:Slider17",
+					"groupControl": 3,
+					"groupCondition": {"AND":[1,2]},
+					"valueOptions": {
+						"sourceType": "ModSettingBool"
+					}
+				},
+				{
+					"text": "Additive morphing limit",
+					"help": "How far additive morphing can exceed the target size increase (% of target size increase). 0 = cannot exceed target; 100 = cannot exceed 2x target",
+					"type": "slider",
+					"id": "fAdditiveLimit:Slider17",
+					"groupCondition": {"AND":[1,2,3]},
+					"valueOptions": {
+						"sourceType": "ModSettingFloat",
+						"min": 0.0,
+						"max": 600.0,
+						"step": 10.0
+					}
+				},
+				{
+					"text": "<b>Warning!</b> Additive morphing without a limit can lead to insane morphs!",
+					"type": "text",
+					"html": true,
+					"groupCondition": 1
+				},
 
 
 				{
-					"text": "Slider Set 18",
+					"text": "Slider Set 19",
 					"type": "section"
 				},
 				{
@@ -1413,10 +2353,61 @@
 						"step": 1.0
 					}
 				},
+				{
+					"text": "Only doctors can reset morphs",
+					"help": "With this enabled only doctors can restore your base shape. Reducing rads with RadAway or other means will have no effect on the sliders.",
+					"type": "switcher",
+					"id": "bOnlyDoctorCanReset:Slider18",
+					"groupControl": 1,
+					"valueOptions": {
+						"sourceType": "ModSettingBool"
+					}
+				},
+				{
+					"text": "Additive morphing",
+					"help": "Enabled: rads gained after taking RadAway further increase morphs. Disabled: rads gained after taking RadAway only increase morphs if irradiation is higher than before taking RadAway.",
+					"type": "switcher",
+					"id": "bIsAdditive:Slider18",
+					"groupControl": 2,
+					"groupCondition": 1,
+					"valueOptions": {
+						"sourceType": "ModSettingBool"
+					}
+				},
+				{
+					"text": "Limit additive morphing",
+					"help": "Disabled: Unlimited additive morphing. Use at own risk!",
+					"type": "switcher",
+					"id": "bHasAdditiveLimit:Slider18",
+					"groupControl": 3,
+					"groupCondition": {"AND":[1,2]},
+					"valueOptions": {
+						"sourceType": "ModSettingBool"
+					}
+				},
+				{
+					"text": "Additive morphing limit",
+					"help": "How far additive morphing can exceed the target size increase (% of target size increase). 0 = cannot exceed target; 100 = cannot exceed 2x target",
+					"type": "slider",
+					"id": "fAdditiveLimit:Slider18",
+					"groupCondition": {"AND":[1,2,3]},
+					"valueOptions": {
+						"sourceType": "ModSettingFloat",
+						"min": 0.0,
+						"max": 600.0,
+						"step": 10.0
+					}
+				},
+				{
+					"text": "<b>Warning!</b> Additive morphing without a limit can lead to insane morphs!",
+					"type": "text",
+					"html": true,
+					"groupCondition": 1
+				},
 
 
 				{
-					"text": "Slider Set 19",
+					"text": "Slider Set 20",
 					"type": "section"
 				},
 				{
@@ -1485,77 +2476,56 @@
 						"step": 1.0
 					}
 				},
-
-
 				{
-					"text": "Slider Set 20",
-					"type": "section"
-				},
-				{
-					"text": "Slider Names",
-					"help": "Enter the slider names separated by \"|\" (e.g. Boobs|Butt|Nose). Make sure there is no leading or trailing space.",
-					"type": "textinput",
-					"id": "sSliderName:Slider20",
+					"text": "Only doctors can reset morphs",
+					"help": "With this enabled only doctors can restore your base shape. Reducing rads with RadAway or other means will have no effect on the sliders.",
+					"type": "switcher",
+					"id": "bOnlyDoctorCanReset:Slider19",
+					"groupControl": 1,
 					"valueOptions": {
-						"sourceType": "ModSettingString"
+						"sourceType": "ModSettingBool"
 					}
 				},
 				{
-					"text": "Target size increase",
-					"help": "At 100% the slider will be the initial value + 1 when you are fully irradiated.",
+					"text": "Additive morphing",
+					"help": "Enabled: rads gained after taking RadAway further increase morphs. Disabled: rads gained after taking RadAway only increase morphs if irradiation is higher than before taking RadAway.",
+					"type": "switcher",
+					"id": "bIsAdditive:Slider19",
+					"groupControl": 2,
+					"groupCondition": 1,
+					"valueOptions": {
+						"sourceType": "ModSettingBool"
+					}
+				},
+				{
+					"text": "Limit additive morphing",
+					"help": "Disabled: Unlimited additive morphing. Use at own risk!",
+					"type": "switcher",
+					"id": "bHasAdditiveLimit:Slider19",
+					"groupControl": 3,
+					"groupCondition": {"AND":[1,2]},
+					"valueOptions": {
+						"sourceType": "ModSettingBool"
+					}
+				},
+				{
+					"text": "Additive morphing limit",
+					"help": "How far additive morphing can exceed the target size increase (% of target size increase). 0 = cannot exceed target; 100 = cannot exceed 2x target",
 					"type": "slider",
-					"id": "fTargetMorph:Slider20",
+					"id": "fAdditiveLimit:Slider19",
+					"groupCondition": {"AND":[1,2,3]},
 					"valueOptions": {
 						"sourceType": "ModSettingFloat",
-						"min": -600.0,
+						"min": 0.0,
 						"max": 600.0,
 						"step": 10.0
 					}
 				},
 				{
-					"text": "Lower radiation threshold",
-					"help": "Morphing starts when you are irradiated for x%",
-					"type": "slider",
-					"id": "fThresholdMin:Slider20",
-					"valueOptions": {
-						"sourceType": "ModSettingFloat",
-						"min": 0.0,
-						"max": 75.0,
-						"step": 5.0
-					}
-				},
-				{
-					"text": "Upper radiation threshold",
-					"help": "Morphing reaches the target size increase when you are irradiated for x%",
-					"type": "slider",
-					"id": "fThresholdMax:Slider20",
-					"valueOptions": {
-						"sourceType": "ModSettingFloat",
-						"min": 25.0,
-						"max": 100.0,
-						"step": 5.0
-					}
-				},
-				{
-					"text": "Armor slots to unequip",
-					"help": "Enter slot numbers to unequip when the unequip threshold is reached. Separate multiple slots by \"|\" (e.g. 10|11|12). Make sure there is no leading or trailing space.",
-					"type": "textinput",
-					"id": "sUnequipSlot:Slider20",
-					"valueOptions": {
-						"sourceType": "ModSettingString"
-					}
-				},
-				{
-					"text": "Unequip threshold",
-					"help": "When x% of your morphing target is reached armor from the selected slots will be unequipped.",
-					"type": "slider",
-					"id": "fThresholdUnequip:Slider20",
-					"valueOptions": {
-						"sourceType": "ModSettingFloat",
-						"min": 1.0,
-						"max": 100.0,
-						"step": 1.0
-					}
+					"text": "<b>Warning!</b> Additive morphing without a limit can lead to insane morphs!",
+					"type": "text",
+					"html": true,
+					"groupCondition": 1
 				}
 			]
 		}
