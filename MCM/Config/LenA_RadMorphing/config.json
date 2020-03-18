@@ -4,7 +4,7 @@
 	"minMcmVersion": 1,
 	"content": [
 		{
-			"text": "<font size='24'>Rad Morphing Redux</font> <font size='10'>v0.1.0</font>",
+			"text": "<font size='24'>Rad Morphing Redux</font> <font size='10'>v0.3.0</font>",
 			"type": "text",
 			"html": true
 		},
