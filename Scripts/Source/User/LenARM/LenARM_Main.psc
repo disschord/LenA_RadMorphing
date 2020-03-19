@@ -367,7 +367,7 @@ Function Shutdown()
 	
 	Utility.Wait(Math.Max(UpdateDelay + 0.5, 2.0))
 	; restore base values
-	ResetMorphs()
+	RestoreOriginalMorphs()
 EndFunction
 
 
@@ -425,6 +425,19 @@ EndEvent
 
 Function ResetMorphs()
 	Log("ResetMorphs")
+	RestoreOriginalMorphs()
+	; reset saved morphs in SliderSets
+	int idxSet = 0
+	While (idxSet < SliderSets.Length)
+		SliderSet set = SliderSets[idxSet]
+		set.BaseMorph = 0.0
+		set.CurrentMorph = 0.0
+		idxSet += 1
+	EndWhile
+EndFunction
+
+Function RestoreOriginalMorphs()
+	Log("RestoreOriginalMorphs")
 	; restore base values
 	int i = 0
 	While (i < SliderNames.Length)
