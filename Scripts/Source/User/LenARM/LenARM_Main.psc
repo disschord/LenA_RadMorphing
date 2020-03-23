@@ -695,9 +695,9 @@ Function UnequipSlots()
 					int idxComp = 0
 					While (idxComp < CurrentCompanions.Length)
 						Actor comp = CurrentCompanions[idxComp]
-						Actor:WornItem item = comp.GetWornItem(UnequipSlots[idxSlot])
-						If (item.item)
-							Log("  unequipping companion(" + comp + ") slot " + UnequipSlots[idxSlot] + " (" + item.item.GetName() + " / " + item.modelName + ")")
+						Actor:WornItem compItem = comp.GetWornItem(UnequipSlots[idxSlot])
+						If (compItem.item)
+							Log("  unequipping companion(" + comp + ") slot " + UnequipSlots[idxSlot] + " (" + compItem.item.GetName() + " / " + compItem.modelName + ")")
 							comp.UnequipItemSlot(UnequipSlots[idxSlot])
 							compFound[idxComp] = true
 						EndIf
@@ -713,10 +713,10 @@ Function UnequipSlots()
 			LenARM_DropClothesSound.Play(PlayerRef)
 		EndIf
 
-		int idxComp = 0
-		While (idxComp < compFound.Length)
-			LenARM_DropClothesSound.Play(CurrentCompanions[idxComp])
-			idxComp += 1
+		int idxCompSound = 0
+		While (idxCompSound < compFound.Length)
+			LenARM_DropClothesSound.PlayAndWait(CurrentCompanions[idxCompSound])
+			idxCompSound += 1
 		EndWhile
 	EndIf
 EndFunction
