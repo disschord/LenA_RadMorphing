@@ -708,9 +708,9 @@ Function UnequipSlots()
 			EndIf
 			idxSet += 1
 		EndWhile
-		
+
 		If (found)
-			LenARM_DropClothesSound.Play(PlayerRef)
+			LenARM_DropClothesSound.PlayAndWait(PlayerRef)
 		EndIf
 
 		int idxCompSound = 0
