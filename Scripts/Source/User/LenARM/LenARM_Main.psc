@@ -19,6 +19,18 @@ Group EnumTimerId
 	int Property ETimerMorphTick = 1 Auto Const
 EndGroup
 
+Group EnumApplyCompanion
+	int Property EApplyCompanionNone = 0 Auto Const
+	int Property EApplyCompanionFemale = 1 Auto Const
+	int Property EApplyCompanionMale = 2 Auto Const
+	int Property EApplyCompanionAll = 3 Auto Const
+EndGroup
+
+Group EnumSex
+	int Property ESexMale = 0 Auto Const
+	int Property ESexFemale = 1 Auto Const
+EndGroup
+
 
 Group Constants
 	int Property _NUMBER_OF_SLIDERSETS_ = 20 Auto Const
@@ -40,6 +52,7 @@ Struct SliderSet
 	bool IsAdditive
 	bool HasAdditiveLimit
 	float AdditiveLimit
+	int ApplyCompanion
 	; END: MCM values
 
 	int NumberOfSliderNames
@@ -155,6 +168,7 @@ SliderSet Function SliderSet_Constructor(int idxSet)
 		set.IsAdditive = MCM.GetModSettingBool("LenA_RadMorphing", "bIsAdditive:Slider" + idxSet)
 		set.HasAdditiveLimit = MCM.GetModSettingBool("LenA_RadMorphing", "bHasAdditiveLimit:Slider" + idxSet)
 		set.AdditiveLimit = MCM.GetModSettingFloat("LenA_RadMorphing", "fAdditiveLimit:Slider" + idxSet) / 100.0
+		set.ApplyCompanion = MCM.GetModSettingInt("LenA_RadMorphing", "iApplyCompanion:Slider" + idxSet)
 
 		string[] names = StringSplit(set.SliderName, "|")
 		set.NumberOfSliderNames = names.Length
@@ -508,13 +522,16 @@ Function RetrieveOriginalCompanionMorphs(Actor companion)
 EndFunction
 
 
-Function SetCompanionMorphs(int idxSlider, float morph)
+Function SetCompanionMorphs(int idxSlider, float morph, int applyCompanion)
 	Log("SetCompanionMorphs: " + idxSlider + "; " + morph)
 	int idxComp = 0
 	While (idxComp < CurrentCompanions.Length)
 		Actor companion = CurrentCompanions[idxComp]
-		int offsetIdx = SliderNames.Length * idxComp
-		BodyGen.SetMorph(companion, True, SliderNames[idxSlider], kwMorph, OriginalCompanionMorphs[offsetIdx + idxSlider] + morph)
+		int sex = companion.GetActorBase().GetSex()
+		If (applyCompanion == EApplyCompanionAll || (sex == ESexFemale && applyCompanion == EApplyCompanionFemale) || (sex == ESexMale && applyCompanion == EApplyCompanionMale))
+			int offsetIdx = SliderNames.Length * idxComp
+			BodyGen.SetMorph(companion, True, SliderNames[idxSlider], kwMorph, OriginalCompanionMorphs[offsetIdx + idxSlider] + morph)
+		EndIf
 		idxComp += 1
 	EndWhile
 EndFunction
@@ -635,7 +652,9 @@ Function TimerMorphTick()
 					While (idxSlider < sliderNameOffset + sliderSet.NumberOfSliderNames)
 						BodyGen.SetMorph(PlayerRef, true, SliderNames[idxSlider], kwMorph, OriginalMorphs[idxSlider] + fullMorph * sliderSet.TargetMorph)
 						Log("    setting slider '" + SliderNames[idxSlider] + "' to " + (OriginalMorphs[idxSlider] + fullMorph * sliderSet.TargetMorph) + " (base value is " + OriginalMorphs[idxSlider] + ") (base morph is " + sliderSet.BaseMorph + ") (target is " + sliderSet.TargetMorph + ")")
-						SetCompanionMorphs(idxSlider, fullMorph * sliderSet.TargetMorph)
+						If (sliderSet.ApplyCompanion != EApplyCompanionNone)
+							SetCompanionMorphs(idxSlider, fullMorph * sliderSet.TargetMorph, sliderSet.ApplyCompanion)
+						EndIf
 						idxSlider += 1
 					EndWhile
 				ElseIf (sliderSet.IsAdditive)
