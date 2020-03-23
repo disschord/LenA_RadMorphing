@@ -2,6 +2,26 @@ import pyperclip
 import re
 
 tpl = """
+		{
+			"pageDisplayName": "Slider Set $CNTLBL$",
+			"content": [
+				{
+					"text": "To find the correct slider names open the XML file relevant to the body you are using in Bodyslide's \\\"SliderCategories\\\" folder.<br>The attribute \\\"displayname\\\" is what you see in BodySlide, but here you need to enter the value of the <b>\\\"name\\\"</b> attribute.",
+					"type": "text",
+					"html": true
+				},
+				{
+					"text": "Show worn clothes",
+					"type": "button",
+					"help": "Show the worn clothing / armor items and their slots",
+					"action": {
+						"type": "CallFunction",
+						"form": "LenA_RadMorphing.esp|1000F99",
+						"function": "ShowEquippedClothes",
+						"params": []
+					}
+				},
+
 				{
 					"text": "Slider Set $CNTLBL$",
 					"type": "section"
@@ -123,9 +143,11 @@ tpl = """
 					"id": "iApplyCompanion:Slider$CNT$",
 					"valueOptions": {
 						"sourceType": "ModSettingInt",
-						"values": ["None", "Female", "Male", "All"]
+						"options": ["None", "Female", "Male", "All"]
 					}
-				}"""
+				}
+			]
+		}"""
 
 txt = []
 
