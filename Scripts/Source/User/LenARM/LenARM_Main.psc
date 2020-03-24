@@ -690,16 +690,25 @@ Function UnequipSlots()
 					If (item.item)
 						Log("  unequipping slot " + UnequipSlots[idxSlot] + " (" + item.item.GetName() + " / " + item.modelName + ")")
 						PlayerRef.UnequipItemSlot(UnequipSlots[idxSlot])
-						found = true
+						If (!found)
+							LenARM_DropClothesSound.PlayAndWait(PlayerRef)
+							found = true
+						EndIf
 					EndIf
 					int idxComp = 0
 					While (idxComp < CurrentCompanions.Length)
-						Actor comp = CurrentCompanions[idxComp]
-						Actor:WornItem compItem = comp.GetWornItem(UnequipSlots[idxSlot])
-						If (compItem.item)
-							Log("  unequipping companion(" + comp + ") slot " + UnequipSlots[idxSlot] + " (" + compItem.item.GetName() + " / " + compItem.modelName + ")")
-							comp.UnequipItemSlot(UnequipSlots[idxSlot])
-							compFound[idxComp] = true
+						Actor companion = CurrentCompanions[idxComp]
+						int sex = companion.GetActorBase().GetSex()
+						If (sliderSet.ApplyCompanion == EApplyCompanionAll || (sex == ESexFemale && sliderSet.ApplyCompanion == EApplyCompanionFemale) || (sex == ESexMale && sliderSet.ApplyCompanion == EApplyCompanionMale))
+							Actor:WornItem compItem = companion.GetWornItem(UnequipSlots[idxSlot])
+							If (compItem.item)
+								Log("  unequipping companion(" + companion + ") slot " + UnequipSlots[idxSlot] + " (" + compItem.item.GetName() + " / " + compItem.modelName + ")")
+								companion.UnequipItemSlot(UnequipSlots[idxSlot])
+								If (!compFound[idxComp])
+									LenARM_DropClothesSound.PlayAndWait(CurrentCompanions[idxComp])
+									compFound[idxComp] = true
+								EndIf
+							EndIf
 						EndIf
 						idxComp += 1
 					EndWhile
@@ -707,16 +716,6 @@ Function UnequipSlots()
 				EndWhile
 			EndIf
 			idxSet += 1
-		EndWhile
-
-		If (found)
-			LenARM_DropClothesSound.PlayAndWait(PlayerRef)
-		EndIf
-
-		int idxCompSound = 0
-		While (idxCompSound < compFound.Length)
-			LenARM_DropClothesSound.PlayAndWait(CurrentCompanions[idxCompSound])
-			idxCompSound += 1
 		EndWhile
 	EndIf
 EndFunction
