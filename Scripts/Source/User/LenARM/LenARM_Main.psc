@@ -675,8 +675,7 @@ EndFunction
 
 Function UnequipSlots()
 	Log("UnequipSlots: " + UnequipStackSize)
-	UnequipStackSize -= 1
-	If (UnequipStackSize <= 0)
+	If (UnequipStackSize <= 1)
 		bool found = false
 		bool[] compFound = new bool[CurrentCompanions.Length]
 		int idxSet = 0
@@ -718,6 +717,7 @@ Function UnequipSlots()
 			idxSet += 1
 		EndWhile
 	EndIf
+	UnequipStackSize -= 1
 EndFunction
 
 Function TriggerUnequipSlots()
