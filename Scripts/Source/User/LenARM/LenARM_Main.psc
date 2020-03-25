@@ -527,7 +527,7 @@ Function SetCompanionMorphs(int idxSlider, float morph, int applyCompanion)
 	int idxComp = 0
 	While (idxComp < CurrentCompanions.Length)
 		Actor companion = CurrentCompanions[idxComp]
-		int sex = companion.GetActorBase().GetSex()
+		int sex = companion.GetLeveledActorBase().GetSex()
 		If (applyCompanion == EApplyCompanionAll || (sex == ESexFemale && applyCompanion == EApplyCompanionFemale) || (sex == ESexMale && applyCompanion == EApplyCompanionMale))
 			int offsetIdx = SliderNames.Length * idxComp
 			BodyGen.SetMorph(companion, True, SliderNames[idxSlider], kwMorph, OriginalCompanionMorphs[offsetIdx + idxSlider] + morph)
@@ -698,7 +698,7 @@ Function UnequipSlots()
 					int idxComp = 0
 					While (idxComp < CurrentCompanions.Length)
 						Actor companion = CurrentCompanions[idxComp]
-						int sex = companion.GetActorBase().GetSex()
+						int sex = companion.GetLeveledActorBase().GetSex()
 						If (sliderSet.ApplyCompanion == EApplyCompanionAll || (sex == ESexFemale && sliderSet.ApplyCompanion == EApplyCompanionFemale) || (sex == ESexMale && sliderSet.ApplyCompanion == EApplyCompanionMale))
 							Actor:WornItem compItem = companion.GetWornItem(UnequipSlots[idxSlot])
 							If (compItem.item)
