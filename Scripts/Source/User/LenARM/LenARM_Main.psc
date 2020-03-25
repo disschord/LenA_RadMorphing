@@ -523,20 +523,24 @@ EndFunction
 
 
 Function SetCompanionMorphs(int idxSlider, float morph, int applyCompanion)
-	Log("SetCompanionMorphs: " + idxSlider + "; " + morph)
+	Log("SetCompanionMorphs: " + idxSlider + "; " + morph + "; " + applyCompanion)
 	int idxComp = 0
 	While (idxComp < CurrentCompanions.Length)
 		Actor companion = CurrentCompanions[idxComp]
 		int sex = companion.GetLeveledActorBase().GetSex()
 		If (applyCompanion == EApplyCompanionAll || (sex == ESexFemale && applyCompanion == EApplyCompanionFemale) || (sex == ESexMale && applyCompanion == EApplyCompanionMale))
 			int offsetIdx = SliderNames.Length * idxComp
+			Log("    setting companion(" + companion + ") slider '" + SliderNames[idxSlider] + "' to " + (OriginalMorphs[offsetIdx + idxSlider] + morph) + " (base value is " + OriginalMorphs[offsetIdx + idxSlider] + ")")
 			BodyGen.SetMorph(companion, True, SliderNames[idxSlider], kwMorph, OriginalCompanionMorphs[offsetIdx + idxSlider] + morph)
+		Else
+			Log("    skipping companion slider:  sex=" + sex)
 		EndIf
 		idxComp += 1
 	EndWhile
 EndFunction
 
 Function ApplyAllCompanionMorphs()
+	Log("ApplyAllCompanionMorphs")
 	int idxComp = 0
 	While (idxComp < CurrentCompanions.Length)
 		BodyGen.UpdateMorphs(CurrentCompanions[idxComp])
@@ -690,6 +694,7 @@ Function UnequipSlots()
 						Log("  unequipping slot " + UnequipSlots[idxSlot] + " (" + item.item.GetName() + " / " + item.modelName + ")")
 						PlayerRef.UnequipItemSlot(UnequipSlots[idxSlot])
 						If (!found)
+							Log("  playing sound")
 							LenARM_DropClothesSound.PlayAndWait(PlayerRef)
 							found = true
 						EndIf
@@ -702,8 +707,10 @@ Function UnequipSlots()
 							Actor:WornItem compItem = companion.GetWornItem(UnequipSlots[idxSlot])
 							If (compItem.item)
 								Log("  unequipping companion(" + companion + ") slot " + UnequipSlots[idxSlot] + " (" + compItem.item.GetName() + " / " + compItem.modelName + ")")
-								companion.UnequipItemSlot(UnequipSlots[idxSlot])
+								; companion.UnequipItemSlot(UnequipSlots[idxSlot])
+								companion.UnequipItem(compItem.item)
 								If (!compFound[idxComp])
+									Log("  playing companion sound")
 									LenARM_DropClothesSound.PlayAndWait(CurrentCompanions[idxComp])
 									compFound[idxComp] = true
 								EndIf
