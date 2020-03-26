@@ -1,0 +1,49 @@
+{
+	"modName": "LenA_RadMorphing",
+	"displayName": "Rad Morphing Redux",
+	"minMcmVersion": 1,
+	"content": [
+		{
+			"text": "<font size='24'>Rad Morphing Redux</font> <font id='version' size='10'>v0.3.2</font>",
+			"type": "text",
+			"html": true
+		},
+
+
+		{
+			"text": "General Settings",
+			"type": "section"
+		},
+		{
+			"text": "Enable Rad Morphing",
+			"help": "Enable or disable this mod. Default: OFF",
+			"type": "switcher",
+			"id": "bIsEnabled:General",
+			"valueOptions": {
+				"sourceType": "ModSettingBool"
+			}
+		},
+		{
+			"text": "Display disabled warning",
+			"help": "Displays a warning at the start of a game when this mod is disabled. Default: ON",
+			"type": "switcher",
+			"id": "bWarnDisabled:General",
+			"valueOptions": {
+				"sourceType": "ModSettingBool"
+			}
+		},
+		{
+			"text": "Update delay",
+			"help": "Seconds to wait between updating morphs",
+			"type": "slider",
+			"id": "fUpdateDelay:General",
+			"valueOptions": {
+				"sourceType": "ModSettingFloat",
+				"min": 0.5,
+				"max": 60.0,
+				"step": 0.5
+			}
+		}
+	],
+	"pages": []
+}
