@@ -36,6 +36,16 @@ tpl = """
 					}
 				},
 				{
+					"text": "Apply to companions",
+					"help": "Applies this slider set to your companions (based on your rads).",
+					"type": "stepper",
+					"id": "iApplyCompanion:Slider$CNT$",
+					"valueOptions": {
+						"sourceType": "ModSettingInt",
+						"options": ["None", "Female", "Male", "All"]
+					}
+				},
+				{
 					"text": "Target size increase",
 					"help": "At 100% the slider will be the initial value + 1 when you are fully irradiated.",
 					"type": "slider",
@@ -135,16 +145,6 @@ tpl = """
 					"text": "<b>Warning!</b> Additive morphing without a limit can lead to insane morphs!",
 					"type": "text",
 					"html": true
-				},
-				{
-					"text": "Apply to companions",
-					"help": "Applies this slider set to your companions (based on your rads).",
-					"type": "stepper",
-					"id": "iApplyCompanion:Slider$CNT$",
-					"valueOptions": {
-						"sourceType": "ModSettingInt",
-						"options": ["None", "Female", "Male", "All"]
-					}
 				}
 			]
 		}"""
