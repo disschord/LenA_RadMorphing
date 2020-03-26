@@ -401,15 +401,16 @@ EndFunction
 Function Restart()
 	RestartStackSize += 1
 	Utility.Wait(1.0)
-	RestartStackSize -= 1
-	If (RestartStackSize == 0)
+	If (RestartStackSize <= 1)
 		Log("Restart")
 		Shutdown()
 		Utility.Wait(1.0)
 		Startup()
+		Log("Restart completed")
 	Else
 		Log("RestartStackSize: " + RestartStackSize)
 	EndIf
+	RestartStackSize -= 1
 EndFunction
 
 
