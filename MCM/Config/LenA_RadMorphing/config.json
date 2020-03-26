@@ -45,6 +45,28 @@
     ],
     "pages": [
         {
+            "pageDisplayName": "Debug Tools",
+            "content": [
+                {
+                    "text": "Tools",
+                    "type": "section"
+                },
+                {
+                    "text": "Add irradiated blood",
+                    "type": "button",
+                    "help": "Add 50 irradiated blood to player inventory for rads testing.",
+                    "action": {
+                        "type": "CallFunction",
+                        "form": "LenA_RadMorphing.esp|1000F99",
+                        "function": "GiveIrradiatedBlood",
+                        "params": [
+                            
+                        ]
+                    }
+                }
+            ]
+        },
+        {
             "pageDisplayName": "Slider Set 1",
             "content": [
                 {

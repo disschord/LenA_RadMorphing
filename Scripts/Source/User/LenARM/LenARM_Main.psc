@@ -12,6 +12,8 @@ Group Properties
 	Sound Property LenARM_DropClothesSound Auto Const
 
 	Faction Property CurrentCompanionFaction Auto Const
+
+	Potion Property GlowingOneBlood Auto Const
 EndGroup
 
 
@@ -208,6 +210,18 @@ int Function SliderSet_GetUnequipSlotOffset(int idxSet)
 EndFunction
 ;
 ; END: SliderSet functions
+
+
+
+
+;
+; Debug and testing tools
+;
+Function GiveIrradiatedBlood()
+	PlayerRef.AddItem(GlowingOneBlood, 50)
+EndFunction
+;
+; END: Debug and testing tools
 
 
 
