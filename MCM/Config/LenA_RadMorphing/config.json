@@ -46,8 +46,9 @@
 		}
 	],
 	"pages": [
+		
 		{
-			"pageDisplayName": "Slider Sets",
+			"pageDisplayName": "Slider Set 1",
 			"content": [
 				{
 					"text": "To find the correct slider names open the XML file relevant to the body you are using in Bodyslide's \"SliderCategories\" folder.<br>The attribute \"displayname\" is what you see in BodySlide, but here you need to enter the value of the <b>\"name\"</b> attribute.",
@@ -65,10 +66,7 @@
 						"params": []
 					}
 				},
-				
-				
-				
-				
+
 				{
 					"text": "Slider Set 1",
 					"type": "section"
@@ -144,7 +142,6 @@
 					"help": "With this enabled only doctors can restore your base shape. Reducing rads with RadAway or other means will have no effect on the sliders.",
 					"type": "switcher",
 					"id": "bOnlyDoctorCanReset:Slider0",
-					"groupControl": 1,
 					"valueOptions": {
 						"sourceType": "ModSettingBool"
 					}
@@ -154,8 +151,6 @@
 					"help": "Enabled: rads gained after taking RadAway further increase morphs. Disabled: rads gained after taking RadAway only increase morphs if irradiation is higher than before taking RadAway.",
 					"type": "switcher",
 					"id": "bIsAdditive:Slider0",
-					"groupControl": 2,
-					"groupCondition": 1,
 					"valueOptions": {
 						"sourceType": "ModSettingBool"
 					}
@@ -165,8 +160,6 @@
 					"help": "Disabled: Unlimited additive morphing. Use at own risk!",
 					"type": "switcher",
 					"id": "bHasAdditiveLimit:Slider0",
-					"groupControl": 3,
-					"groupCondition": {"AND":[1,2]},
 					"valueOptions": {
 						"sourceType": "ModSettingBool"
 					}
@@ -176,7 +169,6 @@
 					"help": "How far additive morphing can exceed the target size increase (% of target size increase). 0 = cannot exceed target; 100 = cannot exceed 2x target",
 					"type": "slider",
 					"id": "fAdditiveLimit:Slider0",
-					"groupCondition": {"AND":[1,2,3]},
 					"valueOptions": {
 						"sourceType": "ModSettingFloat",
 						"min": 0.0,
@@ -187,10 +179,41 @@
 				{
 					"text": "<b>Warning!</b> Additive morphing without a limit can lead to insane morphs!",
 					"type": "text",
-					"html": true,
-					"groupCondition": 1
+					"html": true
 				},
+				{
+					"text": "Apply to companions",
+					"help": "Applies this slider set to your companions (based on your rads).",
+					"type": "stepper",
+					"id": "iApplyCompanion:Slider0",
+					"valueOptions": {
+						"sourceType": "ModSettingInt",
+						"options": ["None", "Female", "Male", "All"]
+					}
+				}
+			]
+		},
 
+
+		{
+			"pageDisplayName": "Slider Set 2",
+			"content": [
+				{
+					"text": "To find the correct slider names open the XML file relevant to the body you are using in Bodyslide's \"SliderCategories\" folder.<br>The attribute \"displayname\" is what you see in BodySlide, but here you need to enter the value of the <b>\"name\"</b> attribute.",
+					"type": "text",
+					"html": true
+				},
+				{
+					"text": "Show worn clothes",
+					"type": "button",
+					"help": "Show the worn clothing / armor items and their slots",
+					"action": {
+						"type": "CallFunction",
+						"form": "LenA_RadMorphing.esp|1000F99",
+						"function": "ShowEquippedClothes",
+						"params": []
+					}
+				},
 
 				{
 					"text": "Slider Set 2",
@@ -267,7 +290,6 @@
 					"help": "With this enabled only doctors can restore your base shape. Reducing rads with RadAway or other means will have no effect on the sliders.",
 					"type": "switcher",
 					"id": "bOnlyDoctorCanReset:Slider1",
-					"groupControl": 1,
 					"valueOptions": {
 						"sourceType": "ModSettingBool"
 					}
@@ -277,8 +299,6 @@
 					"help": "Enabled: rads gained after taking RadAway further increase morphs. Disabled: rads gained after taking RadAway only increase morphs if irradiation is higher than before taking RadAway.",
 					"type": "switcher",
 					"id": "bIsAdditive:Slider1",
-					"groupControl": 2,
-					"groupCondition": 1,
 					"valueOptions": {
 						"sourceType": "ModSettingBool"
 					}
@@ -288,8 +308,6 @@
 					"help": "Disabled: Unlimited additive morphing. Use at own risk!",
 					"type": "switcher",
 					"id": "bHasAdditiveLimit:Slider1",
-					"groupControl": 3,
-					"groupCondition": {"AND":[1,2]},
 					"valueOptions": {
 						"sourceType": "ModSettingBool"
 					}
@@ -299,7 +317,6 @@
 					"help": "How far additive morphing can exceed the target size increase (% of target size increase). 0 = cannot exceed target; 100 = cannot exceed 2x target",
 					"type": "slider",
 					"id": "fAdditiveLimit:Slider1",
-					"groupCondition": {"AND":[1,2,3]},
 					"valueOptions": {
 						"sourceType": "ModSettingFloat",
 						"min": 0.0,
@@ -310,10 +327,41 @@
 				{
 					"text": "<b>Warning!</b> Additive morphing without a limit can lead to insane morphs!",
 					"type": "text",
-					"html": true,
-					"groupCondition": 1
+					"html": true
 				},
+				{
+					"text": "Apply to companions",
+					"help": "Applies this slider set to your companions (based on your rads).",
+					"type": "stepper",
+					"id": "iApplyCompanion:Slider1",
+					"valueOptions": {
+						"sourceType": "ModSettingInt",
+						"options": ["None", "Female", "Male", "All"]
+					}
+				}
+			]
+		},
 
+
+		{
+			"pageDisplayName": "Slider Set 3",
+			"content": [
+				{
+					"text": "To find the correct slider names open the XML file relevant to the body you are using in Bodyslide's \"SliderCategories\" folder.<br>The attribute \"displayname\" is what you see in BodySlide, but here you need to enter the value of the <b>\"name\"</b> attribute.",
+					"type": "text",
+					"html": true
+				},
+				{
+					"text": "Show worn clothes",
+					"type": "button",
+					"help": "Show the worn clothing / armor items and their slots",
+					"action": {
+						"type": "CallFunction",
+						"form": "LenA_RadMorphing.esp|1000F99",
+						"function": "ShowEquippedClothes",
+						"params": []
+					}
+				},
 
 				{
 					"text": "Slider Set 3",
@@ -390,7 +438,6 @@
 					"help": "With this enabled only doctors can restore your base shape. Reducing rads with RadAway or other means will have no effect on the sliders.",
 					"type": "switcher",
 					"id": "bOnlyDoctorCanReset:Slider2",
-					"groupControl": 1,
 					"valueOptions": {
 						"sourceType": "ModSettingBool"
 					}
@@ -400,8 +447,6 @@
 					"help": "Enabled: rads gained after taking RadAway further increase morphs. Disabled: rads gained after taking RadAway only increase morphs if irradiation is higher than before taking RadAway.",
 					"type": "switcher",
 					"id": "bIsAdditive:Slider2",
-					"groupControl": 2,
-					"groupCondition": 1,
 					"valueOptions": {
 						"sourceType": "ModSettingBool"
 					}
@@ -411,8 +456,6 @@
 					"help": "Disabled: Unlimited additive morphing. Use at own risk!",
 					"type": "switcher",
 					"id": "bHasAdditiveLimit:Slider2",
-					"groupControl": 3,
-					"groupCondition": {"AND":[1,2]},
 					"valueOptions": {
 						"sourceType": "ModSettingBool"
 					}
@@ -422,7 +465,6 @@
 					"help": "How far additive morphing can exceed the target size increase (% of target size increase). 0 = cannot exceed target; 100 = cannot exceed 2x target",
 					"type": "slider",
 					"id": "fAdditiveLimit:Slider2",
-					"groupCondition": {"AND":[1,2,3]},
 					"valueOptions": {
 						"sourceType": "ModSettingFloat",
 						"min": 0.0,
@@ -433,10 +475,41 @@
 				{
 					"text": "<b>Warning!</b> Additive morphing without a limit can lead to insane morphs!",
 					"type": "text",
-					"html": true,
-					"groupCondition": 1
+					"html": true
 				},
+				{
+					"text": "Apply to companions",
+					"help": "Applies this slider set to your companions (based on your rads).",
+					"type": "stepper",
+					"id": "iApplyCompanion:Slider2",
+					"valueOptions": {
+						"sourceType": "ModSettingInt",
+						"options": ["None", "Female", "Male", "All"]
+					}
+				}
+			]
+		},
 
+
+		{
+			"pageDisplayName": "Slider Set 4",
+			"content": [
+				{
+					"text": "To find the correct slider names open the XML file relevant to the body you are using in Bodyslide's \"SliderCategories\" folder.<br>The attribute \"displayname\" is what you see in BodySlide, but here you need to enter the value of the <b>\"name\"</b> attribute.",
+					"type": "text",
+					"html": true
+				},
+				{
+					"text": "Show worn clothes",
+					"type": "button",
+					"help": "Show the worn clothing / armor items and their slots",
+					"action": {
+						"type": "CallFunction",
+						"form": "LenA_RadMorphing.esp|1000F99",
+						"function": "ShowEquippedClothes",
+						"params": []
+					}
+				},
 
 				{
 					"text": "Slider Set 4",
@@ -513,7 +586,6 @@
 					"help": "With this enabled only doctors can restore your base shape. Reducing rads with RadAway or other means will have no effect on the sliders.",
 					"type": "switcher",
 					"id": "bOnlyDoctorCanReset:Slider3",
-					"groupControl": 1,
 					"valueOptions": {
 						"sourceType": "ModSettingBool"
 					}
@@ -523,8 +595,6 @@
 					"help": "Enabled: rads gained after taking RadAway further increase morphs. Disabled: rads gained after taking RadAway only increase morphs if irradiation is higher than before taking RadAway.",
 					"type": "switcher",
 					"id": "bIsAdditive:Slider3",
-					"groupControl": 2,
-					"groupCondition": 1,
 					"valueOptions": {
 						"sourceType": "ModSettingBool"
 					}
@@ -534,8 +604,6 @@
 					"help": "Disabled: Unlimited additive morphing. Use at own risk!",
 					"type": "switcher",
 					"id": "bHasAdditiveLimit:Slider3",
-					"groupControl": 3,
-					"groupCondition": {"AND":[1,2]},
 					"valueOptions": {
 						"sourceType": "ModSettingBool"
 					}
@@ -545,7 +613,6 @@
 					"help": "How far additive morphing can exceed the target size increase (% of target size increase). 0 = cannot exceed target; 100 = cannot exceed 2x target",
 					"type": "slider",
 					"id": "fAdditiveLimit:Slider3",
-					"groupCondition": {"AND":[1,2,3]},
 					"valueOptions": {
 						"sourceType": "ModSettingFloat",
 						"min": 0.0,
@@ -556,10 +623,41 @@
 				{
 					"text": "<b>Warning!</b> Additive morphing without a limit can lead to insane morphs!",
 					"type": "text",
-					"html": true,
-					"groupCondition": 1
+					"html": true
 				},
+				{
+					"text": "Apply to companions",
+					"help": "Applies this slider set to your companions (based on your rads).",
+					"type": "stepper",
+					"id": "iApplyCompanion:Slider3",
+					"valueOptions": {
+						"sourceType": "ModSettingInt",
+						"options": ["None", "Female", "Male", "All"]
+					}
+				}
+			]
+		},
 
+
+		{
+			"pageDisplayName": "Slider Set 5",
+			"content": [
+				{
+					"text": "To find the correct slider names open the XML file relevant to the body you are using in Bodyslide's \"SliderCategories\" folder.<br>The attribute \"displayname\" is what you see in BodySlide, but here you need to enter the value of the <b>\"name\"</b> attribute.",
+					"type": "text",
+					"html": true
+				},
+				{
+					"text": "Show worn clothes",
+					"type": "button",
+					"help": "Show the worn clothing / armor items and their slots",
+					"action": {
+						"type": "CallFunction",
+						"form": "LenA_RadMorphing.esp|1000F99",
+						"function": "ShowEquippedClothes",
+						"params": []
+					}
+				},
 
 				{
 					"text": "Slider Set 5",
@@ -636,7 +734,6 @@
 					"help": "With this enabled only doctors can restore your base shape. Reducing rads with RadAway or other means will have no effect on the sliders.",
 					"type": "switcher",
 					"id": "bOnlyDoctorCanReset:Slider4",
-					"groupControl": 1,
 					"valueOptions": {
 						"sourceType": "ModSettingBool"
 					}
@@ -646,8 +743,6 @@
 					"help": "Enabled: rads gained after taking RadAway further increase morphs. Disabled: rads gained after taking RadAway only increase morphs if irradiation is higher than before taking RadAway.",
 					"type": "switcher",
 					"id": "bIsAdditive:Slider4",
-					"groupControl": 2,
-					"groupCondition": 1,
 					"valueOptions": {
 						"sourceType": "ModSettingBool"
 					}
@@ -657,8 +752,6 @@
 					"help": "Disabled: Unlimited additive morphing. Use at own risk!",
 					"type": "switcher",
 					"id": "bHasAdditiveLimit:Slider4",
-					"groupControl": 3,
-					"groupCondition": {"AND":[1,2]},
 					"valueOptions": {
 						"sourceType": "ModSettingBool"
 					}
@@ -668,7 +761,6 @@
 					"help": "How far additive morphing can exceed the target size increase (% of target size increase). 0 = cannot exceed target; 100 = cannot exceed 2x target",
 					"type": "slider",
 					"id": "fAdditiveLimit:Slider4",
-					"groupCondition": {"AND":[1,2,3]},
 					"valueOptions": {
 						"sourceType": "ModSettingFloat",
 						"min": 0.0,
@@ -679,10 +771,41 @@
 				{
 					"text": "<b>Warning!</b> Additive morphing without a limit can lead to insane morphs!",
 					"type": "text",
-					"html": true,
-					"groupCondition": 1
+					"html": true
 				},
+				{
+					"text": "Apply to companions",
+					"help": "Applies this slider set to your companions (based on your rads).",
+					"type": "stepper",
+					"id": "iApplyCompanion:Slider4",
+					"valueOptions": {
+						"sourceType": "ModSettingInt",
+						"options": ["None", "Female", "Male", "All"]
+					}
+				}
+			]
+		},
 
+
+		{
+			"pageDisplayName": "Slider Set 6",
+			"content": [
+				{
+					"text": "To find the correct slider names open the XML file relevant to the body you are using in Bodyslide's \"SliderCategories\" folder.<br>The attribute \"displayname\" is what you see in BodySlide, but here you need to enter the value of the <b>\"name\"</b> attribute.",
+					"type": "text",
+					"html": true
+				},
+				{
+					"text": "Show worn clothes",
+					"type": "button",
+					"help": "Show the worn clothing / armor items and their slots",
+					"action": {
+						"type": "CallFunction",
+						"form": "LenA_RadMorphing.esp|1000F99",
+						"function": "ShowEquippedClothes",
+						"params": []
+					}
+				},
 
 				{
 					"text": "Slider Set 6",
@@ -759,7 +882,6 @@
 					"help": "With this enabled only doctors can restore your base shape. Reducing rads with RadAway or other means will have no effect on the sliders.",
 					"type": "switcher",
 					"id": "bOnlyDoctorCanReset:Slider5",
-					"groupControl": 1,
 					"valueOptions": {
 						"sourceType": "ModSettingBool"
 					}
@@ -769,8 +891,6 @@
 					"help": "Enabled: rads gained after taking RadAway further increase morphs. Disabled: rads gained after taking RadAway only increase morphs if irradiation is higher than before taking RadAway.",
 					"type": "switcher",
 					"id": "bIsAdditive:Slider5",
-					"groupControl": 2,
-					"groupCondition": 1,
 					"valueOptions": {
 						"sourceType": "ModSettingBool"
 					}
@@ -780,8 +900,6 @@
 					"help": "Disabled: Unlimited additive morphing. Use at own risk!",
 					"type": "switcher",
 					"id": "bHasAdditiveLimit:Slider5",
-					"groupControl": 3,
-					"groupCondition": {"AND":[1,2]},
 					"valueOptions": {
 						"sourceType": "ModSettingBool"
 					}
@@ -791,7 +909,6 @@
 					"help": "How far additive morphing can exceed the target size increase (% of target size increase). 0 = cannot exceed target; 100 = cannot exceed 2x target",
 					"type": "slider",
 					"id": "fAdditiveLimit:Slider5",
-					"groupCondition": {"AND":[1,2,3]},
 					"valueOptions": {
 						"sourceType": "ModSettingFloat",
 						"min": 0.0,
@@ -802,10 +919,41 @@
 				{
 					"text": "<b>Warning!</b> Additive morphing without a limit can lead to insane morphs!",
 					"type": "text",
-					"html": true,
-					"groupCondition": 1
+					"html": true
 				},
+				{
+					"text": "Apply to companions",
+					"help": "Applies this slider set to your companions (based on your rads).",
+					"type": "stepper",
+					"id": "iApplyCompanion:Slider5",
+					"valueOptions": {
+						"sourceType": "ModSettingInt",
+						"options": ["None", "Female", "Male", "All"]
+					}
+				}
+			]
+		},
 
+
+		{
+			"pageDisplayName": "Slider Set 7",
+			"content": [
+				{
+					"text": "To find the correct slider names open the XML file relevant to the body you are using in Bodyslide's \"SliderCategories\" folder.<br>The attribute \"displayname\" is what you see in BodySlide, but here you need to enter the value of the <b>\"name\"</b> attribute.",
+					"type": "text",
+					"html": true
+				},
+				{
+					"text": "Show worn clothes",
+					"type": "button",
+					"help": "Show the worn clothing / armor items and their slots",
+					"action": {
+						"type": "CallFunction",
+						"form": "LenA_RadMorphing.esp|1000F99",
+						"function": "ShowEquippedClothes",
+						"params": []
+					}
+				},
 
 				{
 					"text": "Slider Set 7",
@@ -882,7 +1030,6 @@
 					"help": "With this enabled only doctors can restore your base shape. Reducing rads with RadAway or other means will have no effect on the sliders.",
 					"type": "switcher",
 					"id": "bOnlyDoctorCanReset:Slider6",
-					"groupControl": 1,
 					"valueOptions": {
 						"sourceType": "ModSettingBool"
 					}
@@ -892,8 +1039,6 @@
 					"help": "Enabled: rads gained after taking RadAway further increase morphs. Disabled: rads gained after taking RadAway only increase morphs if irradiation is higher than before taking RadAway.",
 					"type": "switcher",
 					"id": "bIsAdditive:Slider6",
-					"groupControl": 2,
-					"groupCondition": 1,
 					"valueOptions": {
 						"sourceType": "ModSettingBool"
 					}
@@ -903,8 +1048,6 @@
 					"help": "Disabled: Unlimited additive morphing. Use at own risk!",
 					"type": "switcher",
 					"id": "bHasAdditiveLimit:Slider6",
-					"groupControl": 3,
-					"groupCondition": {"AND":[1,2]},
 					"valueOptions": {
 						"sourceType": "ModSettingBool"
 					}
@@ -914,7 +1057,6 @@
 					"help": "How far additive morphing can exceed the target size increase (% of target size increase). 0 = cannot exceed target; 100 = cannot exceed 2x target",
 					"type": "slider",
 					"id": "fAdditiveLimit:Slider6",
-					"groupCondition": {"AND":[1,2,3]},
 					"valueOptions": {
 						"sourceType": "ModSettingFloat",
 						"min": 0.0,
@@ -925,10 +1067,41 @@
 				{
 					"text": "<b>Warning!</b> Additive morphing without a limit can lead to insane morphs!",
 					"type": "text",
-					"html": true,
-					"groupCondition": 1
+					"html": true
 				},
+				{
+					"text": "Apply to companions",
+					"help": "Applies this slider set to your companions (based on your rads).",
+					"type": "stepper",
+					"id": "iApplyCompanion:Slider6",
+					"valueOptions": {
+						"sourceType": "ModSettingInt",
+						"options": ["None", "Female", "Male", "All"]
+					}
+				}
+			]
+		},
 
+
+		{
+			"pageDisplayName": "Slider Set 8",
+			"content": [
+				{
+					"text": "To find the correct slider names open the XML file relevant to the body you are using in Bodyslide's \"SliderCategories\" folder.<br>The attribute \"displayname\" is what you see in BodySlide, but here you need to enter the value of the <b>\"name\"</b> attribute.",
+					"type": "text",
+					"html": true
+				},
+				{
+					"text": "Show worn clothes",
+					"type": "button",
+					"help": "Show the worn clothing / armor items and their slots",
+					"action": {
+						"type": "CallFunction",
+						"form": "LenA_RadMorphing.esp|1000F99",
+						"function": "ShowEquippedClothes",
+						"params": []
+					}
+				},
 
 				{
 					"text": "Slider Set 8",
@@ -1005,7 +1178,6 @@
 					"help": "With this enabled only doctors can restore your base shape. Reducing rads with RadAway or other means will have no effect on the sliders.",
 					"type": "switcher",
 					"id": "bOnlyDoctorCanReset:Slider7",
-					"groupControl": 1,
 					"valueOptions": {
 						"sourceType": "ModSettingBool"
 					}
@@ -1015,8 +1187,6 @@
 					"help": "Enabled: rads gained after taking RadAway further increase morphs. Disabled: rads gained after taking RadAway only increase morphs if irradiation is higher than before taking RadAway.",
 					"type": "switcher",
 					"id": "bIsAdditive:Slider7",
-					"groupControl": 2,
-					"groupCondition": 1,
 					"valueOptions": {
 						"sourceType": "ModSettingBool"
 					}
@@ -1026,8 +1196,6 @@
 					"help": "Disabled: Unlimited additive morphing. Use at own risk!",
 					"type": "switcher",
 					"id": "bHasAdditiveLimit:Slider7",
-					"groupControl": 3,
-					"groupCondition": {"AND":[1,2]},
 					"valueOptions": {
 						"sourceType": "ModSettingBool"
 					}
@@ -1037,7 +1205,6 @@
 					"help": "How far additive morphing can exceed the target size increase (% of target size increase). 0 = cannot exceed target; 100 = cannot exceed 2x target",
 					"type": "slider",
 					"id": "fAdditiveLimit:Slider7",
-					"groupCondition": {"AND":[1,2,3]},
 					"valueOptions": {
 						"sourceType": "ModSettingFloat",
 						"min": 0.0,
@@ -1048,10 +1215,41 @@
 				{
 					"text": "<b>Warning!</b> Additive morphing without a limit can lead to insane morphs!",
 					"type": "text",
-					"html": true,
-					"groupCondition": 1
+					"html": true
 				},
+				{
+					"text": "Apply to companions",
+					"help": "Applies this slider set to your companions (based on your rads).",
+					"type": "stepper",
+					"id": "iApplyCompanion:Slider7",
+					"valueOptions": {
+						"sourceType": "ModSettingInt",
+						"options": ["None", "Female", "Male", "All"]
+					}
+				}
+			]
+		},
 
+
+		{
+			"pageDisplayName": "Slider Set 9",
+			"content": [
+				{
+					"text": "To find the correct slider names open the XML file relevant to the body you are using in Bodyslide's \"SliderCategories\" folder.<br>The attribute \"displayname\" is what you see in BodySlide, but here you need to enter the value of the <b>\"name\"</b> attribute.",
+					"type": "text",
+					"html": true
+				},
+				{
+					"text": "Show worn clothes",
+					"type": "button",
+					"help": "Show the worn clothing / armor items and their slots",
+					"action": {
+						"type": "CallFunction",
+						"form": "LenA_RadMorphing.esp|1000F99",
+						"function": "ShowEquippedClothes",
+						"params": []
+					}
+				},
 
 				{
 					"text": "Slider Set 9",
@@ -1128,7 +1326,6 @@
 					"help": "With this enabled only doctors can restore your base shape. Reducing rads with RadAway or other means will have no effect on the sliders.",
 					"type": "switcher",
 					"id": "bOnlyDoctorCanReset:Slider8",
-					"groupControl": 1,
 					"valueOptions": {
 						"sourceType": "ModSettingBool"
 					}
@@ -1138,8 +1335,6 @@
 					"help": "Enabled: rads gained after taking RadAway further increase morphs. Disabled: rads gained after taking RadAway only increase morphs if irradiation is higher than before taking RadAway.",
 					"type": "switcher",
 					"id": "bIsAdditive:Slider8",
-					"groupControl": 2,
-					"groupCondition": 1,
 					"valueOptions": {
 						"sourceType": "ModSettingBool"
 					}
@@ -1149,8 +1344,6 @@
 					"help": "Disabled: Unlimited additive morphing. Use at own risk!",
 					"type": "switcher",
 					"id": "bHasAdditiveLimit:Slider8",
-					"groupControl": 3,
-					"groupCondition": {"AND":[1,2]},
 					"valueOptions": {
 						"sourceType": "ModSettingBool"
 					}
@@ -1160,7 +1353,6 @@
 					"help": "How far additive morphing can exceed the target size increase (% of target size increase). 0 = cannot exceed target; 100 = cannot exceed 2x target",
 					"type": "slider",
 					"id": "fAdditiveLimit:Slider8",
-					"groupCondition": {"AND":[1,2,3]},
 					"valueOptions": {
 						"sourceType": "ModSettingFloat",
 						"min": 0.0,
@@ -1171,10 +1363,41 @@
 				{
 					"text": "<b>Warning!</b> Additive morphing without a limit can lead to insane morphs!",
 					"type": "text",
-					"html": true,
-					"groupCondition": 1
+					"html": true
 				},
+				{
+					"text": "Apply to companions",
+					"help": "Applies this slider set to your companions (based on your rads).",
+					"type": "stepper",
+					"id": "iApplyCompanion:Slider8",
+					"valueOptions": {
+						"sourceType": "ModSettingInt",
+						"options": ["None", "Female", "Male", "All"]
+					}
+				}
+			]
+		},
 
+
+		{
+			"pageDisplayName": "Slider Set 10",
+			"content": [
+				{
+					"text": "To find the correct slider names open the XML file relevant to the body you are using in Bodyslide's \"SliderCategories\" folder.<br>The attribute \"displayname\" is what you see in BodySlide, but here you need to enter the value of the <b>\"name\"</b> attribute.",
+					"type": "text",
+					"html": true
+				},
+				{
+					"text": "Show worn clothes",
+					"type": "button",
+					"help": "Show the worn clothing / armor items and their slots",
+					"action": {
+						"type": "CallFunction",
+						"form": "LenA_RadMorphing.esp|1000F99",
+						"function": "ShowEquippedClothes",
+						"params": []
+					}
+				},
 
 				{
 					"text": "Slider Set 10",
@@ -1251,7 +1474,6 @@
 					"help": "With this enabled only doctors can restore your base shape. Reducing rads with RadAway or other means will have no effect on the sliders.",
 					"type": "switcher",
 					"id": "bOnlyDoctorCanReset:Slider9",
-					"groupControl": 1,
 					"valueOptions": {
 						"sourceType": "ModSettingBool"
 					}
@@ -1261,8 +1483,6 @@
 					"help": "Enabled: rads gained after taking RadAway further increase morphs. Disabled: rads gained after taking RadAway only increase morphs if irradiation is higher than before taking RadAway.",
 					"type": "switcher",
 					"id": "bIsAdditive:Slider9",
-					"groupControl": 2,
-					"groupCondition": 1,
 					"valueOptions": {
 						"sourceType": "ModSettingBool"
 					}
@@ -1272,8 +1492,6 @@
 					"help": "Disabled: Unlimited additive morphing. Use at own risk!",
 					"type": "switcher",
 					"id": "bHasAdditiveLimit:Slider9",
-					"groupControl": 3,
-					"groupCondition": {"AND":[1,2]},
 					"valueOptions": {
 						"sourceType": "ModSettingBool"
 					}
@@ -1283,7 +1501,6 @@
 					"help": "How far additive morphing can exceed the target size increase (% of target size increase). 0 = cannot exceed target; 100 = cannot exceed 2x target",
 					"type": "slider",
 					"id": "fAdditiveLimit:Slider9",
-					"groupCondition": {"AND":[1,2,3]},
 					"valueOptions": {
 						"sourceType": "ModSettingFloat",
 						"min": 0.0,
@@ -1294,10 +1511,41 @@
 				{
 					"text": "<b>Warning!</b> Additive morphing without a limit can lead to insane morphs!",
 					"type": "text",
-					"html": true,
-					"groupCondition": 1
+					"html": true
 				},
+				{
+					"text": "Apply to companions",
+					"help": "Applies this slider set to your companions (based on your rads).",
+					"type": "stepper",
+					"id": "iApplyCompanion:Slider9",
+					"valueOptions": {
+						"sourceType": "ModSettingInt",
+						"options": ["None", "Female", "Male", "All"]
+					}
+				}
+			]
+		},
 
+
+		{
+			"pageDisplayName": "Slider Set 11",
+			"content": [
+				{
+					"text": "To find the correct slider names open the XML file relevant to the body you are using in Bodyslide's \"SliderCategories\" folder.<br>The attribute \"displayname\" is what you see in BodySlide, but here you need to enter the value of the <b>\"name\"</b> attribute.",
+					"type": "text",
+					"html": true
+				},
+				{
+					"text": "Show worn clothes",
+					"type": "button",
+					"help": "Show the worn clothing / armor items and their slots",
+					"action": {
+						"type": "CallFunction",
+						"form": "LenA_RadMorphing.esp|1000F99",
+						"function": "ShowEquippedClothes",
+						"params": []
+					}
+				},
 
 				{
 					"text": "Slider Set 11",
@@ -1374,7 +1622,6 @@
 					"help": "With this enabled only doctors can restore your base shape. Reducing rads with RadAway or other means will have no effect on the sliders.",
 					"type": "switcher",
 					"id": "bOnlyDoctorCanReset:Slider10",
-					"groupControl": 1,
 					"valueOptions": {
 						"sourceType": "ModSettingBool"
 					}
@@ -1384,8 +1631,6 @@
 					"help": "Enabled: rads gained after taking RadAway further increase morphs. Disabled: rads gained after taking RadAway only increase morphs if irradiation is higher than before taking RadAway.",
 					"type": "switcher",
 					"id": "bIsAdditive:Slider10",
-					"groupControl": 2,
-					"groupCondition": 1,
 					"valueOptions": {
 						"sourceType": "ModSettingBool"
 					}
@@ -1395,8 +1640,6 @@
 					"help": "Disabled: Unlimited additive morphing. Use at own risk!",
 					"type": "switcher",
 					"id": "bHasAdditiveLimit:Slider10",
-					"groupControl": 3,
-					"groupCondition": {"AND":[1,2]},
 					"valueOptions": {
 						"sourceType": "ModSettingBool"
 					}
@@ -1406,7 +1649,6 @@
 					"help": "How far additive morphing can exceed the target size increase (% of target size increase). 0 = cannot exceed target; 100 = cannot exceed 2x target",
 					"type": "slider",
 					"id": "fAdditiveLimit:Slider10",
-					"groupCondition": {"AND":[1,2,3]},
 					"valueOptions": {
 						"sourceType": "ModSettingFloat",
 						"min": 0.0,
@@ -1417,10 +1659,41 @@
 				{
 					"text": "<b>Warning!</b> Additive morphing without a limit can lead to insane morphs!",
 					"type": "text",
-					"html": true,
-					"groupCondition": 1
+					"html": true
 				},
+				{
+					"text": "Apply to companions",
+					"help": "Applies this slider set to your companions (based on your rads).",
+					"type": "stepper",
+					"id": "iApplyCompanion:Slider10",
+					"valueOptions": {
+						"sourceType": "ModSettingInt",
+						"options": ["None", "Female", "Male", "All"]
+					}
+				}
+			]
+		},
 
+
+		{
+			"pageDisplayName": "Slider Set 12",
+			"content": [
+				{
+					"text": "To find the correct slider names open the XML file relevant to the body you are using in Bodyslide's \"SliderCategories\" folder.<br>The attribute \"displayname\" is what you see in BodySlide, but here you need to enter the value of the <b>\"name\"</b> attribute.",
+					"type": "text",
+					"html": true
+				},
+				{
+					"text": "Show worn clothes",
+					"type": "button",
+					"help": "Show the worn clothing / armor items and their slots",
+					"action": {
+						"type": "CallFunction",
+						"form": "LenA_RadMorphing.esp|1000F99",
+						"function": "ShowEquippedClothes",
+						"params": []
+					}
+				},
 
 				{
 					"text": "Slider Set 12",
@@ -1497,7 +1770,6 @@
 					"help": "With this enabled only doctors can restore your base shape. Reducing rads with RadAway or other means will have no effect on the sliders.",
 					"type": "switcher",
 					"id": "bOnlyDoctorCanReset:Slider11",
-					"groupControl": 1,
 					"valueOptions": {
 						"sourceType": "ModSettingBool"
 					}
@@ -1507,8 +1779,6 @@
 					"help": "Enabled: rads gained after taking RadAway further increase morphs. Disabled: rads gained after taking RadAway only increase morphs if irradiation is higher than before taking RadAway.",
 					"type": "switcher",
 					"id": "bIsAdditive:Slider11",
-					"groupControl": 2,
-					"groupCondition": 1,
 					"valueOptions": {
 						"sourceType": "ModSettingBool"
 					}
@@ -1518,8 +1788,6 @@
 					"help": "Disabled: Unlimited additive morphing. Use at own risk!",
 					"type": "switcher",
 					"id": "bHasAdditiveLimit:Slider11",
-					"groupControl": 3,
-					"groupCondition": {"AND":[1,2]},
 					"valueOptions": {
 						"sourceType": "ModSettingBool"
 					}
@@ -1529,7 +1797,6 @@
 					"help": "How far additive morphing can exceed the target size increase (% of target size increase). 0 = cannot exceed target; 100 = cannot exceed 2x target",
 					"type": "slider",
 					"id": "fAdditiveLimit:Slider11",
-					"groupCondition": {"AND":[1,2,3]},
 					"valueOptions": {
 						"sourceType": "ModSettingFloat",
 						"min": 0.0,
@@ -1540,10 +1807,41 @@
 				{
 					"text": "<b>Warning!</b> Additive morphing without a limit can lead to insane morphs!",
 					"type": "text",
-					"html": true,
-					"groupCondition": 1
+					"html": true
 				},
+				{
+					"text": "Apply to companions",
+					"help": "Applies this slider set to your companions (based on your rads).",
+					"type": "stepper",
+					"id": "iApplyCompanion:Slider11",
+					"valueOptions": {
+						"sourceType": "ModSettingInt",
+						"options": ["None", "Female", "Male", "All"]
+					}
+				}
+			]
+		},
 
+
+		{
+			"pageDisplayName": "Slider Set 13",
+			"content": [
+				{
+					"text": "To find the correct slider names open the XML file relevant to the body you are using in Bodyslide's \"SliderCategories\" folder.<br>The attribute \"displayname\" is what you see in BodySlide, but here you need to enter the value of the <b>\"name\"</b> attribute.",
+					"type": "text",
+					"html": true
+				},
+				{
+					"text": "Show worn clothes",
+					"type": "button",
+					"help": "Show the worn clothing / armor items and their slots",
+					"action": {
+						"type": "CallFunction",
+						"form": "LenA_RadMorphing.esp|1000F99",
+						"function": "ShowEquippedClothes",
+						"params": []
+					}
+				},
 
 				{
 					"text": "Slider Set 13",
@@ -1620,7 +1918,6 @@
 					"help": "With this enabled only doctors can restore your base shape. Reducing rads with RadAway or other means will have no effect on the sliders.",
 					"type": "switcher",
 					"id": "bOnlyDoctorCanReset:Slider12",
-					"groupControl": 1,
 					"valueOptions": {
 						"sourceType": "ModSettingBool"
 					}
@@ -1630,8 +1927,6 @@
 					"help": "Enabled: rads gained after taking RadAway further increase morphs. Disabled: rads gained after taking RadAway only increase morphs if irradiation is higher than before taking RadAway.",
 					"type": "switcher",
 					"id": "bIsAdditive:Slider12",
-					"groupControl": 2,
-					"groupCondition": 1,
 					"valueOptions": {
 						"sourceType": "ModSettingBool"
 					}
@@ -1641,8 +1936,6 @@
 					"help": "Disabled: Unlimited additive morphing. Use at own risk!",
 					"type": "switcher",
 					"id": "bHasAdditiveLimit:Slider12",
-					"groupControl": 3,
-					"groupCondition": {"AND":[1,2]},
 					"valueOptions": {
 						"sourceType": "ModSettingBool"
 					}
@@ -1652,7 +1945,6 @@
 					"help": "How far additive morphing can exceed the target size increase (% of target size increase). 0 = cannot exceed target; 100 = cannot exceed 2x target",
 					"type": "slider",
 					"id": "fAdditiveLimit:Slider12",
-					"groupCondition": {"AND":[1,2,3]},
 					"valueOptions": {
 						"sourceType": "ModSettingFloat",
 						"min": 0.0,
@@ -1663,10 +1955,41 @@
 				{
 					"text": "<b>Warning!</b> Additive morphing without a limit can lead to insane morphs!",
 					"type": "text",
-					"html": true,
-					"groupCondition": 1
+					"html": true
 				},
+				{
+					"text": "Apply to companions",
+					"help": "Applies this slider set to your companions (based on your rads).",
+					"type": "stepper",
+					"id": "iApplyCompanion:Slider12",
+					"valueOptions": {
+						"sourceType": "ModSettingInt",
+						"options": ["None", "Female", "Male", "All"]
+					}
+				}
+			]
+		},
 
+
+		{
+			"pageDisplayName": "Slider Set 14",
+			"content": [
+				{
+					"text": "To find the correct slider names open the XML file relevant to the body you are using in Bodyslide's \"SliderCategories\" folder.<br>The attribute \"displayname\" is what you see in BodySlide, but here you need to enter the value of the <b>\"name\"</b> attribute.",
+					"type": "text",
+					"html": true
+				},
+				{
+					"text": "Show worn clothes",
+					"type": "button",
+					"help": "Show the worn clothing / armor items and their slots",
+					"action": {
+						"type": "CallFunction",
+						"form": "LenA_RadMorphing.esp|1000F99",
+						"function": "ShowEquippedClothes",
+						"params": []
+					}
+				},
 
 				{
 					"text": "Slider Set 14",
@@ -1743,7 +2066,6 @@
 					"help": "With this enabled only doctors can restore your base shape. Reducing rads with RadAway or other means will have no effect on the sliders.",
 					"type": "switcher",
 					"id": "bOnlyDoctorCanReset:Slider13",
-					"groupControl": 1,
 					"valueOptions": {
 						"sourceType": "ModSettingBool"
 					}
@@ -1753,8 +2075,6 @@
 					"help": "Enabled: rads gained after taking RadAway further increase morphs. Disabled: rads gained after taking RadAway only increase morphs if irradiation is higher than before taking RadAway.",
 					"type": "switcher",
 					"id": "bIsAdditive:Slider13",
-					"groupControl": 2,
-					"groupCondition": 1,
 					"valueOptions": {
 						"sourceType": "ModSettingBool"
 					}
@@ -1764,8 +2084,6 @@
 					"help": "Disabled: Unlimited additive morphing. Use at own risk!",
 					"type": "switcher",
 					"id": "bHasAdditiveLimit:Slider13",
-					"groupControl": 3,
-					"groupCondition": {"AND":[1,2]},
 					"valueOptions": {
 						"sourceType": "ModSettingBool"
 					}
@@ -1775,7 +2093,6 @@
 					"help": "How far additive morphing can exceed the target size increase (% of target size increase). 0 = cannot exceed target; 100 = cannot exceed 2x target",
 					"type": "slider",
 					"id": "fAdditiveLimit:Slider13",
-					"groupCondition": {"AND":[1,2,3]},
 					"valueOptions": {
 						"sourceType": "ModSettingFloat",
 						"min": 0.0,
@@ -1786,10 +2103,41 @@
 				{
 					"text": "<b>Warning!</b> Additive morphing without a limit can lead to insane morphs!",
 					"type": "text",
-					"html": true,
-					"groupCondition": 1
+					"html": true
 				},
+				{
+					"text": "Apply to companions",
+					"help": "Applies this slider set to your companions (based on your rads).",
+					"type": "stepper",
+					"id": "iApplyCompanion:Slider13",
+					"valueOptions": {
+						"sourceType": "ModSettingInt",
+						"options": ["None", "Female", "Male", "All"]
+					}
+				}
+			]
+		},
 
+
+		{
+			"pageDisplayName": "Slider Set 15",
+			"content": [
+				{
+					"text": "To find the correct slider names open the XML file relevant to the body you are using in Bodyslide's \"SliderCategories\" folder.<br>The attribute \"displayname\" is what you see in BodySlide, but here you need to enter the value of the <b>\"name\"</b> attribute.",
+					"type": "text",
+					"html": true
+				},
+				{
+					"text": "Show worn clothes",
+					"type": "button",
+					"help": "Show the worn clothing / armor items and their slots",
+					"action": {
+						"type": "CallFunction",
+						"form": "LenA_RadMorphing.esp|1000F99",
+						"function": "ShowEquippedClothes",
+						"params": []
+					}
+				},
 
 				{
 					"text": "Slider Set 15",
@@ -1866,7 +2214,6 @@
 					"help": "With this enabled only doctors can restore your base shape. Reducing rads with RadAway or other means will have no effect on the sliders.",
 					"type": "switcher",
 					"id": "bOnlyDoctorCanReset:Slider14",
-					"groupControl": 1,
 					"valueOptions": {
 						"sourceType": "ModSettingBool"
 					}
@@ -1876,8 +2223,6 @@
 					"help": "Enabled: rads gained after taking RadAway further increase morphs. Disabled: rads gained after taking RadAway only increase morphs if irradiation is higher than before taking RadAway.",
 					"type": "switcher",
 					"id": "bIsAdditive:Slider14",
-					"groupControl": 2,
-					"groupCondition": 1,
 					"valueOptions": {
 						"sourceType": "ModSettingBool"
 					}
@@ -1887,8 +2232,6 @@
 					"help": "Disabled: Unlimited additive morphing. Use at own risk!",
 					"type": "switcher",
 					"id": "bHasAdditiveLimit:Slider14",
-					"groupControl": 3,
-					"groupCondition": {"AND":[1,2]},
 					"valueOptions": {
 						"sourceType": "ModSettingBool"
 					}
@@ -1898,7 +2241,6 @@
 					"help": "How far additive morphing can exceed the target size increase (% of target size increase). 0 = cannot exceed target; 100 = cannot exceed 2x target",
 					"type": "slider",
 					"id": "fAdditiveLimit:Slider14",
-					"groupCondition": {"AND":[1,2,3]},
 					"valueOptions": {
 						"sourceType": "ModSettingFloat",
 						"min": 0.0,
@@ -1909,10 +2251,41 @@
 				{
 					"text": "<b>Warning!</b> Additive morphing without a limit can lead to insane morphs!",
 					"type": "text",
-					"html": true,
-					"groupCondition": 1
+					"html": true
 				},
+				{
+					"text": "Apply to companions",
+					"help": "Applies this slider set to your companions (based on your rads).",
+					"type": "stepper",
+					"id": "iApplyCompanion:Slider14",
+					"valueOptions": {
+						"sourceType": "ModSettingInt",
+						"options": ["None", "Female", "Male", "All"]
+					}
+				}
+			]
+		},
 
+
+		{
+			"pageDisplayName": "Slider Set 16",
+			"content": [
+				{
+					"text": "To find the correct slider names open the XML file relevant to the body you are using in Bodyslide's \"SliderCategories\" folder.<br>The attribute \"displayname\" is what you see in BodySlide, but here you need to enter the value of the <b>\"name\"</b> attribute.",
+					"type": "text",
+					"html": true
+				},
+				{
+					"text": "Show worn clothes",
+					"type": "button",
+					"help": "Show the worn clothing / armor items and their slots",
+					"action": {
+						"type": "CallFunction",
+						"form": "LenA_RadMorphing.esp|1000F99",
+						"function": "ShowEquippedClothes",
+						"params": []
+					}
+				},
 
 				{
 					"text": "Slider Set 16",
@@ -1989,7 +2362,6 @@
 					"help": "With this enabled only doctors can restore your base shape. Reducing rads with RadAway or other means will have no effect on the sliders.",
 					"type": "switcher",
 					"id": "bOnlyDoctorCanReset:Slider15",
-					"groupControl": 1,
 					"valueOptions": {
 						"sourceType": "ModSettingBool"
 					}
@@ -1999,8 +2371,6 @@
 					"help": "Enabled: rads gained after taking RadAway further increase morphs. Disabled: rads gained after taking RadAway only increase morphs if irradiation is higher than before taking RadAway.",
 					"type": "switcher",
 					"id": "bIsAdditive:Slider15",
-					"groupControl": 2,
-					"groupCondition": 1,
 					"valueOptions": {
 						"sourceType": "ModSettingBool"
 					}
@@ -2010,8 +2380,6 @@
 					"help": "Disabled: Unlimited additive morphing. Use at own risk!",
 					"type": "switcher",
 					"id": "bHasAdditiveLimit:Slider15",
-					"groupControl": 3,
-					"groupCondition": {"AND":[1,2]},
 					"valueOptions": {
 						"sourceType": "ModSettingBool"
 					}
@@ -2021,7 +2389,6 @@
 					"help": "How far additive morphing can exceed the target size increase (% of target size increase). 0 = cannot exceed target; 100 = cannot exceed 2x target",
 					"type": "slider",
 					"id": "fAdditiveLimit:Slider15",
-					"groupCondition": {"AND":[1,2,3]},
 					"valueOptions": {
 						"sourceType": "ModSettingFloat",
 						"min": 0.0,
@@ -2032,10 +2399,41 @@
 				{
 					"text": "<b>Warning!</b> Additive morphing without a limit can lead to insane morphs!",
 					"type": "text",
-					"html": true,
-					"groupCondition": 1
+					"html": true
 				},
+				{
+					"text": "Apply to companions",
+					"help": "Applies this slider set to your companions (based on your rads).",
+					"type": "stepper",
+					"id": "iApplyCompanion:Slider15",
+					"valueOptions": {
+						"sourceType": "ModSettingInt",
+						"options": ["None", "Female", "Male", "All"]
+					}
+				}
+			]
+		},
 
+
+		{
+			"pageDisplayName": "Slider Set 17",
+			"content": [
+				{
+					"text": "To find the correct slider names open the XML file relevant to the body you are using in Bodyslide's \"SliderCategories\" folder.<br>The attribute \"displayname\" is what you see in BodySlide, but here you need to enter the value of the <b>\"name\"</b> attribute.",
+					"type": "text",
+					"html": true
+				},
+				{
+					"text": "Show worn clothes",
+					"type": "button",
+					"help": "Show the worn clothing / armor items and their slots",
+					"action": {
+						"type": "CallFunction",
+						"form": "LenA_RadMorphing.esp|1000F99",
+						"function": "ShowEquippedClothes",
+						"params": []
+					}
+				},
 
 				{
 					"text": "Slider Set 17",
@@ -2112,7 +2510,6 @@
 					"help": "With this enabled only doctors can restore your base shape. Reducing rads with RadAway or other means will have no effect on the sliders.",
 					"type": "switcher",
 					"id": "bOnlyDoctorCanReset:Slider16",
-					"groupControl": 1,
 					"valueOptions": {
 						"sourceType": "ModSettingBool"
 					}
@@ -2122,8 +2519,6 @@
 					"help": "Enabled: rads gained after taking RadAway further increase morphs. Disabled: rads gained after taking RadAway only increase morphs if irradiation is higher than before taking RadAway.",
 					"type": "switcher",
 					"id": "bIsAdditive:Slider16",
-					"groupControl": 2,
-					"groupCondition": 1,
 					"valueOptions": {
 						"sourceType": "ModSettingBool"
 					}
@@ -2133,8 +2528,6 @@
 					"help": "Disabled: Unlimited additive morphing. Use at own risk!",
 					"type": "switcher",
 					"id": "bHasAdditiveLimit:Slider16",
-					"groupControl": 3,
-					"groupCondition": {"AND":[1,2]},
 					"valueOptions": {
 						"sourceType": "ModSettingBool"
 					}
@@ -2144,7 +2537,6 @@
 					"help": "How far additive morphing can exceed the target size increase (% of target size increase). 0 = cannot exceed target; 100 = cannot exceed 2x target",
 					"type": "slider",
 					"id": "fAdditiveLimit:Slider16",
-					"groupCondition": {"AND":[1,2,3]},
 					"valueOptions": {
 						"sourceType": "ModSettingFloat",
 						"min": 0.0,
@@ -2155,10 +2547,41 @@
 				{
 					"text": "<b>Warning!</b> Additive morphing without a limit can lead to insane morphs!",
 					"type": "text",
-					"html": true,
-					"groupCondition": 1
+					"html": true
 				},
+				{
+					"text": "Apply to companions",
+					"help": "Applies this slider set to your companions (based on your rads).",
+					"type": "stepper",
+					"id": "iApplyCompanion:Slider16",
+					"valueOptions": {
+						"sourceType": "ModSettingInt",
+						"options": ["None", "Female", "Male", "All"]
+					}
+				}
+			]
+		},
 
+
+		{
+			"pageDisplayName": "Slider Set 18",
+			"content": [
+				{
+					"text": "To find the correct slider names open the XML file relevant to the body you are using in Bodyslide's \"SliderCategories\" folder.<br>The attribute \"displayname\" is what you see in BodySlide, but here you need to enter the value of the <b>\"name\"</b> attribute.",
+					"type": "text",
+					"html": true
+				},
+				{
+					"text": "Show worn clothes",
+					"type": "button",
+					"help": "Show the worn clothing / armor items and their slots",
+					"action": {
+						"type": "CallFunction",
+						"form": "LenA_RadMorphing.esp|1000F99",
+						"function": "ShowEquippedClothes",
+						"params": []
+					}
+				},
 
 				{
 					"text": "Slider Set 18",
@@ -2235,7 +2658,6 @@
 					"help": "With this enabled only doctors can restore your base shape. Reducing rads with RadAway or other means will have no effect on the sliders.",
 					"type": "switcher",
 					"id": "bOnlyDoctorCanReset:Slider17",
-					"groupControl": 1,
 					"valueOptions": {
 						"sourceType": "ModSettingBool"
 					}
@@ -2245,8 +2667,6 @@
 					"help": "Enabled: rads gained after taking RadAway further increase morphs. Disabled: rads gained after taking RadAway only increase morphs if irradiation is higher than before taking RadAway.",
 					"type": "switcher",
 					"id": "bIsAdditive:Slider17",
-					"groupControl": 2,
-					"groupCondition": 1,
 					"valueOptions": {
 						"sourceType": "ModSettingBool"
 					}
@@ -2256,8 +2676,6 @@
 					"help": "Disabled: Unlimited additive morphing. Use at own risk!",
 					"type": "switcher",
 					"id": "bHasAdditiveLimit:Slider17",
-					"groupControl": 3,
-					"groupCondition": {"AND":[1,2]},
 					"valueOptions": {
 						"sourceType": "ModSettingBool"
 					}
@@ -2267,7 +2685,6 @@
 					"help": "How far additive morphing can exceed the target size increase (% of target size increase). 0 = cannot exceed target; 100 = cannot exceed 2x target",
 					"type": "slider",
 					"id": "fAdditiveLimit:Slider17",
-					"groupCondition": {"AND":[1,2,3]},
 					"valueOptions": {
 						"sourceType": "ModSettingFloat",
 						"min": 0.0,
@@ -2278,10 +2695,41 @@
 				{
 					"text": "<b>Warning!</b> Additive morphing without a limit can lead to insane morphs!",
 					"type": "text",
-					"html": true,
-					"groupCondition": 1
+					"html": true
 				},
+				{
+					"text": "Apply to companions",
+					"help": "Applies this slider set to your companions (based on your rads).",
+					"type": "stepper",
+					"id": "iApplyCompanion:Slider17",
+					"valueOptions": {
+						"sourceType": "ModSettingInt",
+						"options": ["None", "Female", "Male", "All"]
+					}
+				}
+			]
+		},
 
+
+		{
+			"pageDisplayName": "Slider Set 19",
+			"content": [
+				{
+					"text": "To find the correct slider names open the XML file relevant to the body you are using in Bodyslide's \"SliderCategories\" folder.<br>The attribute \"displayname\" is what you see in BodySlide, but here you need to enter the value of the <b>\"name\"</b> attribute.",
+					"type": "text",
+					"html": true
+				},
+				{
+					"text": "Show worn clothes",
+					"type": "button",
+					"help": "Show the worn clothing / armor items and their slots",
+					"action": {
+						"type": "CallFunction",
+						"form": "LenA_RadMorphing.esp|1000F99",
+						"function": "ShowEquippedClothes",
+						"params": []
+					}
+				},
 
 				{
 					"text": "Slider Set 19",
@@ -2358,7 +2806,6 @@
 					"help": "With this enabled only doctors can restore your base shape. Reducing rads with RadAway or other means will have no effect on the sliders.",
 					"type": "switcher",
 					"id": "bOnlyDoctorCanReset:Slider18",
-					"groupControl": 1,
 					"valueOptions": {
 						"sourceType": "ModSettingBool"
 					}
@@ -2368,8 +2815,6 @@
 					"help": "Enabled: rads gained after taking RadAway further increase morphs. Disabled: rads gained after taking RadAway only increase morphs if irradiation is higher than before taking RadAway.",
 					"type": "switcher",
 					"id": "bIsAdditive:Slider18",
-					"groupControl": 2,
-					"groupCondition": 1,
 					"valueOptions": {
 						"sourceType": "ModSettingBool"
 					}
@@ -2379,8 +2824,6 @@
 					"help": "Disabled: Unlimited additive morphing. Use at own risk!",
 					"type": "switcher",
 					"id": "bHasAdditiveLimit:Slider18",
-					"groupControl": 3,
-					"groupCondition": {"AND":[1,2]},
 					"valueOptions": {
 						"sourceType": "ModSettingBool"
 					}
@@ -2390,7 +2833,6 @@
 					"help": "How far additive morphing can exceed the target size increase (% of target size increase). 0 = cannot exceed target; 100 = cannot exceed 2x target",
 					"type": "slider",
 					"id": "fAdditiveLimit:Slider18",
-					"groupCondition": {"AND":[1,2,3]},
 					"valueOptions": {
 						"sourceType": "ModSettingFloat",
 						"min": 0.0,
@@ -2401,10 +2843,41 @@
 				{
 					"text": "<b>Warning!</b> Additive morphing without a limit can lead to insane morphs!",
 					"type": "text",
-					"html": true,
-					"groupCondition": 1
+					"html": true
 				},
+				{
+					"text": "Apply to companions",
+					"help": "Applies this slider set to your companions (based on your rads).",
+					"type": "stepper",
+					"id": "iApplyCompanion:Slider18",
+					"valueOptions": {
+						"sourceType": "ModSettingInt",
+						"options": ["None", "Female", "Male", "All"]
+					}
+				}
+			]
+		},
 
+
+		{
+			"pageDisplayName": "Slider Set 20",
+			"content": [
+				{
+					"text": "To find the correct slider names open the XML file relevant to the body you are using in Bodyslide's \"SliderCategories\" folder.<br>The attribute \"displayname\" is what you see in BodySlide, but here you need to enter the value of the <b>\"name\"</b> attribute.",
+					"type": "text",
+					"html": true
+				},
+				{
+					"text": "Show worn clothes",
+					"type": "button",
+					"help": "Show the worn clothing / armor items and their slots",
+					"action": {
+						"type": "CallFunction",
+						"form": "LenA_RadMorphing.esp|1000F99",
+						"function": "ShowEquippedClothes",
+						"params": []
+					}
+				},
 
 				{
 					"text": "Slider Set 20",
@@ -2481,7 +2954,6 @@
 					"help": "With this enabled only doctors can restore your base shape. Reducing rads with RadAway or other means will have no effect on the sliders.",
 					"type": "switcher",
 					"id": "bOnlyDoctorCanReset:Slider19",
-					"groupControl": 1,
 					"valueOptions": {
 						"sourceType": "ModSettingBool"
 					}
@@ -2491,8 +2963,6 @@
 					"help": "Enabled: rads gained after taking RadAway further increase morphs. Disabled: rads gained after taking RadAway only increase morphs if irradiation is higher than before taking RadAway.",
 					"type": "switcher",
 					"id": "bIsAdditive:Slider19",
-					"groupControl": 2,
-					"groupCondition": 1,
 					"valueOptions": {
 						"sourceType": "ModSettingBool"
 					}
@@ -2502,8 +2972,6 @@
 					"help": "Disabled: Unlimited additive morphing. Use at own risk!",
 					"type": "switcher",
 					"id": "bHasAdditiveLimit:Slider19",
-					"groupControl": 3,
-					"groupCondition": {"AND":[1,2]},
 					"valueOptions": {
 						"sourceType": "ModSettingBool"
 					}
@@ -2513,7 +2981,6 @@
 					"help": "How far additive morphing can exceed the target size increase (% of target size increase). 0 = cannot exceed target; 100 = cannot exceed 2x target",
 					"type": "slider",
 					"id": "fAdditiveLimit:Slider19",
-					"groupCondition": {"AND":[1,2,3]},
 					"valueOptions": {
 						"sourceType": "ModSettingFloat",
 						"min": 0.0,
@@ -2524,8 +2991,17 @@
 				{
 					"text": "<b>Warning!</b> Additive morphing without a limit can lead to insane morphs!",
 					"type": "text",
-					"html": true,
-					"groupCondition": 1
+					"html": true
+				},
+				{
+					"text": "Apply to companions",
+					"help": "Applies this slider set to your companions (based on your rads).",
+					"type": "stepper",
+					"id": "iApplyCompanion:Slider19",
+					"valueOptions": {
+						"sourceType": "ModSettingInt",
+						"options": ["None", "Female", "Male", "All"]
+					}
 				}
 			]
 		}

@@ -10,11 +10,25 @@ Group Properties
 	Scene Property DoctorMedicineScene03_AllDone Auto Const
 
 	Sound Property LenARM_DropClothesSound Auto Const
+
+	Faction Property CurrentCompanionFaction Auto Const
 EndGroup
 
 
 Group EnumTimerId
 	int Property ETimerMorphTick = 1 Auto Const
+EndGroup
+
+Group EnumApplyCompanion
+	int Property EApplyCompanionNone = 0 Auto Const
+	int Property EApplyCompanionFemale = 1 Auto Const
+	int Property EApplyCompanionMale = 2 Auto Const
+	int Property EApplyCompanionAll = 3 Auto Const
+EndGroup
+
+Group EnumSex
+	int Property ESexMale = 0 Auto Const
+	int Property ESexFemale = 1 Auto Const
 EndGroup
 
 
@@ -38,6 +52,7 @@ Struct SliderSet
 	bool IsAdditive
 	bool HasAdditiveLimit
 	float AdditiveLimit
+	int ApplyCompanion
 	; END: MCM values
 
 	int NumberOfSliderNames
@@ -57,6 +72,11 @@ int[] UnequipSlots
 
 ; flattened two-dimensional array[idxSliderSet][idxSliderName]
 float[] OriginalMorphs
+
+; flattened array[idxCompanion][idxSliderSet][idxSliderName]
+float[] OriginalCompanionMorphs
+
+Actor[] CurrentCompanions
 
 
 float UpdateDelay
@@ -124,7 +144,7 @@ EndFunction
 
 
 string Function GetVersion()
-	return "0.3.0"
+	return "0.3.1"
 EndFunction
 
 
@@ -148,6 +168,7 @@ SliderSet Function SliderSet_Constructor(int idxSet)
 		set.IsAdditive = MCM.GetModSettingBool("LenA_RadMorphing", "bIsAdditive:Slider" + idxSet)
 		set.HasAdditiveLimit = MCM.GetModSettingBool("LenA_RadMorphing", "bHasAdditiveLimit:Slider" + idxSet)
 		set.AdditiveLimit = MCM.GetModSettingFloat("LenA_RadMorphing", "fAdditiveLimit:Slider" + idxSet) / 100.0
+		set.ApplyCompanion = MCM.GetModSettingInt("LenA_RadMorphing", "iApplyCompanion:Slider" + idxSet)
 
 		string[] names = StringSplit(set.SliderName, "|")
 		set.NumberOfSliderNames = names.Length
@@ -261,6 +282,9 @@ Function Startup()
 		RegisterForRemoteEvent(DoctorMedicineScene03_AllDone, "OnBegin")
 		RegisterForRemoteEvent(DoctorMedicineScene03_AllDone, "OnEnd")
 
+		; set up companions
+		CurrentCompanions = new Actor[0]
+
 		; start timer
 		TimerMorphTick()
 	ElseIf (MCM.GetModSettingBool("LenA_RadMorphing", "bWarnDisabled:General"))
@@ -285,6 +309,7 @@ Function LoadSliderSets()
 	EndIf
 	If (!OriginalMorphs)
 		OriginalMorphs = new float[0]
+		OriginalCompanionMorphs = new float[0]
 	EndIf
 	
 	; get slider sets
@@ -350,6 +375,8 @@ Function LoadSliderSets()
 	Log("  SliderNames: " + SliderNames)
 	Log("  OriginalMorphs: " + OriginalMorphs)
 	Log("  UnequipSlots: " + UnequipSlots)
+
+	RetrieveAllOriginalCompanionMorphs()
 EndFunction
 
 
@@ -445,6 +472,146 @@ Function RestoreOriginalMorphs()
 		i += 1
 	EndWhile
 	BodyGen.UpdateMorphs(PlayerRef)
+
+	RestoreAllOriginalCompanionMorphs()
+EndFunction
+
+
+
+
+Function RestoreAllOriginalCompanionMorphs()
+	Log("RestoreAllOriginalCompanionMorphs")
+	int idxComp = 0
+	While (idxComp < CurrentCompanions.Length)
+		Actor companion = CurrentCompanions[idxComp]
+		RestoreOriginalCompanionMorphs(companion, idxComp)
+		idxComp += 1
+	EndWhile
+EndFunction
+
+Function RestoreOriginalCompanionMorphs(Actor companion, int idxCompanion)
+	Log("RestoreOriginalCompanionMorphs: " + companion + "; " + idxCompanion)
+	int offsetIdx = SliderNames.Length * idxCompanion
+	int idxSlider = 0
+	While (idxSlider < SliderNames.Length)
+		BodyGen.SetMorph(companion, True, SliderNames[idxSlider], kwMorph, OriginalCompanionMorphs[offsetIdx + idxSlider])
+		idxSlider += 1
+	EndWhile
+	BodyGen.UpdateMorphs(companion)
+EndFunction
+
+
+Function RetrieveAllOriginalCompanionMorphs()
+	Log("RetrieveAllOriginalCompanionMorphs")
+	OriginalCompanionMorphs = new float[0]
+	int idxComp = 0
+	While (idxComp < CurrentCompanions.Length)
+		Actor companion = CurrentCompanions[idxComp]
+		RetrieveOriginalCompanionMorphs(companion)
+		idxComp += 1
+	EndWhile
+EndFunction
+
+Function RetrieveOriginalCompanionMorphs(Actor companion)
+	Log("RetrieveOriginalCompanionMorphs: " + companion)
+	int idxSlider = 0
+	While (idxSlider < SliderNames.Length)
+		OriginalCompanionMorphs.Add(BodyGen.GetMorph(companion, True, SliderNames[idxSlider], None))
+		idxSlider += 1
+	EndWhile
+EndFunction
+
+
+Function SetCompanionMorphs(int idxSlider, float morph, int applyCompanion)
+	Log("SetCompanionMorphs: " + idxSlider + "; " + morph + "; " + applyCompanion)
+	int idxComp = 0
+	While (idxComp < CurrentCompanions.Length)
+		Actor companion = CurrentCompanions[idxComp]
+		int sex = companion.GetLeveledActorBase().GetSex()
+		If (applyCompanion == EApplyCompanionAll || (sex == ESexFemale && applyCompanion == EApplyCompanionFemale) || (sex == ESexMale && applyCompanion == EApplyCompanionMale))
+			int offsetIdx = SliderNames.Length * idxComp
+			Log("    setting companion(" + companion + ") slider '" + SliderNames[idxSlider] + "' to " + (OriginalMorphs[offsetIdx + idxSlider] + morph) + " (base value is " + OriginalMorphs[offsetIdx + idxSlider] + ")")
+			BodyGen.SetMorph(companion, True, SliderNames[idxSlider], kwMorph, OriginalCompanionMorphs[offsetIdx + idxSlider] + morph)
+		Else
+			Log("    skipping companion slider:  sex=" + sex)
+		EndIf
+		idxComp += 1
+	EndWhile
+EndFunction
+
+Function ApplyAllCompanionMorphs()
+	Log("ApplyAllCompanionMorphs")
+	int idxComp = 0
+	While (idxComp < CurrentCompanions.Length)
+		BodyGen.UpdateMorphs(CurrentCompanions[idxComp])
+		idxComp += 1
+	EndWhile
+EndFunction
+
+
+
+
+Function RemoveDismissedCompanions(Actor[] newCompanions)
+	Log("RemoveDismissedCompanions: " + newCompanions)
+	int idxOld = CurrentCompanions.Length - 1
+	While (idxOld >= 0)
+		Actor oldComp = CurrentCompanions[idxOld]
+		If (newCompanions.Find(oldComp) == -1)
+			Log("  removing companion " + oldComp)
+			CurrentCompanions.Remove(idxOld)
+			RestoreOriginalCompanionMorphs(oldComp, idxOld)
+		EndIf
+		idxOld -= 1
+	EndWhile
+EndFunction
+
+Function AddNewCompanions(Actor[] newCompanions)
+	Log("AddNewCompanions: " + newCompanions)
+	int idxNew = 0
+	While (idxNew < newCompanions.Length)
+		Actor newComp = newCompanions[idxNew]
+		Log("  looking for " + newComp + " -> " + CurrentCompanions.Find(newComp))
+		If (CurrentCompanions.Find(newComp) == -1)
+			Log("  adding companion " + newComp)
+			CurrentCompanions.Add(newComp)
+			RegisterForRemoteEvent(newComp, "OnCompanionDismiss")
+			RetrieveOriginalCompanionMorphs(newComp)
+		EndIf
+		idxNew += 1
+	EndWhile
+EndFunction
+
+Event Actor.OnCompanionDismiss(Actor akSender)
+	Log("Actor.OnCompanionDismiss: " + akSender)
+	int idxComp = CurrentCompanions.Find(akSender)
+	If (idxComp > -1)
+		CurrentCompanions.Remove(idxComp)
+		RestoreOriginalCompanionMorphs(akSender, idxComp)
+	EndIf
+EndEvent
+
+Actor[] Function GetCompanions()
+	Log("GetCompanions")
+	Actor[] allCompanions = Game.GetPlayerFollowers() as Actor[]
+	Log("  allCompanions: " + allCompanions)
+	Actor[] filteredCompanions = new Actor[0]
+	int idxFilterCompanions = 0
+	While (idxFilterCompanions < allCompanions.Length)
+		Actor companion = allCompanions[idxFilterCompanions]
+		If (companion.IsInFaction(CurrentCompanionFaction))
+			filteredCompanions.Add(companion)
+		EndIf
+		idxFilterCompanions += 1
+	EndWhile
+	return filteredCompanions
+EndFunction
+
+Function UpdateCompanions()
+	Log("UpdateCompanions")
+	Actor[] newComps = GetCompanions()
+	RemoveDismissedCompanions(newComps)
+	AddNewCompanions(newComps)
+	Log("  CurrentCompanions: " + CurrentCompanions)
 EndFunction
 
 
@@ -456,6 +623,9 @@ Function TimerMorphTick()
 	If (newRads != CurrentRads)
 		Log("new rads: " + newRads + " (" + CurrentRads + ")")
 		CurrentRads = newRads
+		; companions
+		UpdateCompanions()
+
 		; apply morphs
 		int idxSet = 0
 		While (idxSet < SliderSets.Length)
@@ -486,6 +656,9 @@ Function TimerMorphTick()
 					While (idxSlider < sliderNameOffset + sliderSet.NumberOfSliderNames)
 						BodyGen.SetMorph(PlayerRef, true, SliderNames[idxSlider], kwMorph, OriginalMorphs[idxSlider] + fullMorph * sliderSet.TargetMorph)
 						Log("    setting slider '" + SliderNames[idxSlider] + "' to " + (OriginalMorphs[idxSlider] + fullMorph * sliderSet.TargetMorph) + " (base value is " + OriginalMorphs[idxSlider] + ") (base morph is " + sliderSet.BaseMorph + ") (target is " + sliderSet.TargetMorph + ")")
+						If (sliderSet.ApplyCompanion != EApplyCompanionNone)
+							SetCompanionMorphs(idxSlider, fullMorph * sliderSet.TargetMorph, sliderSet.ApplyCompanion)
+						EndIf
 						idxSlider += 1
 					EndWhile
 				ElseIf (sliderSet.IsAdditive)
@@ -497,6 +670,7 @@ Function TimerMorphTick()
 			idxSet += 1
 		EndWhile
 		BodyGen.UpdateMorphs(PlayerRef)
+		ApplyAllCompanionMorphs()
 		TriggerUnequipSlots()
 	EndIf
 	StartTimer(UpdateDelay, ETimerMorphTick)
@@ -505,9 +679,9 @@ EndFunction
 
 Function UnequipSlots()
 	Log("UnequipSlots: " + UnequipStackSize)
-	UnequipStackSize -= 1
-	If (UnequipStackSize <= 0)
+	If (UnequipStackSize <= 1)
 		bool found = false
+		bool[] compFound = new bool[CurrentCompanions.Length]
 		int idxSet = 0
 		While (idxSet < SliderSets.Length)
 			SliderSet sliderSet = SliderSets[idxSet]
@@ -519,17 +693,38 @@ Function UnequipSlots()
 					If (item.item)
 						Log("  unequipping slot " + UnequipSlots[idxSlot] + " (" + item.item.GetName() + " / " + item.modelName + ")")
 						PlayerRef.UnequipItemSlot(UnequipSlots[idxSlot])
-						found = true
+						If (!found)
+							Log("  playing sound")
+							LenARM_DropClothesSound.PlayAndWait(PlayerRef)
+							found = true
+						EndIf
 					EndIf
+					int idxComp = 0
+					While (idxComp < CurrentCompanions.Length)
+						Actor companion = CurrentCompanions[idxComp]
+						int sex = companion.GetLeveledActorBase().GetSex()
+						If (sliderSet.ApplyCompanion == EApplyCompanionAll || (sex == ESexFemale && sliderSet.ApplyCompanion == EApplyCompanionFemale) || (sex == ESexMale && sliderSet.ApplyCompanion == EApplyCompanionMale))
+							Actor:WornItem compItem = companion.GetWornItem(UnequipSlots[idxSlot])
+							If (compItem.item)
+								Log("  unequipping companion(" + companion + ") slot " + UnequipSlots[idxSlot] + " (" + compItem.item.GetName() + " / " + compItem.modelName + ")")
+								; companion.UnequipItemSlot(UnequipSlots[idxSlot])
+								companion.UnequipItem(compItem.item)
+								If (!compFound[idxComp])
+									Log("  playing companion sound")
+									LenARM_DropClothesSound.PlayAndWait(CurrentCompanions[idxComp])
+									compFound[idxComp] = true
+								EndIf
+							EndIf
+						EndIf
+						idxComp += 1
+					EndWhile
 					idxSlot += 1
 				EndWhile
 			EndIf
 			idxSet += 1
 		EndWhile
-		If (found)
-			LenARM_DropClothesSound.Play(PlayerRef)
-		EndIf
 	EndIf
+	UnequipStackSize -= 1
 EndFunction
 
 Function TriggerUnequipSlots()
