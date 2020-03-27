@@ -8,6 +8,7 @@ Group Properties
 	ActorValue Property Rads Auto Const
 
 	Scene Property DoctorMedicineScene03_AllDone Auto Const
+	GenericDoctorsScript Property DialogueGenericDoctors Auto Const
 
 	Sound Property LenARM_DropClothesSound Auto Const
 
@@ -545,7 +546,7 @@ EndEvent
 Event Scene.OnEnd(Scene akSender)
 	float radsNow = PlayerRef.GetValue(Rads)
 	Log("Scene.OnEnd: " + akSender + " (rads: " + radsNow + ")")
-	If (radsNow == 0.0)
+	If (DialogueGenericDoctors.DoctorJustCuredRads == 1)
 		ResetMorphs()
 	EndIf
 EndEvent
