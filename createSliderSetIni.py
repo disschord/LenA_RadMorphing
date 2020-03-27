@@ -13,6 +13,7 @@ bOnlyDoctorCanReset=0
 bIsAdditive=0
 bHasAdditiveLimit=1
 fAdditiveLimit=0.0
+iApplyCompanion=0
 """
 
 txt = []

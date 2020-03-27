@@ -2,6 +2,26 @@ import pyperclip
 import re
 
 tpl = """
+		{
+			"pageDisplayName": "Slider Set $CNTLBL$",
+			"content": [
+				{
+					"text": "To find the correct slider names open the XML file relevant to the body you are using in Bodyslide's \\\"SliderCategories\\\" folder.<br>The attribute \\\"displayname\\\" is what you see in BodySlide, but here you need to enter the value of the <b>\\\"name\\\"</b> attribute.",
+					"type": "text",
+					"html": true
+				},
+				{
+					"text": "Show worn clothes",
+					"type": "button",
+					"help": "Show the worn clothing / armor items and their slots",
+					"action": {
+						"type": "CallFunction",
+						"form": "LenA_RadMorphing.esp|1000F99",
+						"function": "ShowEquippedClothes",
+						"params": []
+					}
+				},
+
 				{
 					"text": "Slider Set $CNTLBL$",
 					"type": "section"
@@ -13,6 +33,16 @@ tpl = """
 					"id": "sSliderName:Slider$CNT$",
 					"valueOptions": {
 						"sourceType": "ModSettingString"
+					}
+				},
+				{
+					"text": "Apply to companions",
+					"help": "Applies this slider set to your companions (based on your rads).",
+					"type": "stepper",
+					"id": "iApplyCompanion:Slider$CNT$",
+					"valueOptions": {
+						"sourceType": "ModSettingInt",
+						"options": ["None", "Female", "Male", "All"]
 					}
 				},
 				{
@@ -77,7 +107,6 @@ tpl = """
 					"help": "With this enabled only doctors can restore your base shape. Reducing rads with RadAway or other means will have no effect on the sliders.",
 					"type": "switcher",
 					"id": "bOnlyDoctorCanReset:Slider$CNT$",
-					"groupControl": 1,
 					"valueOptions": {
 						"sourceType": "ModSettingBool"
 					}
@@ -87,8 +116,6 @@ tpl = """
 					"help": "Enabled: rads gained after taking RadAway further increase morphs. Disabled: rads gained after taking RadAway only increase morphs if irradiation is higher than before taking RadAway.",
 					"type": "switcher",
 					"id": "bIsAdditive:Slider$CNT$",
-					"groupControl": 2,
-					"groupCondition": 1,
 					"valueOptions": {
 						"sourceType": "ModSettingBool"
 					}
@@ -98,8 +125,6 @@ tpl = """
 					"help": "Disabled: Unlimited additive morphing. Use at own risk!",
 					"type": "switcher",
 					"id": "bHasAdditiveLimit:Slider$CNT$",
-					"groupControl": 3,
-					"groupCondition": {"AND":[1,2]},
 					"valueOptions": {
 						"sourceType": "ModSettingBool"
 					}
@@ -109,7 +134,6 @@ tpl = """
 					"help": "How far additive morphing can exceed the target size increase (% of target size increase). 0 = cannot exceed target; 100 = cannot exceed 2x target",
 					"type": "slider",
 					"id": "fAdditiveLimit:Slider$CNT$",
-					"groupCondition": {"AND":[1,2,3]},
 					"valueOptions": {
 						"sourceType": "ModSettingFloat",
 						"min": 0.0,
@@ -120,9 +144,10 @@ tpl = """
 				{
 					"text": "<b>Warning!</b> Additive morphing without a limit can lead to insane morphs!",
 					"type": "text",
-					"html": true,
-					"groupCondition": 1
-				}"""
+					"html": true
+				}
+			]
+		}"""
 
 txt = []
 
