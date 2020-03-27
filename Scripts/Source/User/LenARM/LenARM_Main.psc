@@ -504,7 +504,9 @@ Function Restart()
 	If (RestartStackSize <= 1)
 		Log("Restart")
 		Shutdown()
-		Utility.Wait(1.0)
+		While (IsShuttingDown)
+			Utility.Wait(1.0)
+		EndWhile
 		Startup()
 		Log("Restart completed")
 	Else
