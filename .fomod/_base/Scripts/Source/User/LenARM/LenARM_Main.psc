@@ -156,7 +156,7 @@ EndFunction
 
 
 string Function GetVersion()
-	return "0.4.0"; Fri Mar 27 17:32:05 CET 2020
+	return "0.4.1"; Fri Mar 27 19:21:36 CET 2020
 EndFunction
 
 
@@ -334,6 +334,9 @@ Function PerformUpdateIfNecessary()
 		Log("  update")
 		Debug.MessageBox("Updating Rad Morphing Redux from version " + Version + " to " + GetVersion())
 		Shutdown()
+		While (IsShuttingDown)
+			Utility.Wait(1.0)
+		EndWhile
 		ForgetState()
 		Version = GetVersion()
 		Debug.MessageBox("Rad Morphing Redux has been updated to version " + Version + ".")
