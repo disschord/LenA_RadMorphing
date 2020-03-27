@@ -244,6 +244,8 @@ Function ForgetState(bool isCalledByUser=false)
 		If (isCalledByUser)
 			CancelTimer(ETimerForgetStateCalledByUserTick)
 			ForgetStateCalledByUserCount = 0
+			Log("  show reset start message")
+			Debug.MessageBox("Rad Morphing Redux is resetting itself. Another message will let you know once the mod is fully reset.")
 		EndIf
 		Shutdown(false)
 		SliderSets = none
