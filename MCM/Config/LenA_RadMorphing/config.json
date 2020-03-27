@@ -48,6 +48,23 @@
             "pageDisplayName": "Debug Tools",
             "content": [
                 {
+                    "text": "Debugging",
+                    "type": "section"
+                },
+                {
+                    "text": "Reset mod state",
+                    "type": "button",
+                    "help": "Resets the mod to its initial state without restoring the original body. Does not change any settings.",
+                    "action": {
+                        "type": "CallFunction",
+                        "form": "LenA_RadMorphing.esp|1000F99",
+                        "function": "ForgetState",
+                        "params": [
+                            true
+                        ]
+                    }
+                },
+                {
                     "text": "Tools",
                     "type": "section"
                 },

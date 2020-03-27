@@ -17,8 +17,12 @@ Group Properties
 EndGroup
 
 
+
 Group EnumTimerId
 	int Property ETimerMorphTick = 1 Auto Const
+	int Property ETimerForgetStateCalledByUserTick = 2 Auto Const
+	int Property ETimerShutdownRestoreMorphs = 3 Auto Const
+	int Property ETimerUnequipSlots = 4 Auto Const
 EndGroup
 
 Group EnumApplyCompanion
@@ -89,6 +93,11 @@ float CurrentRads
 
 int RestartStackSize
 int UnequipStackSize
+
+int ForgetStateCalledByUserCount
+bool IsForgetStateBusy
+
+bool IsShuttingDown
 
 
 string Version
@@ -217,6 +226,48 @@ EndFunction
 ;
 ; Debug and testing tools
 ;
+Function ForgetState(bool isCalledByUser=false)
+	Log("ForgetState: isCalledByUser=" + isCalledByUser + "; ForgetStateCalledByUserCount=" + ForgetStateCalledByUserCount + "; IsForgetStateBusy=" + IsForgetStateBusy)
+
+	If (isCalledByUser && IsForgetStateBusy)
+		Log("  show busy warning")
+		Debug.MessageBox("This function is already running. Wait until it has completed.")
+	ElseIf (isCalledByUser && ForgetStateCalledByUserCount < 1)
+		Log("  show warning")
+		CancelTimer(ETimerForgetStateCalledByUserTick)
+		Debug.MessageBox("<center><b>! WARNING !</b></center><br><br><p align='justify'>This function does not reset this mod's settings.<br>It will reset the mod's state. This includes the record of the original body shape. If your body or your companion's body is currently morphed by this mod you will be stuck with the current shape.</p><br>Click the button again to reset the mod's state.")
+		ForgetStateCalledByUserCount = 1
+		StartTimer(0.1, ETimerForgetStateCalledByUserTick)
+	Else
+		Log("  reset state")
+		IsForgetStateBusy = true
+		If (isCalledByUser)
+			CancelTimer(ETimerForgetStateCalledByUserTick)
+			ForgetStateCalledByUserCount = 0
+		EndIf
+		Shutdown(false)
+		SliderSets = none
+		SliderNames = none
+		UnequipSlots = none
+		OriginalMorphs = none
+		OriginalCompanionMorphs = none
+		CurrentCompanions = none
+		CurrentRads = 0.0
+		Startup()
+		IsForgetStateBusy = false
+		Note("Mod state has been reset")
+		If (isCalledByUser)
+			Log("  show reset complete message")
+			Debug.MessageBox("Rad Morphing Redux has been reset.")
+		EndIf
+	EndIf
+EndFunction
+
+Function ForgetStateCounterReset()
+	Log("ForgetStateCounterReset; ForgetStateCalledByUserCount=" + ForgetStateCalledByUserCount)
+	ForgetStateCalledByUserCount = 0
+EndFunction
+
 Function GiveIrradiatedBlood()
 	PlayerRef.AddItem(GlowingOneBlood, 50)
 EndFunction
@@ -270,8 +321,14 @@ EndFunction
 Function PerformUpdateIfNecessary()
 	Log("PerformUpdateIfNecessary: " + Version + " != " + GetVersion() + " -> " + (Version != GetVersion()))
 	If (Version != GetVersion())
-		Restart()
+		Log("  update")
+		Debug.MessageBox("Updating Rad Morphing Redux from version " + Version + " to " + GetVersion())
+		Shutdown()
+		ForgetState()
 		Version = GetVersion()
+		Debug.MessageBox("Rad Morphing Redux has been updated to version " + Version + ".")
+	Else
+		Log("  no update")
 	EndIf
 EndFunction
 
@@ -394,21 +451,37 @@ Function LoadSliderSets()
 EndFunction
 
 
-Function Shutdown()
-	Log("Shutdown")
-	; stop timer
-	CancelTimer(ETimerMorphTick)
-
-	; stop listening for equipping items
-	UnregisterForRemoteEvent(PlayerRef, "OnItemEquipped")
-
-	; stop listening for doctor scene
-	UnregisterForRemoteEvent(DoctorMedicineScene03_AllDone, "OnBegin")
-	UnregisterForRemoteEvent(DoctorMedicineScene03_AllDone, "OnEnd")
+Function Shutdown(bool withRestore=true)
+	If (!IsShuttingDown)
+		Log("Shutdown")
+		IsShuttingDown = true
 	
-	Utility.Wait(Math.Max(UpdateDelay + 0.5, 2.0))
+		; stop timer
+		CancelTimer(ETimerMorphTick)
+	
+		; stop listening for equipping items
+		UnregisterForRemoteEvent(PlayerRef, "OnItemEquipped")
+	
+		; stop listening for doctor scene
+		UnregisterForRemoteEvent(DoctorMedicineScene03_AllDone, "OnBegin")
+		UnregisterForRemoteEvent(DoctorMedicineScene03_AllDone, "OnEnd")
+		
+		If (withRestore)
+			StartTimer(Math.Max(UpdateDelay + 0.5, 2.0), ETimerShutdownRestoreMorphs)
+		Else
+			FinishShutdown()
+		EndIf
+	EndIf
+EndFunction
+
+Function ShutdownRestoreMorphs()
 	; restore base values
 	RestoreOriginalMorphs()
+	FinishShutdown()
+EndFunction
+
+Function FinishShutdown()
+	IsShuttingDown = false
 EndFunction
 
 
@@ -433,6 +506,12 @@ EndFunction
 Event OnTimer(int tid)
 	If (tid == ETimerMorphTick)
 		TimerMorphTick()
+	ElseIf (tid == ETimerForgetStateCalledByUserTick)
+		ForgetStateCounterReset()
+	ElseIf (tid == ETimerShutdownRestoreMorphs)
+		ShutdownRestoreMorphs()
+	ElseIf (tid == ETimerUnequipSlots)
+		UnequipSlots()
 	EndIf
 EndEvent
 
@@ -745,8 +824,7 @@ EndFunction
 Function TriggerUnequipSlots()
 	Log("TriggerUnequipSlots")
 	UnequipStackSize += 1
-	Utility.Wait(0.1)
-	UnequipSlots()
+	StartTimer(0.1, ETimerUnequipSlots)
 EndFunction
 
 
