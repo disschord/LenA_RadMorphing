@@ -305,6 +305,13 @@ EndEvent
 
 Function OnMCMSettingChange(string modName, string id)
 	Log("OnMCMSettingChange: " + modName + "; " + id)
+	If (LL_Fourplay.StringSubstring(id, 0, 1) == "s")
+		string value = MCM.GetModSettingString(modName, id)
+		If (LL_Fourplay.StringSubstring(value, 0, 1) == " ")
+			string msg = "The value you have just changed has leading whitespace:\n\n'" + value + "'"
+			Debug.MessageBox(msg)
+		EndIf
+	EndIf
 	Restart()
 EndFunction
 
