@@ -4,7 +4,7 @@
     "minMcmVersion": 1,
     "content": [
         {
-            "text": "<font size='24'>Rad Morphing Redux</font> <font id='version' size='10'>v0.3.2</font>",
+            "text": "<font size='24'>Rad Morphing Redux</font> <font id='version' size='10'>v0.4.0</font>",
             "type": "text",
             "html": true
         },
@@ -44,6 +44,45 @@
         }
     ],
     "pages": [
+        {
+            "pageDisplayName": "Debug Tools",
+            "content": [
+                {
+                    "text": "Debugging",
+                    "type": "section"
+                },
+                {
+                    "text": "Reset mod state",
+                    "type": "button",
+                    "help": "Resets the mod to its initial state without restoring the original body. Does not change any settings.",
+                    "action": {
+                        "type": "CallFunction",
+                        "form": "LenA_RadMorphing.esp|1000F99",
+                        "function": "ForgetState",
+                        "params": [
+                            true
+                        ]
+                    }
+                },
+                {
+                    "text": "Tools",
+                    "type": "section"
+                },
+                {
+                    "text": "Add irradiated blood",
+                    "type": "button",
+                    "help": "Add 50 irradiated blood to player inventory for rads testing.",
+                    "action": {
+                        "type": "CallFunction",
+                        "form": "LenA_RadMorphing.esp|1000F99",
+                        "function": "GiveIrradiatedBlood",
+                        "params": [
+                            
+                        ]
+                    }
+                }
+            ]
+        },
         {
             "pageDisplayName": "Slider Set 1",
             "content": [

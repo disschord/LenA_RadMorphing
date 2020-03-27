@@ -8,15 +8,22 @@ Group Properties
 	ActorValue Property Rads Auto Const
 
 	Scene Property DoctorMedicineScene03_AllDone Auto Const
+	GenericDoctorsScript Property DialogueGenericDoctors Auto Const
 
 	Sound Property LenARM_DropClothesSound Auto Const
 
 	Faction Property CurrentCompanionFaction Auto Const
+
+	Potion Property GlowingOneBlood Auto Const
 EndGroup
+
 
 
 Group EnumTimerId
 	int Property ETimerMorphTick = 1 Auto Const
+	int Property ETimerForgetStateCalledByUserTick = 2 Auto Const
+	int Property ETimerShutdownRestoreMorphs = 3 Auto Const
+	int Property ETimerUnequipSlots = 4 Auto Const
 EndGroup
 
 Group EnumApplyCompanion
@@ -88,6 +95,11 @@ float CurrentRads
 int RestartStackSize
 int UnequipStackSize
 
+int ForgetStateCalledByUserCount
+bool IsForgetStateBusy
+
+bool IsShuttingDown
+
 
 string Version
 
@@ -144,7 +156,7 @@ EndFunction
 
 
 string Function GetVersion()
-	return "0.3.2"; Thu Mar 26 17:44:11 CET 2020
+	return "0.4.0"; Fri Mar 27 17:32:05 CET 2020
 EndFunction
 
 
@@ -212,6 +224,62 @@ EndFunction
 
 
 
+;
+; Debug and testing tools
+;
+Function ForgetState(bool isCalledByUser=false)
+	Log("ForgetState: isCalledByUser=" + isCalledByUser + "; ForgetStateCalledByUserCount=" + ForgetStateCalledByUserCount + "; IsForgetStateBusy=" + IsForgetStateBusy)
+
+	If (isCalledByUser && IsForgetStateBusy)
+		Log("  show busy warning")
+		Debug.MessageBox("This function is already running. Wait until it has completed.")
+	ElseIf (isCalledByUser && ForgetStateCalledByUserCount < 1)
+		Log("  show warning")
+		CancelTimer(ETimerForgetStateCalledByUserTick)
+		Debug.MessageBox("<center><b>! WARNING !</b></center><br><br><p align='justify'>This function does not reset this mod's settings.<br>It will reset the mod's state. This includes the record of the original body shape. If your body or your companion's body is currently morphed by this mod you will be stuck with the current shape.</p><br>Click the button again to reset the mod's state.")
+		ForgetStateCalledByUserCount = 1
+		StartTimer(0.1, ETimerForgetStateCalledByUserTick)
+	Else
+		Log("  reset state")
+		IsForgetStateBusy = true
+		If (isCalledByUser)
+			CancelTimer(ETimerForgetStateCalledByUserTick)
+			ForgetStateCalledByUserCount = 0
+			Log("  show reset start message")
+			Debug.MessageBox("Rad Morphing Redux is resetting itself. Another message will let you know once the mod is fully reset.")
+		EndIf
+		Shutdown(false)
+		SliderSets = none
+		SliderNames = none
+		UnequipSlots = none
+		OriginalMorphs = none
+		OriginalCompanionMorphs = none
+		CurrentCompanions = none
+		CurrentRads = 0.0
+		Startup()
+		IsForgetStateBusy = false
+		Note("Mod state has been reset")
+		If (isCalledByUser)
+			Log("  show reset complete message")
+			Debug.MessageBox("Rad Morphing Redux has been reset.")
+		EndIf
+	EndIf
+EndFunction
+
+Function ForgetStateCounterReset()
+	Log("ForgetStateCounterReset; ForgetStateCalledByUserCount=" + ForgetStateCalledByUserCount)
+	ForgetStateCalledByUserCount = 0
+EndFunction
+
+Function GiveIrradiatedBlood()
+	PlayerRef.AddItem(GlowingOneBlood, 50)
+EndFunction
+;
+; END: Debug and testing tools
+
+
+
+
 
 
 
@@ -238,6 +306,13 @@ EndEvent
 
 Function OnMCMSettingChange(string modName, string id)
 	Log("OnMCMSettingChange: " + modName + "; " + id)
+	If (LL_Fourplay.StringSubstring(id, 0, 1) == "s")
+		string value = MCM.GetModSettingString(modName, id)
+		If (LL_Fourplay.StringSubstring(value, 0, 1) == " ")
+			string msg = "The value you have just changed has leading whitespace:\n\n'" + value + "'"
+			Debug.MessageBox(msg)
+		EndIf
+	EndIf
 	Restart()
 EndFunction
 
@@ -256,8 +331,14 @@ EndFunction
 Function PerformUpdateIfNecessary()
 	Log("PerformUpdateIfNecessary: " + Version + " != " + GetVersion() + " -> " + (Version != GetVersion()))
 	If (Version != GetVersion())
-		Restart()
+		Log("  update")
+		Debug.MessageBox("Updating Rad Morphing Redux from version " + Version + " to " + GetVersion())
+		Shutdown()
+		ForgetState()
 		Version = GetVersion()
+		Debug.MessageBox("Rad Morphing Redux has been updated to version " + Version + ".")
+	Else
+		Log("  no update")
 	EndIf
 EndFunction
 
@@ -380,36 +461,53 @@ Function LoadSliderSets()
 EndFunction
 
 
-Function Shutdown()
-	Log("Shutdown")
-	; stop timer
-	CancelTimer(ETimerMorphTick)
-
-	; stop listening for equipping items
-	UnregisterForRemoteEvent(PlayerRef, "OnItemEquipped")
-
-	; stop listening for doctor scene
-	UnregisterForRemoteEvent(DoctorMedicineScene03_AllDone, "OnBegin")
-	UnregisterForRemoteEvent(DoctorMedicineScene03_AllDone, "OnEnd")
+Function Shutdown(bool withRestore=true)
+	If (!IsShuttingDown)
+		Log("Shutdown")
+		IsShuttingDown = true
 	
-	Utility.Wait(Math.Max(UpdateDelay + 0.5, 2.0))
+		; stop timer
+		CancelTimer(ETimerMorphTick)
+	
+		; stop listening for equipping items
+		UnregisterForRemoteEvent(PlayerRef, "OnItemEquipped")
+	
+		; stop listening for doctor scene
+		UnregisterForRemoteEvent(DoctorMedicineScene03_AllDone, "OnBegin")
+		UnregisterForRemoteEvent(DoctorMedicineScene03_AllDone, "OnEnd")
+		
+		If (withRestore)
+			StartTimer(Math.Max(UpdateDelay + 0.5, 2.0), ETimerShutdownRestoreMorphs)
+		Else
+			FinishShutdown()
+		EndIf
+	EndIf
+EndFunction
+
+Function ShutdownRestoreMorphs()
 	; restore base values
 	RestoreOriginalMorphs()
+	FinishShutdown()
+EndFunction
+
+Function FinishShutdown()
+	IsShuttingDown = false
 EndFunction
 
 
 Function Restart()
 	RestartStackSize += 1
 	Utility.Wait(1.0)
-	RestartStackSize -= 1
-	If (RestartStackSize == 0)
+	If (RestartStackSize <= 1)
 		Log("Restart")
 		Shutdown()
 		Utility.Wait(1.0)
 		Startup()
+		Log("Restart completed")
 	Else
 		Log("RestartStackSize: " + RestartStackSize)
 	EndIf
+	RestartStackSize -= 1
 EndFunction
 
 
@@ -418,6 +516,12 @@ EndFunction
 Event OnTimer(int tid)
 	If (tid == ETimerMorphTick)
 		TimerMorphTick()
+	ElseIf (tid == ETimerForgetStateCalledByUserTick)
+		ForgetStateCounterReset()
+	ElseIf (tid == ETimerShutdownRestoreMorphs)
+		ShutdownRestoreMorphs()
+	ElseIf (tid == ETimerUnequipSlots)
+		UnequipSlots()
 	EndIf
 EndEvent
 
@@ -442,7 +546,7 @@ EndEvent
 Event Scene.OnEnd(Scene akSender)
 	float radsNow = PlayerRef.GetValue(Rads)
 	Log("Scene.OnEnd: " + akSender + " (rads: " + radsNow + ")")
-	If (radsNow == 0.0)
+	If (DialogueGenericDoctors.DoctorJustCuredRads == 1)
 		ResetMorphs()
 	EndIf
 EndEvent
@@ -730,8 +834,7 @@ EndFunction
 Function TriggerUnequipSlots()
 	Log("TriggerUnequipSlots")
 	UnequipStackSize += 1
-	Utility.Wait(0.1)
-	UnequipSlots()
+	StartTimer(0.1, ETimerUnequipSlots)
 EndFunction
 
 

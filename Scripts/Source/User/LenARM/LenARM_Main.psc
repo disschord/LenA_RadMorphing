@@ -156,7 +156,7 @@ EndFunction
 
 
 string Function GetVersion()
-	return "0.3.1"; Thu Mar 26 19:27:26 CET 2020
+	return "0.4.0"; Fri Mar 27 17:32:05 CET 2020
 EndFunction
 
 
