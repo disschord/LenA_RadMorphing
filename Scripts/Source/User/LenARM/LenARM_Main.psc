@@ -33,6 +33,11 @@ Group EnumApplyCompanion
 	int Property EApplyCompanionAll = 3 Auto Const
 EndGroup
 
+Group EnumUpdateType
+	int Property EUpdateTypeImmediately = 0 Auto Const
+	int Property EUpdateTypeOnSleep = 1 Auto Const
+EndGroup
+
 Group EnumSex
 	int Property ESexMale = 0 Auto Const
 	int Property ESexFemale = 1 Auto Const
@@ -86,6 +91,7 @@ float[] OriginalCompanionMorphs
 Actor[] CurrentCompanions
 
 
+int UpdateType
 float UpdateDelay
 
 
@@ -356,6 +362,9 @@ Function Startup()
 
 		LoadSliderSets()
 
+		; get update type from MCM
+		UpdateType = MCM.GetModSettingInt("LenA_RadMorphing", "iUpdateType:General")
+
 		; get duration from MCM
 		UpdateDelay = MCM.GetModSettingFloat("LenA_RadMorphing", "fUpdateDelay:General")
 
@@ -369,8 +378,13 @@ Function Startup()
 		; set up companions
 		CurrentCompanions = new Actor[0]
 
-		; start timer
-		TimerMorphTick()
+		If (UpdateType == EUpdateTypeImmediately)
+			; start timer
+			TimerMorphTick()
+		ElseIf (UpdateType == EUpdateTypeOnSleep)
+			; listen for sleep events
+			RegisterForPlayerSleep()
+		EndIf
 	ElseIf (MCM.GetModSettingBool("LenA_RadMorphing", "bWarnDisabled:General"))
 		Log("  is disabled, with warning")
 		Debug.MessageBox("Rad Morphing is currently disabled. You can enable it in MCM > Rad Morphing > Enable Rad Morphing")
@@ -468,6 +482,9 @@ Function Shutdown(bool withRestore=true)
 	If (!IsShuttingDown)
 		Log("Shutdown")
 		IsShuttingDown = true
+
+		; stop listening for sleep events
+		UnregisterForPlayerSleep()
 	
 		; stop timer
 		CancelTimer(ETimerMorphTick)
@@ -527,6 +544,63 @@ Event OnTimer(int tid)
 		ShutdownRestoreMorphs()
 	ElseIf (tid == ETimerUnequipSlots)
 		UnequipSlots()
+	EndIf
+EndEvent
+
+
+
+
+Event OnPlayerSleepStart(float afSleepStartTime, float afDesiredSleepEndTime, ObjectReference akBed)
+	Log("OnPlayerSleepStart: afSleepStartTime=" + afSleepStartTime + ";  afDesiredSleepEndTime=" + afDesiredSleepEndTime + ";  akBed=" + akBed)
+	Actor[] allCompanions = Game.GetPlayerFollowers() as Actor[]
+	Log("  followers on sleep start: " + allCompanions)
+	; update companions (companions cannot be found on sleep stop)
+	UpdateCompanions()
+EndEvent
+
+Event OnPlayerSleepStop(bool abInterrupted, ObjectReference akBed)
+	Log("OnPlayerSleepStop: abInterrupted=" + abInterrupted + ";  akBed=" + akBed)
+	Actor[] allCompanions = Game.GetPlayerFollowers() as Actor[]
+	Log("  followers on sleep stop: " + allCompanions)
+	; get rads (0-1000)
+	CurrentRads = PlayerRef.GetValue(Rads) / 1000.0
+	If (CurrentRads > 0.0)
+		Log("  rads: " + CurrentRads)
+		int idxSet = 0
+		While (idxSet < SliderSets.Length)
+			SliderSet sliderSet = SliderSets[idxSet]
+			If (sliderSet.IsUsed)
+				Log("  SliderSet " + idxSet)
+				; calculate morph from CurrentRads
+				float newMorph
+				If (CurrentRads < sliderSet.ThresholdMin)
+					newMorph = 0.0
+				ElseIf (CurrentRads > sliderSet.ThresholdMax)
+					newMorph = 1.0
+				Else
+					newMorph = (CurrentRads - sliderSet.ThresholdMin) / (sliderSet.ThresholdMax - sliderSet.ThresholdMin)
+				EndIf
+				Log("    morph " + idxSet + ": " + sliderSet.CurrentMorph + " + " + newMorph)
+				; add morph to existing morph
+				float fullMorph = Math.Min(1.0, sliderSet.CurrentMorph + newMorph)
+				; apply morph
+				int sliderNameOffset = SliderSet_GetSliderNameOffset(idxSet)
+				int idxSlider = sliderNameOffset
+				While (idxSlider < sliderNameOffset + sliderSet.NumberOfSliderNames)
+					BodyGen.SetMorph(PlayerRef, true, SliderNames[idxSlider], kwMorph, OriginalMorphs[idxSlider] + fullMorph * sliderSet.TargetMorph)
+					Log("    setting slider '" + SliderNames[idxSlider] + "' to " + (OriginalMorphs[idxSlider] + fullMorph * sliderSet.TargetMorph) + " (base value is " + OriginalMorphs[idxSlider] + ") (base morph is " + sliderSet.BaseMorph + ") (target is " + sliderSet.TargetMorph + ")")
+					If (sliderSet.ApplyCompanion != EApplyCompanionNone)
+						SetCompanionMorphs(idxSlider, fullMorph * sliderSet.TargetMorph, sliderSet.ApplyCompanion)
+					EndIf
+					idxSlider += 1
+				EndWhile
+				sliderSet.CurrentMorph = fullMorph
+			EndIf
+			idxSet += 1
+		EndWhile
+		BodyGen.UpdateMorphs(PlayerRef)
+		ApplyAllCompanionMorphs()
+		TriggerUnequipSlots()
 	EndIf
 EndEvent
 

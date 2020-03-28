@@ -33,6 +33,16 @@
 			}
 		},
 		{
+			"text": "Update type",
+			"help": "Whether to update when periodically or after sleeping",
+			"type": "stepper",
+			"id": "iUpdateType:General",
+			"valueOptions": {
+				"sourceType": "ModSettingInt",
+				"options": ["Periodically", "After sleeping"]
+			}
+		},
+		{
 			"text": "Update delay",
 			"help": "Seconds to wait between updating morphs",
 			"type": "slider",
