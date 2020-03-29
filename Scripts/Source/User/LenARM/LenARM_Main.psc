@@ -508,12 +508,14 @@ Function Shutdown(bool withRestore=true)
 EndFunction
 
 Function ShutdownRestoreMorphs()
+	Log("ShutdownRestoreMorphs")
 	; restore base values
 	RestoreOriginalMorphs()
 	FinishShutdown()
 EndFunction
 
 Function FinishShutdown()
+	Log("FinishShutdown")
 	IsShuttingDown = false
 EndFunction
 
