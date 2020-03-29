@@ -66,6 +66,51 @@
                 "max": 60.0,
                 "step": 0.5
             }
+        },
+        {
+            "text": "<br>",
+            "html": true
+        },
+        {
+            "text": "Radiation detection",
+            "type": "section"
+        },
+        {
+            "text": "Radiation detection",
+            "help": "Determine radiation from actual radiation value (red part of the health bar) or by using a random rads/s value while taking rads in game. Default: Actual radiation",
+            "type": "stepper",
+            "id": "iRadiationDetection:General",
+            "valueOptions": {
+                "sourceType": "ModSettingInt",
+                "options": [
+                    "Actual radiation",
+                    "Random"
+                ]
+            }
+        },
+        {
+            "text": "Random rads lower limit",
+            "help": "With random rads detection, rads/s will be between this value and the upper limit when taking rads. Total rads go from 0 to 1000.",
+            "type": "slider",
+            "id": "fRandomRadsLower:General",
+            "valueOptions": {
+                "sourceType": "ModSettingFloat",
+                "min": 0.01,
+                "max": 20.0,
+                "step": 0.01
+            }
+        },
+        {
+            "text": "Random rads upper limit",
+            "help": "With random rads detection, rads/s will be between the lower limit and this value when taking rads. Total rads go from 0 to 1000.",
+            "type": "slider",
+            "id": "fRandomRadsUpper:General",
+            "valueOptions": {
+                "sourceType": "ModSettingFloat",
+                "min": 0.01,
+                "max": 20.0,
+                "step": 0.01
+            }
         }
     ],
     "pages": [

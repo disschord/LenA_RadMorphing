@@ -24,6 +24,7 @@ Group EnumTimerId
 	int Property ETimerForgetStateCalledByUserTick = 2 Auto Const
 	int Property ETimerShutdownRestoreMorphs = 3 Auto Const
 	int Property ETimerUnequipSlots = 4 Auto Const
+	int Property ETimerFakeRads = 5 Auto Const
 EndGroup
 
 Group EnumApplyCompanion
@@ -36,6 +37,11 @@ EndGroup
 Group EnumUpdateType
 	int Property EUpdateTypeImmediately = 0 Auto Const
 	int Property EUpdateTypeOnSleep = 1 Auto Const
+EndGroup
+
+Group EnumRadsDetectionType
+	int Property ERadsDetectionTypeRads = 0 Auto Const
+	int Property ERadsDetectionTypeRandom = 1 Auto Const
 EndGroup
 
 Group EnumSex
@@ -93,9 +99,14 @@ Actor[] CurrentCompanions
 
 int UpdateType
 float UpdateDelay
+int RadsDetectionType
+float RandomRadsLower
+float RandomRadsUpper
 
 
 float CurrentRads
+float FakeRads
+bool TakeFakeRads
 
 
 int RestartStackSize
@@ -262,6 +273,8 @@ Function ForgetState(bool isCalledByUser=false)
 		OriginalCompanionMorphs = none
 		CurrentCompanions = none
 		CurrentRads = 0.0
+		FakeRads = 0
+		TakeFakeRads = false
 		Startup()
 		IsForgetStateBusy = false
 		Note("Mod state has been reset")
@@ -358,6 +371,11 @@ Function Startup()
 
 		; get duration from MCM
 		UpdateDelay = MCM.GetModSettingFloat("LenA_RadMorphing", "fUpdateDelay:General")
+		
+		; get radiation detection type from MCM
+		RadsDetectionType = MCM.GetModSettingInt("LenA_RadMorphing", "iRadiationDetection:General")
+		RandomRadsLower = MCM.GetModSettingFloat("LenA_RadMorphing", "fRandomRadsLower:General")
+		RandomRadsUpper = MCM.GetModSettingFloat("LenA_RadMorphing", "fRandomRadsUpper:General")
 
 		; start listening for equipping items
 		RegisterForRemoteEvent(PlayerRef, "OnItemEquipped")
@@ -365,6 +383,12 @@ Function Startup()
 		; start listening for doctor scene
 		RegisterForRemoteEvent(DoctorMedicineScene03_AllDone, "OnBegin")
 		RegisterForRemoteEvent(DoctorMedicineScene03_AllDone, "OnEnd")
+
+		If (RadsDetectionType == ERadsDetectionTypeRandom)
+			; start listening for rads damage
+			RegisterForRadiationDamageEvent(PlayerRef)
+			AddFakeRads()
+		EndIf
 
 		; set up companions
 		CurrentCompanions = new Actor[0]
@@ -540,6 +564,8 @@ Event OnTimer(int tid)
 		ShutdownRestoreMorphs()
 	ElseIf (tid == ETimerUnequipSlots)
 		UnequipSlots()
+	ElseIf (tid == ETimerFakeRads)
+		AddFakeRads()
 	EndIf
 EndEvent
 
@@ -558,8 +584,8 @@ Event OnPlayerSleepStop(bool abInterrupted, ObjectReference akBed)
 	Log("OnPlayerSleepStop: abInterrupted=" + abInterrupted + ";  akBed=" + akBed)
 	Actor[] allCompanions = Game.GetPlayerFollowers() as Actor[]
 	Log("  followers on sleep stop: " + allCompanions)
-	; get rads (0-1000)
-	CurrentRads = PlayerRef.GetValue(Rads) / 1000.0
+	; get rads
+	CurrentRads = GetNewRads()
 	If (CurrentRads > 0.0)
 		Log("  rads: " + CurrentRads)
 		int idxSet = 0
@@ -607,8 +633,46 @@ Event Scene.OnEnd(Scene akSender)
 	Log("Scene.OnEnd: " + akSender + " (rads: " + radsNow + ")")
 	If (DialogueGenericDoctors.DoctorJustCuredRads == 1)
 		ResetMorphs()
+		FakeRads = 0
+		TakeFakeRads = false
 	EndIf
 EndEvent
+
+Event OnRadiationDamage(ObjectReference akTarget, bool abIngested)
+	Log("OnRadiationDamage: akTarget=" + akTarget + ";  abIngested=" + abIngested)
+	TakeFakeRads = true
+EndEvent
+
+
+
+
+float Function GetNewRads()
+	Log("GetNewRads (type=" + RadsDetectionType + ")")
+	float newRads = 0.0
+	If (RadsDetectionType == ERadsDetectionTypeRads)
+		newRads = PlayerRef.GetValue(Rads)
+	ElseIf (RadsDetectionType == ERadsDetectionTypeRandom)
+		newRads = FakeRads
+	EndIf
+	return newRads / 1000
+EndFunction
+
+
+
+
+Function AddFakeRads()
+	Log("AddFakeRads")
+	If (TakeFakeRads)
+		; add fake rads
+		FakeRads += Utility.RandomFloat(RandomRadsLower, RandomRadsUpper)
+		Log("  FakeRads: " + FakeRads)
+		TakeFakeRads = false
+	EndIf
+	; restart timer
+	StartTimer(1.0, ETimerFakeRads)
+	; re-register event listener
+	RegisterForRadiationDamageEvent(PlayerRef)
+EndFunction
 
 
 
@@ -809,8 +873,8 @@ EndFunction
 
 
 Function TimerMorphTick()
-	; get rads (0-1000)
-	float newRads = PlayerRef.GetValue(Rads) / 1000.0
+	; get rads
+	float newRads = GetNewRads()
 	If (newRads != CurrentRads)
 		Log("new rads: " + newRads + " (" + CurrentRads + ")")
 		CurrentRads = newRads
