@@ -568,28 +568,12 @@ Event OnPlayerSleepStop(bool abInterrupted, ObjectReference akBed)
 			If (sliderSet.IsUsed)
 				Log("  SliderSet " + idxSet)
 				; calculate morph from CurrentRads
-				float newMorph
-				If (CurrentRads < sliderSet.ThresholdMin)
-					newMorph = 0.0
-				ElseIf (CurrentRads > sliderSet.ThresholdMax)
-					newMorph = 1.0
-				Else
-					newMorph = (CurrentRads - sliderSet.ThresholdMin) / (sliderSet.ThresholdMax - sliderSet.ThresholdMin)
-				EndIf
+				float newMorph = GetNewMorph(CurrentRads, sliderSet)
 				Log("    morph " + idxSet + ": " + sliderSet.CurrentMorph + " + " + newMorph)
 				; add morph to existing morph
 				float fullMorph = Math.Min(1.0, sliderSet.CurrentMorph + newMorph)
 				; apply morph
-				int sliderNameOffset = SliderSet_GetSliderNameOffset(idxSet)
-				int idxSlider = sliderNameOffset
-				While (idxSlider < sliderNameOffset + sliderSet.NumberOfSliderNames)
-					BodyGen.SetMorph(PlayerRef, true, SliderNames[idxSlider], kwMorph, OriginalMorphs[idxSlider] + fullMorph * sliderSet.TargetMorph)
-					Log("    setting slider '" + SliderNames[idxSlider] + "' to " + (OriginalMorphs[idxSlider] + fullMorph * sliderSet.TargetMorph) + " (base value is " + OriginalMorphs[idxSlider] + ") (base morph is " + sliderSet.BaseMorph + ") (target is " + sliderSet.TargetMorph + ")")
-					If (sliderSet.ApplyCompanion != EApplyCompanionNone)
-						SetCompanionMorphs(idxSlider, fullMorph * sliderSet.TargetMorph, sliderSet.ApplyCompanion)
-					EndIf
-					idxSlider += 1
-				EndWhile
+				SetMorphs(idxSet, sliderSet, fullMorph)
 				sliderSet.CurrentMorph = fullMorph
 			EndIf
 			idxSet += 1
@@ -625,6 +609,34 @@ Event Scene.OnEnd(Scene akSender)
 		ResetMorphs()
 	EndIf
 EndEvent
+
+
+
+
+float Function GetNewMorph(float newRads, SliderSet sliderSet)
+	float newMorph
+	If (newRads < sliderSet.ThresholdMin)
+		newMorph = 0.0
+	ElseIf (newRads > sliderSet.ThresholdMax)
+		newMorph = 1.0
+	Else
+		newMorph = (newRads - sliderSet.ThresholdMin) / (sliderSet.ThresholdMax - sliderSet.ThresholdMin)
+	EndIf
+	return newMorph
+EndFunction
+
+Function SetMorphs(int idxSet, SliderSet sliderSet, float fullMorph)
+	int sliderNameOffset = SliderSet_GetSliderNameOffset(idxSet)
+	int idxSlider = sliderNameOffset
+	While (idxSlider < sliderNameOffset + sliderSet.NumberOfSliderNames)
+		BodyGen.SetMorph(PlayerRef, true, SliderNames[idxSlider], kwMorph, OriginalMorphs[idxSlider] + fullMorph * sliderSet.TargetMorph)
+		Log("    setting slider '" + SliderNames[idxSlider] + "' to " + (OriginalMorphs[idxSlider] + fullMorph * sliderSet.TargetMorph) + " (base value is " + OriginalMorphs[idxSlider] + ") (base morph is " + sliderSet.BaseMorph + ") (target is " + sliderSet.TargetMorph + ")")
+		If (sliderSet.ApplyCompanion != EApplyCompanionNone)
+			SetCompanionMorphs(idxSlider, fullMorph * sliderSet.TargetMorph, sliderSet.ApplyCompanion)
+		EndIf
+		idxSlider += 1
+	EndWhile
+EndFunction
 
 
 
@@ -811,15 +823,8 @@ Function TimerMorphTick()
 			SliderSet sliderSet = SliderSets[idxSet]
 			If (sliderSet.NumberOfSliderNames > 0)
 				Log("  SliderSet " + idxSet)
-				float newMorph
-				If (newRads < sliderSet.ThresholdMin)
-					newMorph = 0.0
-				ElseIf (newRads > sliderSet.ThresholdMax)
-					newMorph = 1.0
-				Else
-					newMorph = (newRads - sliderSet.ThresholdMin) / (sliderSet.ThresholdMax - sliderSet.ThresholdMin)
-				EndIf
-	
+				float newMorph = GetNewMorph(newRads, sliderSet)
+
 				Log("    morph " + idxSet + ": " + sliderSet.CurrentMorph + " -> " + newMorph)
 				If (newMorph > sliderSet.CurrentMorph || !sliderSet.OnlyDoctorCanReset)
 					float fullMorph = newMorph
@@ -830,16 +835,7 @@ Function TimerMorphTick()
 						EndIf
 					EndIf
 					Log("    morph " + idxSet + ": " + sliderSet.CurrentMorph + " -> " + newMorph + " -> " + fullMorph)
-					int sliderNameOffset = SliderSet_GetSliderNameOffset(idxSet)
-					int idxSlider = sliderNameOffset
-					While (idxSlider < sliderNameOffset + sliderSet.NumberOfSliderNames)
-						BodyGen.SetMorph(PlayerRef, true, SliderNames[idxSlider], kwMorph, OriginalMorphs[idxSlider] + fullMorph * sliderSet.TargetMorph)
-						Log("    setting slider '" + SliderNames[idxSlider] + "' to " + (OriginalMorphs[idxSlider] + fullMorph * sliderSet.TargetMorph) + " (base value is " + OriginalMorphs[idxSlider] + ") (base morph is " + sliderSet.BaseMorph + ") (target is " + sliderSet.TargetMorph + ")")
-						If (sliderSet.ApplyCompanion != EApplyCompanionNone)
-							SetCompanionMorphs(idxSlider, fullMorph * sliderSet.TargetMorph, sliderSet.ApplyCompanion)
-						EndIf
-						idxSlider += 1
-					EndWhile
+					SetMorphs(idxSet, sliderSet, fullMorph)
 				ElseIf (sliderSet.IsAdditive)
 					sliderSet.BaseMorph += sliderSet.CurrentMorph + newMorph
 					Log("    setting baseMorph " + idxSet + " to " + sliderSet.BaseMorph)
