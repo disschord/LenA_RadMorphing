@@ -325,15 +325,6 @@ EndFunction
 
 
 
-Function ReactToSettingsChange(string id)
-	If (LL_FourPlay.StringSubstring(id, 0, 11) == "sSliderName")
-		Restart()
-	EndIf
-EndFunction
-
-
-
-
 Function PerformUpdateIfNecessary()
 	Log("PerformUpdateIfNecessary: " + Version + " != " + GetVersion() + " -> " + (Version != GetVersion()))
 	If (Version != GetVersion())
