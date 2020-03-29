@@ -31,8 +31,20 @@
             }
         },
         {
+            "text": "<br>",
+            "html": true
+        },
+        {
+            "text": "When to morph",
+            "type": "section"
+        },
+        {
+            "text": "<b>Periodic updates:</b> Checks rads every x seconds (update delay) and changes morphs according to current rads level.<br><b>Update after sleeping:</b> Every time you go to sleep you get additional morphs according to the current rads. In this update mode you can only restore your body by visiting a doctor.<br>",
+            "html": true
+        },
+        {
             "text": "Update type",
-            "help": "Whether to update when periodically or after sleeping",
+            "help": "Whether to update periodically or only after sleeping. Default: Periodically",
             "type": "stepper",
             "id": "iUpdateType:General",
             "valueOptions": {
@@ -45,7 +57,7 @@
         },
         {
             "text": "Update delay",
-            "help": "Seconds to wait between updating morphs",
+            "help": "Seconds to wait between updating morphs. Only applies to periodic updates. Default: 1s",
             "type": "slider",
             "id": "fUpdateDelay:General",
             "valueOptions": {
