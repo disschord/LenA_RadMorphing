@@ -4,7 +4,7 @@
 	"minMcmVersion": 1,
 	"content": [
 		{
-			"text": "<font size='24'>Rad Morphing Redux</font> <font id='version' size='10'>v0.4.2</font>",
+			"text": "<font size='24'>Rad Morphing Redux</font> <font id='version' size='10'>v0.5.0</font>",
 			"type": "text",
 			"html": true
 		},
@@ -33,8 +33,32 @@
 			}
 		},
 		{
+			"text": "<br>",
+			"html": true
+		},
+
+		{
+			"text": "Morph updates",
+			"type": "section"
+		},
+		{
+			"text": "<b>Periodic updates:</b> Checks rads every x seconds (update delay) and changes morphs according to current rads level.<br><b>Update after sleeping:</b> Every time you go to sleep you get additional morphs according to the current rads. In this update mode you can only restore your body by visiting a doctor.<br>",
+			"type": "text",
+			"html": true
+		},
+		{
+			"text": "Update type",
+			"help": "Whether to update periodically or only after sleeping. Default: Periodically",
+			"type": "stepper",
+			"id": "iUpdateType:General",
+			"valueOptions": {
+				"sourceType": "ModSettingInt",
+				"options": ["Periodically", "After sleeping"]
+			}
+		},
+		{
 			"text": "Update delay",
-			"help": "Seconds to wait between updating morphs",
+			"help": "Seconds to wait between updating morphs. Only applies to periodic updates. Default: 1s",
 			"type": "slider",
 			"id": "fUpdateDelay:General",
 			"valueOptions": {
@@ -42,6 +66,49 @@
 				"min": 0.5,
 				"max": 60.0,
 				"step": 0.5
+			}
+		},
+		{
+			"text": "<br>",
+			"html": true
+		},
+
+		{
+			"text": "Radiation detection",
+			"type": "section"
+		},
+		{
+			"text": "Radiation detection",
+			"help": "Determine radiation from actual radiation value (red part of the health bar) or by using a random rads/s value while taking rads in game. Default: Actual radiation",
+			"type": "stepper",
+			"id": "iRadiationDetection:General",
+			"valueOptions": {
+				"sourceType": "ModSettingInt",
+				"options": ["Actual radiation", "Random"]
+			}
+		},
+		{
+			"text": "Random rads lower limit",
+			"help": "With random rads detection, rads/s will be between this value and the upper limit when taking rads. Total rads go from 0 to 1000.",
+			"type": "slider",
+			"id": "fRandomRadsLower:General",
+			"valueOptions": {
+				"sourceType": "ModSettingFloat",
+				"min": 0.01,
+				"max": 20.0,
+				"step": 0.01
+			}
+		},
+		{
+			"text": "Random rads upper limit",
+			"help": "With random rads detection, rads/s will be between the lower limit and this value when taking rads. Total rads go from 0 to 1000.",
+			"type": "slider",
+			"id": "fRandomRadsUpper:General",
+			"valueOptions": {
+				"sourceType": "ModSettingFloat",
+				"min": 0.01,
+				"max": 20.0,
+				"step": 0.01
 			}
 		}
 	],
@@ -79,6 +146,10 @@
 						"function": "GiveIrradiatedBlood",
 						"params": []
 					}
+				},
+				{
+					"text": "<br>",
+					"html": true
 				}
 			]
 		}

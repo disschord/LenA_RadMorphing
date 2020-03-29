@@ -24,6 +24,7 @@ Group EnumTimerId
 	int Property ETimerForgetStateCalledByUserTick = 2 Auto Const
 	int Property ETimerShutdownRestoreMorphs = 3 Auto Const
 	int Property ETimerUnequipSlots = 4 Auto Const
+	int Property ETimerFakeRads = 5 Auto Const
 EndGroup
 
 Group EnumApplyCompanion
@@ -31,6 +32,16 @@ Group EnumApplyCompanion
 	int Property EApplyCompanionFemale = 1 Auto Const
 	int Property EApplyCompanionMale = 2 Auto Const
 	int Property EApplyCompanionAll = 3 Auto Const
+EndGroup
+
+Group EnumUpdateType
+	int Property EUpdateTypeImmediately = 0 Auto Const
+	int Property EUpdateTypeOnSleep = 1 Auto Const
+EndGroup
+
+Group EnumRadsDetectionType
+	int Property ERadsDetectionTypeRads = 0 Auto Const
+	int Property ERadsDetectionTypeRandom = 1 Auto Const
 EndGroup
 
 Group EnumSex
@@ -86,10 +97,16 @@ float[] OriginalCompanionMorphs
 Actor[] CurrentCompanions
 
 
+int UpdateType
 float UpdateDelay
+int RadsDetectionType
+float RandomRadsLower
+float RandomRadsUpper
 
 
 float CurrentRads
+float FakeRads
+bool TakeFakeRads
 
 
 int RestartStackSize
@@ -156,7 +173,7 @@ EndFunction
 
 
 string Function GetVersion()
-	return "0.4.2"; Fri Mar 27 20:59:45 CET 2020
+	return "0.5.0"; Sun Mar 29 15:44:26 CEST 2020
 EndFunction
 
 
@@ -256,6 +273,8 @@ Function ForgetState(bool isCalledByUser=false)
 		OriginalCompanionMorphs = none
 		CurrentCompanions = none
 		CurrentRads = 0.0
+		FakeRads = 0
+		TakeFakeRads = false
 		Startup()
 		IsForgetStateBusy = false
 		Note("Mod state has been reset")
@@ -319,15 +338,6 @@ EndFunction
 
 
 
-Function ReactToSettingsChange(string id)
-	If (LL_FourPlay.StringSubstring(id, 0, 11) == "sSliderName")
-		Restart()
-	EndIf
-EndFunction
-
-
-
-
 Function PerformUpdateIfNecessary()
 	Log("PerformUpdateIfNecessary: " + Version + " != " + GetVersion() + " -> " + (Version != GetVersion()))
 	If (Version != GetVersion())
@@ -356,8 +366,16 @@ Function Startup()
 
 		LoadSliderSets()
 
+		; get update type from MCM
+		UpdateType = MCM.GetModSettingInt("LenA_RadMorphing", "iUpdateType:General")
+
 		; get duration from MCM
 		UpdateDelay = MCM.GetModSettingFloat("LenA_RadMorphing", "fUpdateDelay:General")
+		
+		; get radiation detection type from MCM
+		RadsDetectionType = MCM.GetModSettingInt("LenA_RadMorphing", "iRadiationDetection:General")
+		RandomRadsLower = MCM.GetModSettingFloat("LenA_RadMorphing", "fRandomRadsLower:General")
+		RandomRadsUpper = MCM.GetModSettingFloat("LenA_RadMorphing", "fRandomRadsUpper:General")
 
 		; start listening for equipping items
 		RegisterForRemoteEvent(PlayerRef, "OnItemEquipped")
@@ -366,11 +384,25 @@ Function Startup()
 		RegisterForRemoteEvent(DoctorMedicineScene03_AllDone, "OnBegin")
 		RegisterForRemoteEvent(DoctorMedicineScene03_AllDone, "OnEnd")
 
+		If (RadsDetectionType == ERadsDetectionTypeRandom)
+			; start listening for rads damage
+			RegisterForRadiationDamageEvent(PlayerRef)
+			AddFakeRads()
+		EndIf
+
 		; set up companions
 		CurrentCompanions = new Actor[0]
 
-		; start timer
-		TimerMorphTick()
+		; reset unequip stack
+		UnequipStackSize = 0
+
+		If (UpdateType == EUpdateTypeImmediately)
+			; start timer
+			TimerMorphTick()
+		ElseIf (UpdateType == EUpdateTypeOnSleep)
+			; listen for sleep events
+			RegisterForPlayerSleep()
+		EndIf
 	ElseIf (MCM.GetModSettingBool("LenA_RadMorphing", "bWarnDisabled:General"))
 		Log("  is disabled, with warning")
 		Debug.MessageBox("Rad Morphing is currently disabled. You can enable it in MCM > Rad Morphing > Enable Rad Morphing")
@@ -468,6 +500,9 @@ Function Shutdown(bool withRestore=true)
 	If (!IsShuttingDown)
 		Log("Shutdown")
 		IsShuttingDown = true
+
+		; stop listening for sleep events
+		UnregisterForPlayerSleep()
 	
 		; stop timer
 		CancelTimer(ETimerMorphTick)
@@ -488,12 +523,14 @@ Function Shutdown(bool withRestore=true)
 EndFunction
 
 Function ShutdownRestoreMorphs()
+	Log("ShutdownRestoreMorphs")
 	; restore base values
 	RestoreOriginalMorphs()
 	FinishShutdown()
 EndFunction
 
 Function FinishShutdown()
+	Log("FinishShutdown")
 	IsShuttingDown = false
 EndFunction
 
@@ -527,6 +564,49 @@ Event OnTimer(int tid)
 		ShutdownRestoreMorphs()
 	ElseIf (tid == ETimerUnequipSlots)
 		UnequipSlots()
+	ElseIf (tid == ETimerFakeRads)
+		AddFakeRads()
+	EndIf
+EndEvent
+
+
+
+
+Event OnPlayerSleepStart(float afSleepStartTime, float afDesiredSleepEndTime, ObjectReference akBed)
+	Log("OnPlayerSleepStart: afSleepStartTime=" + afSleepStartTime + ";  afDesiredSleepEndTime=" + afDesiredSleepEndTime + ";  akBed=" + akBed)
+	Actor[] allCompanions = Game.GetPlayerFollowers() as Actor[]
+	Log("  followers on sleep start: " + allCompanions)
+	; update companions (companions cannot be found on sleep stop)
+	UpdateCompanions()
+EndEvent
+
+Event OnPlayerSleepStop(bool abInterrupted, ObjectReference akBed)
+	Log("OnPlayerSleepStop: abInterrupted=" + abInterrupted + ";  akBed=" + akBed)
+	Actor[] allCompanions = Game.GetPlayerFollowers() as Actor[]
+	Log("  followers on sleep stop: " + allCompanions)
+	; get rads
+	CurrentRads = GetNewRads()
+	If (CurrentRads > 0.0)
+		Log("  rads: " + CurrentRads)
+		int idxSet = 0
+		While (idxSet < SliderSets.Length)
+			SliderSet sliderSet = SliderSets[idxSet]
+			If (sliderSet.IsUsed)
+				Log("  SliderSet " + idxSet)
+				; calculate morph from CurrentRads
+				float newMorph = GetNewMorph(CurrentRads, sliderSet)
+				Log("    morph " + idxSet + ": " + sliderSet.CurrentMorph + " + " + newMorph)
+				; add morph to existing morph
+				float fullMorph = Math.Min(1.0, sliderSet.CurrentMorph + newMorph)
+				; apply morph
+				SetMorphs(idxSet, sliderSet, fullMorph)
+				sliderSet.CurrentMorph = fullMorph
+			EndIf
+			idxSet += 1
+		EndWhile
+		BodyGen.UpdateMorphs(PlayerRef)
+		ApplyAllCompanionMorphs()
+		TriggerUnequipSlots()
 	EndIf
 EndEvent
 
@@ -553,8 +633,74 @@ Event Scene.OnEnd(Scene akSender)
 	Log("Scene.OnEnd: " + akSender + " (rads: " + radsNow + ")")
 	If (DialogueGenericDoctors.DoctorJustCuredRads == 1)
 		ResetMorphs()
+		FakeRads = 0
+		TakeFakeRads = false
 	EndIf
 EndEvent
+
+Event OnRadiationDamage(ObjectReference akTarget, bool abIngested)
+	Log("OnRadiationDamage: akTarget=" + akTarget + ";  abIngested=" + abIngested)
+	TakeFakeRads = true
+EndEvent
+
+
+
+
+float Function GetNewRads()
+	Log("GetNewRads (type=" + RadsDetectionType + ")")
+	float newRads = 0.0
+	If (RadsDetectionType == ERadsDetectionTypeRads)
+		newRads = PlayerRef.GetValue(Rads)
+	ElseIf (RadsDetectionType == ERadsDetectionTypeRandom)
+		newRads = FakeRads
+	EndIf
+	return newRads / 1000
+EndFunction
+
+
+
+
+Function AddFakeRads()
+	Log("AddFakeRads")
+	If (TakeFakeRads)
+		; add fake rads
+		FakeRads += Utility.RandomFloat(RandomRadsLower, RandomRadsUpper)
+		Log("  FakeRads: " + FakeRads)
+		TakeFakeRads = false
+	EndIf
+	; restart timer
+	StartTimer(1.0, ETimerFakeRads)
+	; re-register event listener
+	RegisterForRadiationDamageEvent(PlayerRef)
+EndFunction
+
+
+
+
+float Function GetNewMorph(float newRads, SliderSet sliderSet)
+	float newMorph
+	If (newRads < sliderSet.ThresholdMin)
+		newMorph = 0.0
+	ElseIf (newRads > sliderSet.ThresholdMax)
+		newMorph = 1.0
+	Else
+		newMorph = (newRads - sliderSet.ThresholdMin) / (sliderSet.ThresholdMax - sliderSet.ThresholdMin)
+	EndIf
+	return newMorph
+EndFunction
+
+Function SetMorphs(int idxSet, SliderSet sliderSet, float fullMorph)
+	int sliderNameOffset = SliderSet_GetSliderNameOffset(idxSet)
+	int idxSlider = sliderNameOffset
+	While (idxSlider < sliderNameOffset + sliderSet.NumberOfSliderNames)
+		BodyGen.SetMorph(PlayerRef, true, SliderNames[idxSlider], kwMorph, OriginalMorphs[idxSlider] + fullMorph * sliderSet.TargetMorph)
+		Log("    setting slider '" + SliderNames[idxSlider] + "' to " + (OriginalMorphs[idxSlider] + fullMorph * sliderSet.TargetMorph) + " (base value is " + OriginalMorphs[idxSlider] + ") (base morph is " + sliderSet.BaseMorph + ") (target is " + sliderSet.TargetMorph + ")")
+		If (sliderSet.ApplyCompanion != EApplyCompanionNone)
+			SetCompanionMorphs(idxSlider, fullMorph * sliderSet.TargetMorph, sliderSet.ApplyCompanion)
+		EndIf
+		idxSlider += 1
+	EndWhile
+EndFunction
 
 
 
@@ -727,8 +873,8 @@ EndFunction
 
 
 Function TimerMorphTick()
-	; get rads (0-1000)
-	float newRads = PlayerRef.GetValue(Rads) / 1000.0
+	; get rads
+	float newRads = GetNewRads()
 	If (newRads != CurrentRads)
 		Log("new rads: " + newRads + " (" + CurrentRads + ")")
 		CurrentRads = newRads
@@ -741,15 +887,8 @@ Function TimerMorphTick()
 			SliderSet sliderSet = SliderSets[idxSet]
 			If (sliderSet.NumberOfSliderNames > 0)
 				Log("  SliderSet " + idxSet)
-				float newMorph
-				If (newRads < sliderSet.ThresholdMin)
-					newMorph = 0.0
-				ElseIf (newRads > sliderSet.ThresholdMax)
-					newMorph = 1.0
-				Else
-					newMorph = (newRads - sliderSet.ThresholdMin) / (sliderSet.ThresholdMax - sliderSet.ThresholdMin)
-				EndIf
-	
+				float newMorph = GetNewMorph(newRads, sliderSet)
+
 				Log("    morph " + idxSet + ": " + sliderSet.CurrentMorph + " -> " + newMorph)
 				If (newMorph > sliderSet.CurrentMorph || !sliderSet.OnlyDoctorCanReset)
 					float fullMorph = newMorph
@@ -760,16 +899,7 @@ Function TimerMorphTick()
 						EndIf
 					EndIf
 					Log("    morph " + idxSet + ": " + sliderSet.CurrentMorph + " -> " + newMorph + " -> " + fullMorph)
-					int sliderNameOffset = SliderSet_GetSliderNameOffset(idxSet)
-					int idxSlider = sliderNameOffset
-					While (idxSlider < sliderNameOffset + sliderSet.NumberOfSliderNames)
-						BodyGen.SetMorph(PlayerRef, true, SliderNames[idxSlider], kwMorph, OriginalMorphs[idxSlider] + fullMorph * sliderSet.TargetMorph)
-						Log("    setting slider '" + SliderNames[idxSlider] + "' to " + (OriginalMorphs[idxSlider] + fullMorph * sliderSet.TargetMorph) + " (base value is " + OriginalMorphs[idxSlider] + ") (base morph is " + sliderSet.BaseMorph + ") (target is " + sliderSet.TargetMorph + ")")
-						If (sliderSet.ApplyCompanion != EApplyCompanionNone)
-							SetCompanionMorphs(idxSlider, fullMorph * sliderSet.TargetMorph, sliderSet.ApplyCompanion)
-						EndIf
-						idxSlider += 1
-					EndWhile
+					SetMorphs(idxSet, sliderSet, fullMorph)
 				ElseIf (sliderSet.IsAdditive)
 					sliderSet.BaseMorph += sliderSet.CurrentMorph + newMorph
 					Log("    setting baseMorph " + idxSet + " to " + sliderSet.BaseMorph)
@@ -787,7 +917,8 @@ EndFunction
 
 
 Function UnequipSlots()
-	Log("UnequipSlots: " + UnequipStackSize)
+	Log("UnequipSlots (stack=" + UnequipStackSize + ")")
+	UnequipStackSize += 1
 	If (UnequipStackSize <= 1)
 		bool found = false
 		bool[] compFound = new bool[CurrentCompanions.Length]
@@ -834,11 +965,11 @@ Function UnequipSlots()
 		EndWhile
 	EndIf
 	UnequipStackSize -= 1
+	Log("FINISHED UnequipSlots")
 EndFunction
 
 Function TriggerUnequipSlots()
 	Log("TriggerUnequipSlots")
-	UnequipStackSize += 1
 	StartTimer(0.1, ETimerUnequipSlots)
 EndFunction
 
