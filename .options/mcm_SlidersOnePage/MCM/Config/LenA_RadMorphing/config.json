@@ -35,11 +35,12 @@
             "html": true
         },
         {
-            "text": "When to morph",
+            "text": "Morph updates",
             "type": "section"
         },
         {
             "text": "<b>Periodic updates:</b> Checks rads every x seconds (update delay) and changes morphs according to current rads level.<br><b>Update after sleeping:</b> Every time you go to sleep you get additional morphs according to the current rads. In this update mode you can only restore your body by visiting a doctor.<br>",
+            "type": "text",
             "html": true
         },
         {
@@ -150,6 +151,10 @@
                             
                         ]
                     }
+                },
+                {
+                    "text": "<br>",
+                    "html": true
                 }
             ]
         },
