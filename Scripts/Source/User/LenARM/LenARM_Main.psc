@@ -378,6 +378,9 @@ Function Startup()
 		; set up companions
 		CurrentCompanions = new Actor[0]
 
+		; reset unequip stack
+		UnequipStackSize = 0
+
 		If (UpdateType == EUpdateTypeImmediately)
 			; start timer
 			TimerMorphTick()
@@ -861,7 +864,8 @@ EndFunction
 
 
 Function UnequipSlots()
-	Log("UnequipSlots: " + UnequipStackSize)
+	Log("UnequipSlots (stack=" + UnequipStackSize + ")")
+	UnequipStackSize += 1
 	If (UnequipStackSize <= 1)
 		bool found = false
 		bool[] compFound = new bool[CurrentCompanions.Length]
@@ -908,11 +912,11 @@ Function UnequipSlots()
 		EndWhile
 	EndIf
 	UnequipStackSize -= 1
+	Log("FINISHED UnequipSlots")
 EndFunction
 
 Function TriggerUnequipSlots()
 	Log("TriggerUnequipSlots")
-	UnequipStackSize += 1
 	StartTimer(0.1, ETimerUnequipSlots)
 EndFunction
 
