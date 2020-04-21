@@ -660,7 +660,6 @@ EndEvent
 
 
 float Function GetNewRads()
-	Log("GetNewRads (type=" + RadsDetectionType + ")")
 	float newRads = 0.0
 	If (RadsDetectionType == ERadsDetectionTypeRads)
 		newRads = PlayerRef.GetValue(Rads)
