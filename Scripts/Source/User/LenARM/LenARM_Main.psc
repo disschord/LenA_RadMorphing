@@ -894,6 +894,7 @@ Function TimerMorphTick()
 		UpdateCompanions()
 
 		; apply morphs
+		bool changedMorphs = false
 		int idxSet = 0
 		While (idxSet < SliderSets.Length)
 			SliderSet sliderSet = SliderSets[idxSet]
@@ -902,7 +903,7 @@ Function TimerMorphTick()
 				float newMorph = GetNewMorph(newRads, sliderSet)
 
 				Log("    morph " + idxSet + ": " + sliderSet.CurrentMorph + " -> " + newMorph)
-				If (newMorph > sliderSet.CurrentMorph || !sliderSet.OnlyDoctorCanReset)
+				If (newMorph > sliderSet.CurrentMorph || (!sliderSet.OnlyDoctorCanReset && newMorph != sliderSet.CurrentMorph))
 					float fullMorph = newMorph
 					If (sliderSet.IsAdditive)
 						fullMorph += sliderSet.BaseMorph
@@ -912,6 +913,7 @@ Function TimerMorphTick()
 					EndIf
 					Log("    morph " + idxSet + ": " + sliderSet.CurrentMorph + " -> " + newMorph + " -> " + fullMorph)
 					SetMorphs(idxSet, sliderSet, fullMorph)
+					changedMorphs = true
 				ElseIf (sliderSet.IsAdditive)
 					sliderSet.BaseMorph += sliderSet.CurrentMorph - newMorph
 					Log("    setting baseMorph " + idxSet + " to " + sliderSet.BaseMorph)
@@ -920,9 +922,11 @@ Function TimerMorphTick()
 			EndIf
 			idxSet += 1
 		EndWhile
-		BodyGen.UpdateMorphs(PlayerRef)
-		ApplyAllCompanionMorphs()
-		TriggerUnequipSlots()
+		If (changedMorphs)
+			BodyGen.UpdateMorphs(PlayerRef)
+			ApplyAllCompanionMorphs()
+			TriggerUnequipSlots()
+		EndIf
 	EndIf
 	StartTimer(UpdateDelay, ETimerMorphTick)
 EndFunction
