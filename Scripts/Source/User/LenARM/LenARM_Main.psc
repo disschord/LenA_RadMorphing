@@ -396,6 +396,19 @@ Function Startup()
 		; reset unequip stack
 		UnequipStackSize = 0
 
+		; reapply base morphs
+		int idxSet = 0
+		While (idxSet < SliderSets.Length)
+			SliderSet set = SliderSets[idxSet]
+			If (set.OnlyDoctorCanReset && set.IsAdditive && set.BaseMorph > 0)
+				SetMorphs(idxSet, set, set.BaseMorph)
+				SetCompanionMorphs(idxSet, set.BaseMorph, set.ApplyCompanion)
+			EndIf
+			idxSet += 1
+		EndWhile
+		ApplyAllCompanionMorphs()
+		BodyGen.UpdateMorphs(PlayerRef)
+
 		If (UpdateType == EUpdateTypeImmediately)
 			; start timer
 			TimerMorphTick()
