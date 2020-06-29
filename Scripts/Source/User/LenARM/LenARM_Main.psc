@@ -914,11 +914,14 @@ Function TimerMorphTick()
 					Log("    morph " + idxSet + ": " + sliderSet.CurrentMorph + " -> " + newMorph + " -> " + fullMorph)
 					SetMorphs(idxSet, sliderSet, fullMorph)
 					changedMorphs = true
+					sliderSet.CurrentMorph = newMorph
+					Log("    setting currentMorph " + idxSet + " to " + sliderSet.CurrentMorph)
 				ElseIf (sliderSet.IsAdditive)
 					sliderSet.BaseMorph += sliderSet.CurrentMorph - newMorph
 					Log("    setting baseMorph " + idxSet + " to " + sliderSet.BaseMorph)
+					sliderSet.CurrentMorph = newMorph
+					Log("    setting currentMorph " + idxSet + " to " + sliderSet.CurrentMorph)
 				EndIf
-				sliderSet.CurrentMorph = newMorph
 			EndIf
 			idxSet += 1
 		EndWhile
