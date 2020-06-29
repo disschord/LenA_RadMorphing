@@ -704,8 +704,9 @@ EndFunction
 Function SetMorphs(int idxSet, SliderSet sliderSet, float fullMorph)
 	int sliderNameOffset = SliderSet_GetSliderNameOffset(idxSet)
 	int idxSlider = sliderNameOffset
+	int sex = PlayerRef.GetLeveledActorBase().GetSex()
 	While (idxSlider < sliderNameOffset + sliderSet.NumberOfSliderNames)
-		BodyGen.SetMorph(PlayerRef, true, SliderNames[idxSlider], kwMorph, OriginalMorphs[idxSlider] + fullMorph * sliderSet.TargetMorph)
+		BodyGen.SetMorph(PlayerRef, sex==ESexFemale, SliderNames[idxSlider], kwMorph, OriginalMorphs[idxSlider] + fullMorph * sliderSet.TargetMorph)
 		Log("    setting slider '" + SliderNames[idxSlider] + "' to " + (OriginalMorphs[idxSlider] + fullMorph * sliderSet.TargetMorph) + " (base value is " + OriginalMorphs[idxSlider] + ") (base morph is " + sliderSet.BaseMorph + ") (target is " + sliderSet.TargetMorph + ")")
 		If (sliderSet.ApplyCompanion != EApplyCompanionNone)
 			SetCompanionMorphs(idxSlider, fullMorph * sliderSet.TargetMorph, sliderSet.ApplyCompanion)
@@ -734,8 +735,9 @@ Function RestoreOriginalMorphs()
 	Log("RestoreOriginalMorphs")
 	; restore base values
 	int i = 0
+	int sex = PlayerRef.GetLeveledActorBase().GetSex()
 	While (i < SliderNames.Length)
-		BodyGen.SetMorph(PlayerRef, True, SliderNames[i], kwMorph, OriginalMorphs[i])
+		BodyGen.SetMorph(PlayerRef, sex==ESexFemale, SliderNames[i], kwMorph, OriginalMorphs[i])
 		i += 1
 	EndWhile
 	BodyGen.UpdateMorphs(PlayerRef)
@@ -760,8 +762,9 @@ Function RestoreOriginalCompanionMorphs(Actor companion, int idxCompanion)
 	Log("RestoreOriginalCompanionMorphs: " + companion + "; " + idxCompanion)
 	int offsetIdx = SliderNames.Length * idxCompanion
 	int idxSlider = 0
+	int sex = companion.GetLeveledActorBase().GetSex()
 	While (idxSlider < SliderNames.Length)
-		BodyGen.SetMorph(companion, True, SliderNames[idxSlider], kwMorph, OriginalCompanionMorphs[offsetIdx + idxSlider])
+		BodyGen.SetMorph(companion, sex==ESexFemale, SliderNames[idxSlider], kwMorph, OriginalCompanionMorphs[offsetIdx + idxSlider])
 		idxSlider += 1
 	EndWhile
 	BodyGen.UpdateMorphs(companion)
@@ -798,7 +801,7 @@ Function SetCompanionMorphs(int idxSlider, float morph, int applyCompanion)
 		If (applyCompanion == EApplyCompanionAll || (sex == ESexFemale && applyCompanion == EApplyCompanionFemale) || (sex == ESexMale && applyCompanion == EApplyCompanionMale))
 			int offsetIdx = SliderNames.Length * idxComp
 			Log("    setting companion(" + companion + ") slider '" + SliderNames[idxSlider] + "' to " + (OriginalMorphs[offsetIdx + idxSlider] + morph) + " (base value is " + OriginalMorphs[offsetIdx + idxSlider] + ")")
-			BodyGen.SetMorph(companion, True, SliderNames[idxSlider], kwMorph, OriginalCompanionMorphs[offsetIdx + idxSlider] + morph)
+			BodyGen.SetMorph(companion, sex==ESexFemale, SliderNames[idxSlider], kwMorph, OriginalCompanionMorphs[offsetIdx + idxSlider] + morph)
 		Else
 			Log("    skipping companion slider:  sex=" + sex)
 		EndIf
