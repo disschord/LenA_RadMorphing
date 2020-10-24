@@ -174,7 +174,7 @@ EndFunction
 
 
 string Function GetVersion()
-	return "0.6.2"; Sat Oct 24 11:24:08 CEST 2020
+	return "0.6.3"; Sat Oct 24 12:12:27 CEST 2020
 EndFunction
 
 
@@ -801,12 +801,16 @@ Function SetCompanionMorphs(int idxSlider, float morph, int applyCompanion)
 	While (idxComp < CurrentCompanions.Length)
 		Actor companion = CurrentCompanions[idxComp]
 		int sex = companion.GetLeveledActorBase().GetSex()
-		If (applyCompanion == EApplyCompanionAll || (sex == ESexFemale && applyCompanion == EApplyCompanionFemale) || (sex == ESexMale && applyCompanion == EApplyCompanionMale))
-			int offsetIdx = SliderNames.Length * idxComp
-			Log("    setting companion(" + companion + ") slider '" + SliderNames[idxSlider] + "' to " + (OriginalMorphs[offsetIdx + idxSlider] + morph) + " (base value is " + OriginalMorphs[offsetIdx + idxSlider] + ")")
-			BodyGen.SetMorph(companion, sex==ESexFemale, SliderNames[idxSlider], kwMorph, OriginalCompanionMorphs[offsetIdx + idxSlider] + morph)
+		If (!companion.IsInPowerArmor())
+			If (applyCompanion == EApplyCompanionAll || (sex == ESexFemale && applyCompanion == EApplyCompanionFemale) || (sex == ESexMale && applyCompanion == EApplyCompanionMale))
+				int offsetIdx = SliderNames.Length * idxComp
+				Log("    setting companion(" + companion + ") slider '" + SliderNames[idxSlider] + "' to " + (OriginalMorphs[offsetIdx + idxSlider] + morph) + " (base value is " + OriginalMorphs[offsetIdx + idxSlider] + ")")
+				BodyGen.SetMorph(companion, sex==ESexFemale, SliderNames[idxSlider], kwMorph, OriginalCompanionMorphs[offsetIdx + idxSlider] + morph)
+			Else
+				Log("    skipping companion slider:  sex=" + sex)
+			EndIf
 		Else
-			Log("    skipping companion slider:  sex=" + sex)
+			Log("    skipping companion(" + companion + ") due to being in power armor")
 		EndIf
 		idxComp += 1
 	EndWhile
@@ -895,46 +899,50 @@ Function TimerMorphTick()
 	float newRads = GetNewRads()
 	If (newRads != CurrentRads)
 		Log("new rads: " + newRads + " (" + CurrentRads + ")")
-		CurrentRads = newRads
-		; companions
-		UpdateCompanions()
+		If (!PlayerRef.IsInPowerArmor())
+			CurrentRads = newRads
+			; companions
+			UpdateCompanions()
 
-		; apply morphs
-		bool changedMorphs = false
-		int idxSet = 0
-		While (idxSet < SliderSets.Length)
-			SliderSet sliderSet = SliderSets[idxSet]
-			If (sliderSet.NumberOfSliderNames > 0)
-				Log("  SliderSet " + idxSet)
-				float newMorph = GetNewMorph(newRads, sliderSet)
+			; apply morphs
+			bool changedMorphs = false
+			int idxSet = 0
+			While (idxSet < SliderSets.Length)
+				SliderSet sliderSet = SliderSets[idxSet]
+				If (sliderSet.NumberOfSliderNames > 0)
+					Log("  SliderSet " + idxSet)
+					float newMorph = GetNewMorph(newRads, sliderSet)
 
-				Log("    morph " + idxSet + ": " + sliderSet.CurrentMorph + " -> " + newMorph)
-				If (newMorph > sliderSet.CurrentMorph || (!sliderSet.OnlyDoctorCanReset && newMorph != sliderSet.CurrentMorph))
-					float fullMorph = newMorph
-					If (sliderSet.IsAdditive)
-						fullMorph += sliderSet.BaseMorph
-						If (sliderSet.HasAdditiveLimit)
-							fullMorph = Math.Min(fullMorph, 1.0 + sliderSet.AdditiveLimit)
+					Log("    morph " + idxSet + ": " + sliderSet.CurrentMorph + " -> " + newMorph)
+					If (newMorph > sliderSet.CurrentMorph || (!sliderSet.OnlyDoctorCanReset && newMorph != sliderSet.CurrentMorph))
+						float fullMorph = newMorph
+						If (sliderSet.IsAdditive)
+							fullMorph += sliderSet.BaseMorph
+							If (sliderSet.HasAdditiveLimit)
+								fullMorph = Math.Min(fullMorph, 1.0 + sliderSet.AdditiveLimit)
+							EndIf
 						EndIf
+						Log("    morph " + idxSet + ": " + sliderSet.CurrentMorph + " -> " + newMorph + " -> " + fullMorph)
+						SetMorphs(idxSet, sliderSet, fullMorph)
+						changedMorphs = true
+						sliderSet.CurrentMorph = newMorph
+						Log("    setting currentMorph " + idxSet + " to " + sliderSet.CurrentMorph)
+					ElseIf (sliderSet.IsAdditive)
+						sliderSet.BaseMorph += sliderSet.CurrentMorph - newMorph
+						Log("    setting baseMorph " + idxSet + " to " + sliderSet.BaseMorph)
+						sliderSet.CurrentMorph = newMorph
+						Log("    setting currentMorph " + idxSet + " to " + sliderSet.CurrentMorph)
 					EndIf
-					Log("    morph " + idxSet + ": " + sliderSet.CurrentMorph + " -> " + newMorph + " -> " + fullMorph)
-					SetMorphs(idxSet, sliderSet, fullMorph)
-					changedMorphs = true
-					sliderSet.CurrentMorph = newMorph
-					Log("    setting currentMorph " + idxSet + " to " + sliderSet.CurrentMorph)
-				ElseIf (sliderSet.IsAdditive)
-					sliderSet.BaseMorph += sliderSet.CurrentMorph - newMorph
-					Log("    setting baseMorph " + idxSet + " to " + sliderSet.BaseMorph)
-					sliderSet.CurrentMorph = newMorph
-					Log("    setting currentMorph " + idxSet + " to " + sliderSet.CurrentMorph)
 				EndIf
+				idxSet += 1
+			EndWhile
+			If (changedMorphs)
+				BodyGen.UpdateMorphs(PlayerRef)
+				ApplyAllCompanionMorphs()
+				TriggerUnequipSlots()
 			EndIf
-			idxSet += 1
-		EndWhile
-		If (changedMorphs)
-			BodyGen.UpdateMorphs(PlayerRef)
-			ApplyAllCompanionMorphs()
-			TriggerUnequipSlots()
+		Else
+			Log("skipping due to player in power armor")
 		EndIf
 	EndIf
 	StartTimer(UpdateDelay, ETimerMorphTick)
