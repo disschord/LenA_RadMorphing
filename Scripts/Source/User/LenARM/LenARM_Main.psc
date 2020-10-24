@@ -8,6 +8,7 @@ Group Properties
 	ActorValue Property Rads Auto Const
 
 	Scene Property DoctorMedicineScene03_AllDone Auto Const
+	Scene Property DLC03DialogueFarHarbor_TeddyFinished Auto Const
 	GenericDoctorsScript Property DialogueGenericDoctors Auto Const
 
 	Sound Property LenARM_DropClothesSound Auto Const
@@ -173,7 +174,7 @@ EndFunction
 
 
 string Function GetVersion()
-	return "0.6.1"; Mon Jun 29 11:00:09 CEST 2020
+	return "0.6.2"; Sat Oct 24 11:24:08 CEST 2020
 EndFunction
 
 
@@ -383,6 +384,8 @@ Function Startup()
 		; start listening for doctor scene
 		RegisterForRemoteEvent(DoctorMedicineScene03_AllDone, "OnBegin")
 		RegisterForRemoteEvent(DoctorMedicineScene03_AllDone, "OnEnd")
+		RegisterForRemoteEvent(DLC03DialogueFarHarbor_TeddyFinished, "OnBegin")
+		RegisterForRemoteEvent(DLC03DialogueFarHarbor_TeddyFinished, "OnEnd")
 
 		If (RadsDetectionType == ERadsDetectionTypeRandom)
 			; start listening for rads damage
