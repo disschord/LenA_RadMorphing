@@ -14,6 +14,7 @@ Group Properties
 	Sound Property LenARM_DropClothesSound Auto Const
 
 	Faction Property CurrentCompanionFaction Auto Const
+	Faction Property PlayerAllyFation Auto Const
 
 	Potion Property GlowingOneBlood Auto Const
 EndGroup
@@ -875,7 +876,7 @@ Actor[] Function GetCompanions()
 	int idxFilterCompanions = 0
 	While (idxFilterCompanions < allCompanions.Length)
 		Actor companion = allCompanions[idxFilterCompanions]
-		If (companion.IsInFaction(CurrentCompanionFaction))
+		If (companion.IsInFaction(CurrentCompanionFaction) || companion.IsInFaction(PlayerAllyFation))
 			filteredCompanions.Add(companion)
 		EndIf
 		idxFilterCompanions += 1
