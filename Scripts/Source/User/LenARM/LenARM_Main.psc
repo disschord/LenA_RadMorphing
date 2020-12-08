@@ -804,7 +804,7 @@ Function SetCompanionMorphs(int idxSlider, float morph, int applyCompanion)
 		If (!companion.IsInPowerArmor())
 			If (applyCompanion == EApplyCompanionAll || (sex == ESexFemale && applyCompanion == EApplyCompanionFemale) || (sex == ESexMale && applyCompanion == EApplyCompanionMale))
 				int offsetIdx = SliderNames.Length * idxComp
-				Log("    setting companion(" + companion + ") slider '" + SliderNames[idxSlider] + "' to " + (OriginalMorphs[offsetIdx + idxSlider] + morph) + " (base value is " + OriginalMorphs[offsetIdx + idxSlider] + ")")
+				Log("    setting companion(" + companion + ") slider '" + SliderNames[idxSlider] + "' to " + (OriginalCompanionMorphs[offsetIdx + idxSlider] + morph) + " (base value is " + OriginalCompanionMorphs[offsetIdx + idxSlider] + ")")
 				BodyGen.SetMorph(companion, sex==ESexFemale, SliderNames[idxSlider], kwMorph, OriginalCompanionMorphs[offsetIdx + idxSlider] + morph)
 			Else
 				Log("    skipping companion slider:  sex=" + sex)
