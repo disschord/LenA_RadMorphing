@@ -14,6 +14,7 @@ Group Properties
 	Sound Property LenARM_DropClothesSound Auto Const
 
 	Faction Property CurrentCompanionFaction Auto Const
+	Faction Property PlayerAllyFation Auto Const
 
 	Potion Property GlowingOneBlood Auto Const
 EndGroup
@@ -174,7 +175,7 @@ EndFunction
 
 
 string Function GetVersion()
-	return "0.6.3"; Sat Oct 24 12:12:27 CEST 2020
+	return "0.7.0"; Tue Dec 08 11:50:11 CET 2020
 EndFunction
 
 
@@ -804,7 +805,7 @@ Function SetCompanionMorphs(int idxSlider, float morph, int applyCompanion)
 		If (!companion.IsInPowerArmor())
 			If (applyCompanion == EApplyCompanionAll || (sex == ESexFemale && applyCompanion == EApplyCompanionFemale) || (sex == ESexMale && applyCompanion == EApplyCompanionMale))
 				int offsetIdx = SliderNames.Length * idxComp
-				Log("    setting companion(" + companion + ") slider '" + SliderNames[idxSlider] + "' to " + (OriginalMorphs[offsetIdx + idxSlider] + morph) + " (base value is " + OriginalMorphs[offsetIdx + idxSlider] + ")")
+				Log("    setting companion(" + companion + ") slider '" + SliderNames[idxSlider] + "' to " + (OriginalCompanionMorphs[offsetIdx + idxSlider] + morph) + " (base value is " + OriginalCompanionMorphs[offsetIdx + idxSlider] + ")")
 				BodyGen.SetMorph(companion, sex==ESexFemale, SliderNames[idxSlider], kwMorph, OriginalCompanionMorphs[offsetIdx + idxSlider] + morph)
 			Else
 				Log("    skipping companion slider:  sex=" + sex)
@@ -875,7 +876,7 @@ Actor[] Function GetCompanions()
 	int idxFilterCompanions = 0
 	While (idxFilterCompanions < allCompanions.Length)
 		Actor companion = allCompanions[idxFilterCompanions]
-		If (companion.IsInFaction(CurrentCompanionFaction))
+		If (companion.IsInFaction(CurrentCompanionFaction) || companion.IsInFaction(PlayerAllyFation))
 			filteredCompanions.Add(companion)
 		EndIf
 		idxFilterCompanions += 1
