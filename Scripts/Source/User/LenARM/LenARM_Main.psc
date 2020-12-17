@@ -7,8 +7,15 @@ Group Properties
 
 	ActorValue Property Rads Auto Const
 
+	; Base Game
 	Scene Property DoctorMedicineScene03_AllDone Auto Const
+	; Far Harbor
 	Scene Property DLC03DialogueFarHarbor_TeddyFinished Auto Const
+	Scene Property DialogueNucleusArchemist_GreetScene03_AllDone Auto Const
+	Scene Property DLC03AcadiaDialogueAsterPostExamScene Auto Const
+	; Nuka World
+	Scene Property DLC04SettlementDoctor_EndScene Auto Const
+
 	GenericDoctorsScript Property DialogueGenericDoctors Auto Const
 
 	Sound Property LenARM_DropClothesSound Auto Const
@@ -387,6 +394,12 @@ Function Startup()
 		RegisterForRemoteEvent(DoctorMedicineScene03_AllDone, "OnEnd")
 		RegisterForRemoteEvent(DLC03DialogueFarHarbor_TeddyFinished, "OnBegin")
 		RegisterForRemoteEvent(DLC03DialogueFarHarbor_TeddyFinished, "OnEnd")
+		RegisterForRemoteEvent(DialogueNucleusArchemist_GreetScene03_AllDone, "OnBegin")
+		RegisterForRemoteEvent(DialogueNucleusArchemist_GreetScene03_AllDone, "OnEnd")
+		RegisterForRemoteEvent(DLC03AcadiaDialogueAsterPostExamScene, "OnBegin")
+		RegisterForRemoteEvent(DLC03AcadiaDialogueAsterPostExamScene, "OnEnd")
+		RegisterForRemoteEvent(DLC04SettlementDoctor_EndScene, "OnBegin")
+		RegisterForRemoteEvent(DLC04SettlementDoctor_EndScene, "OnEnd")
 
 		If (RadsDetectionType == ERadsDetectionTypeRandom)
 			; start listening for rads damage
