@@ -7,8 +7,15 @@ Group Properties
 
 	ActorValue Property Rads Auto Const
 
+	; Base Game
 	Scene Property DoctorMedicineScene03_AllDone Auto Const
+	; Far Harbor
 	Scene Property DLC03DialogueFarHarbor_TeddyFinished Auto Const
+	Scene Property DialogueNucleusArchemist_GreetScene03_AllDone Auto Const
+	Scene Property DLC03AcadiaDialogueAsterPostExamScene Auto Const
+	; Nuka World
+	Scene Property DLC04SettlementDoctor_EndScene Auto Const
+
 	GenericDoctorsScript Property DialogueGenericDoctors Auto Const
 
 	Sound Property LenARM_DropClothesSound Auto Const
@@ -175,7 +182,7 @@ EndFunction
 
 
 string Function GetVersion()
-	return "0.7.0"; Tue Dec 08 11:50:11 CET 2020
+	return "0.7.1"; Thu Dec 17 09:11:27 CET 2020
 EndFunction
 
 
@@ -387,6 +394,12 @@ Function Startup()
 		RegisterForRemoteEvent(DoctorMedicineScene03_AllDone, "OnEnd")
 		RegisterForRemoteEvent(DLC03DialogueFarHarbor_TeddyFinished, "OnBegin")
 		RegisterForRemoteEvent(DLC03DialogueFarHarbor_TeddyFinished, "OnEnd")
+		RegisterForRemoteEvent(DialogueNucleusArchemist_GreetScene03_AllDone, "OnBegin")
+		RegisterForRemoteEvent(DialogueNucleusArchemist_GreetScene03_AllDone, "OnEnd")
+		RegisterForRemoteEvent(DLC03AcadiaDialogueAsterPostExamScene, "OnBegin")
+		RegisterForRemoteEvent(DLC03AcadiaDialogueAsterPostExamScene, "OnEnd")
+		RegisterForRemoteEvent(DLC04SettlementDoctor_EndScene, "OnBegin")
+		RegisterForRemoteEvent(DLC04SettlementDoctor_EndScene, "OnEnd")
 
 		If (RadsDetectionType == ERadsDetectionTypeRandom)
 			; start listening for rads damage
@@ -964,7 +977,7 @@ Function UnequipSlots()
 				int idxSlot = unequipSlotOffset
 				While (idxSlot < unequipSlotOffset + sliderSet.NumberOfUnequipSlots)
 					Actor:WornItem item = PlayerRef.GetWornItem(UnequipSlots[idxSlot])
-					If (item.item)
+					If (item.item && LL_Fourplay.StringSubstring(item.modelName, 0, 6) != "Actors" && LL_Fourplay.StringSubstring(item.modelName, 0, 6) != "Pipboy")
 						Log("  unequipping slot " + UnequipSlots[idxSlot] + " (" + item.item.GetName() + " / " + item.modelName + ")")
 						PlayerRef.UnequipItemSlot(UnequipSlots[idxSlot])
 						If (!found && !PlayerRef.IsEquipped(item.item))
@@ -979,9 +992,8 @@ Function UnequipSlots()
 						int sex = companion.GetLeveledActorBase().GetSex()
 						If (sliderSet.ApplyCompanion == EApplyCompanionAll || (sex == ESexFemale && sliderSet.ApplyCompanion == EApplyCompanionFemale) || (sex == ESexMale && sliderSet.ApplyCompanion == EApplyCompanionMale))
 							Actor:WornItem compItem = companion.GetWornItem(UnequipSlots[idxSlot])
-							If (compItem.item)
+							If (compItem.item && LL_Fourplay.StringSubstring(compItem.modelName, 0, 6) != "Actors" && LL_Fourplay.StringSubstring(compItem.modelName, 0, 6) != "Pipboy")
 								Log("  unequipping companion(" + companion + ") slot " + UnequipSlots[idxSlot] + " (" + compItem.item.GetName() + " / " + compItem.modelName + ")")
-								; companion.UnequipItemSlot(UnequipSlots[idxSlot])
 								companion.UnequipItem(compItem.item)
 								If (!compFound[idxComp] && !companion.IsEquipped(compItem.item))
 									Log("  playing companion sound")
