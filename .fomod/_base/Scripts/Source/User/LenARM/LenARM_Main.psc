@@ -24,6 +24,8 @@ Group Properties
 	Faction Property PlayerAllyFation Auto Const
 
 	Potion Property GlowingOneBlood Auto Const
+	
+	Perk[] Property RadiationPerks Auto
 EndGroup
 
 
@@ -112,6 +114,10 @@ int RadsDetectionType
 float RandomRadsLower
 float RandomRadsUpper
 
+; perk vars
+float IrradiatedSpeed
+float[] iRanks
+; end perk vars
 
 float CurrentRads
 float FakeRads
@@ -182,7 +188,7 @@ EndFunction
 
 
 string Function GetVersion()
-	return "0.7.1"; Thu Dec 17 09:11:27 CET 2020
+	return "0.7.2"; Fri Dec 25 09:11:27 CET 2020
 EndFunction
 
 
@@ -380,6 +386,29 @@ Function Startup()
 
 		; get duration from MCM
 		UpdateDelay = MCM.GetModSettingFloat("LenA_RadMorphing", "fUpdateDelay:General")
+		
+		; get irradiated perk speed from MCM
+        IrradiatedSpeed = MCM.GetModSettingInt("LenA_RadMorphing", "iSpeed:Irradiated")
+        If (IrradiatedSpeed > 1)
+            IrradiatedSpeed *= 0.66667
+        EndIf
+                		
+        ; build an Custom Irradiation Rank Array in the most painful way possible
+        iRanks = new float[5]
+        iRanks.Insert(MCM.GetModSettingFloat("LenA_RadMorphing", "fRank1:Irradiated"), 0)
+        iRanks.Insert(MCM.GetModSettingFloat("LenA_RadMorphing", "fRank2:Irradiated"), 1)
+        iRanks.Insert(MCM.GetModSettingFloat("LenA_RadMorphing", "fRank3:Irradiated"), 2)
+        iRanks.Insert(MCM.GetModSettingFloat("LenA_RadMorphing", "fRank4:Irradiated"), 3)
+        iRanks.Insert(MCM.GetModSettingFloat("LenA_RadMorphing", "fRank5:Irradiated"), 4)
+                		
+        Int i = 0
+        While (i < 5)
+            Log ("Custom Irradiated Rank " + (i+1) + ": " + iRanks[i])
+            i += 1
+        EndWhile
+        
+        ; update stats
+        ApplyIrradiatedPerk()
 		
 		; get radiation detection type from MCM
 		RadsDetectionType = MCM.GetModSettingInt("LenA_RadMorphing", "iRadiationDetection:General")
@@ -905,8 +934,57 @@ Function UpdateCompanions()
 	Log("  CurrentCompanions: " + CurrentCompanions)
 EndFunction
 
+Function ChangePerkLevel(int newLevel)
+    ; remove old perk levels when changing levels or when fully healed
+    Int i = 0
+    While (i < 5)
+        If (i != newLevel)
+            If (PlayerRef.HasPerk(RadiationPerks[i]))
+                Log("Removing Irradiated Perk of level " + i)
+                PlayerRef.RemovePerk(RadiationPerks[i])
+            EndIf
+        EndIf
+        i += 1
+    EndWhile
+    Log("Irradiated Perk Level " + newLevel + " Applied")
+    return
+EndFunction
 
-
+Function ApplyIrradiatedPerk()
+    float iRads = GetNewRads()
+    int perkLevel = (iRads * (5 * IrradiatedSpeed)) as int
+    If (perkLevel > 4)
+        perkLevel = 4
+    EndIf
+    int i = 0
+    
+    ; apply custom irradiated %'s
+    If (IrradiatedSpeed == 0)
+        While (iRads > iRanks[i]/100 && i < 5)
+            i += 1
+        EndWhile
+        
+        perkLevel = i - 1
+        
+        If (!PlayerRef.HasPerk(RadiationPerks[perkLevel]) && perkLevel != -1)
+            PlayerRef.AddPerk(RadiationPerks[perkLevel])
+        EndIf
+        
+        Log("Applying Irradiated Perk with level " + perkLevel)
+        ChangePerkLevel(perkLevel)
+    EndIf
+    
+    ; apply preset irradiated %'s
+    ; apply radiation perk based on radiation level:                     
+    If (!PlayerRef.HasPerk(RadiationPerks[perkLevel]) && iRads >= 0.1/IrradiatedSpeed)
+        PlayerRef.AddPerk(RadiationPerks[perkLevel])
+    ElseIf (iRads < 0.1/IrradiatedSpeed)
+        perkLevel = -1
+    EndIf
+    
+    Log("Applying Irradiated Perk with level " + perkLevel)
+    ChangePerkLevel(perkLevel)
+EndFunction
 
 Function TimerMorphTick()
 	; get rads
@@ -915,6 +993,8 @@ Function TimerMorphTick()
 		Log("new rads: " + newRads + " (" + CurrentRads + ")")
 		If (!PlayerRef.IsInPowerArmor())
 			CurrentRads = newRads
+			; update stats
+            ApplyIrradiatedPerk()
 			; companions
 			UpdateCompanions()
 

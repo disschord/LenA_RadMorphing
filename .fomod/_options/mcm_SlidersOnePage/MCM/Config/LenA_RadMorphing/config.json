@@ -159,6 +159,109 @@
             ]
         },
         {
+            "pageDisplayName": "Stat Effects",
+            "content": [
+                {
+                    "text": "Irradiated Perk, Applies Stat Buffs/Debuffs Based on Rads",
+                    "type": "section"
+                },
+                {
+                    "text": "<br>",
+                    "html": true
+                },
+                {
+                    "text": "Irradiated progression speed preset",
+                    "help": "Irradiated perk progression speed based on %Rads. Default: Custom",
+                    "type": "stepper",
+                    "id": "iSpeed:Irradiated",
+                    "valueOptions": {
+                        "sourceType": "ModSettingInt",
+                        "options": [
+                            "CUSTOM",
+                            "SLOW",
+                            "NORMAL",
+                            "FAST",
+                            "VERY FAST"
+                        ]
+                    }
+                },
+                {
+                    "text": "<b>Slow:</b> Stages at 10%, 20%, 40%, 60%, 80%.<br><b>Normal:</b> Stages at 7.5%, 15%, 30%, 45%, 60%.<br><b>Fast:</b> Stages at 5%, 10%, 20%, 30%, 40%.<br><b>Very Fast:</b> Stages at 2%%, 7.5%, 15%, 22.5%, 30%.",
+                    "type": "text",
+                    "html": true
+                },
+                {
+                    "text": "<br>",
+                    "html": true
+                },
+                {
+                    "text": "<b>Custom Irradiated Stage %'s:</b> Custom points at which the Irradiated perk increases in rank. Set a slider to 100% to disable that stage and later stages.",
+                    "type": "text",
+                    "html": true
+                },
+                {
+                    "text": "Custom Irradiated stage 1 Rads (in %)",
+                    "help": "Sets the point at which the first stage Irradiated perk is added. Default: 100",
+                    "type": "slider",
+                    "id": "fRank1:Irradiated",
+                    "valueOptions": {
+                        "sourceType": "ModSettingFloat",
+                        "min": 0.0,
+                        "max": 100.0,
+                        "step": 0.5
+                    }
+                },
+                {
+                    "text": "Custom Irradiated stage 2 Rads (in %)",
+                    "help": "Sets the point at which the second stage Irradiated perk is added. Default: 100",
+                    "type": "slider",
+                    "id": "fRank2:Irradiated",
+                    "valueOptions": {
+                        "sourceType": "ModSettingFloat",
+                        "min": 0.0,
+                        "max": 100.0,
+                        "step": 0.5
+                    }
+                },
+                {
+                    "text": "Custom Irradiated stage 3 Rads (in %)",
+                    "help": "Sets the point at which the third stage Irradiated perk is added. Default: 100",
+                    "type": "slider",
+                    "id": "fRank3:Irradiated",
+                    "valueOptions": {
+                        "sourceType": "ModSettingFloat",
+                        "min": 0.0,
+                        "max": 100.0,
+                        "step": 0.5
+                    }
+                },
+                {
+                    "text": "Custom Irradiated stage 4 Rads (in %)",
+                    "help": "Sets the point at which the fourth stage Irradiated perk is added. Default: 100",
+                    "type": "slider",
+                    "id": "fRank4:Irradiated",
+                    "valueOptions": {
+                        "sourceType": "ModSettingFloat",
+                        "min": 0.0,
+                        "max": 100.0,
+                        "step": 0.5
+                    }
+                },
+                {
+                    "text": "Custom Irradiated stage 5 Rads (in %)",
+                    "help": "Sets the point at which the final stage Irradiated perk is added. Default: 100",
+                    "type": "slider",
+                    "id": "fRank5:Irradiated",
+                    "valueOptions": {
+                        "sourceType": "ModSettingFloat",
+                        "min": 0.0,
+                        "max": 100.0,
+                        "step": 0.5
+                    }
+                }
+            ]
+        },
+        {
             "pageDisplayName": "Slider Sets",
             "content": [
                 {
